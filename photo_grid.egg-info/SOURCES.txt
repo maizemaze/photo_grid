@@ -1,3 +1,4 @@
+README.md
 setup.py
 photo_grid/CPU_Agents.py
 photo_grid/CPU_ClassFun.py
