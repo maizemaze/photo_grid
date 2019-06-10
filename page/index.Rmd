@@ -1,14 +1,14 @@
 ---
-title: "iPat: Intelligent Prediction and Association Tool"
+title: "GRID: Greenfield Image Decoder"
 author: "Chunpeng James Chen"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output:
   bookdown::gitbook
 documentclass: book
-url: 'https://github.com/poissonfish/iPat'
-github-repo: poissonfish/iPat
-description: "Documentation for the caret package."
+url: 'https://github.com/poissonfish/photo_grid'
+github-repo: poissonfish/photo_grid
+description: "A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping"
 link-citations: yes
 colorlinks: yes
 lot: yes

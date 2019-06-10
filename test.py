@@ -1,4 +1,4 @@
-# cp /Users/jameschen/Dropbox/James_Git/pypii/photo_grid/photo_grid/*.py /Users/jameschen/Dropbox/James_Git/env/lib/python3.6/site-packages/photo_grid/
+cp /Users/jameschen/Dropbox/photo_grid/photo_grid/*.py /Users/jameschen/Dropbox/James_Git/env/lib/python3.6/site-packages/photo_grid/
 import photo_grid
 photo_grid.run()
 
