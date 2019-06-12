@@ -1,4 +1,4 @@
-# /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages
+/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages
 cp /Users/jameschen/Dropbox/photo_grid/photo_grid/*.py /Users/jameschen/Dropbox/James_Git/env/lib/python3.6/site-packages/photo_grid/
 # sudo cp /Users/jameschen/Dropbox/photo_grid/photo_grid/*.py /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/photo_grid/
 

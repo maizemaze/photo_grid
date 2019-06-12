@@ -11,24 +11,33 @@ class Panel_Output(QWidget):
         '''
         '''
         super().__init__()
-        # self.setFocusPolicy(Qt.StrongFocus)
-        # self.setFocus()
-        # self.update()
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setFocus()
+        self.update()
         self.layout = QHBoxLayout()
         '''left side'''
         self.wg_img = Widget_Seg(**params)
         '''right side'''
         self.pn_right = QWidget()
         self.lo_right = QVBoxLayout()
-        # Config
-        self.gr_config = QGroupBox("Config")
-        self.lo_config = QVBoxLayout()
-        self.gr_grid = QGroupBox("Grid Coef. = 0.2")
+        # Boundary
+        self.gr_border = QGroupBox("Plot Size")
+        self.lo_border = QVBoxLayout()
+        # Boundary (auto)
+        self.gr_auto = QGroupBox("Auto")
+        Self.lo_auto = QVBoxLayout()
+        self.gr_grid = QGroupBox("Grid Coef. = 0.0")
         self.lo_grid = QVBoxLayout()
         self.sl_grid = QSlider(Qt.Horizontal)
-        self.gr_smc = QGroupBox("Center = 0")
-        self.lo_smc = QVBoxLayout()
-        self.sl_smc = QSlider(Qt.Horizontal)
+        # Boundary (fix)
+        self.gr_fix = QGroupBox("Fixed")
+        self.lo_fix = QVBoxLayout()
+        self.gr_width = QGroupBox("Width = ")
+        self.lo_width = QVBoxLayout()
+        self.sl_width = QSlider(Qt.Horizontal)
+        self.gr_length = QGroupBox("Length = ")
+        self.lo_length = QVBoxLayout()
+        self.sl_length = QSlider(Qt.Horizontal)
         # Display
         self.gr_dis = QGroupBox("Display")
         self.lo_dis = QHBoxLayout()
@@ -45,7 +54,7 @@ class Panel_Output(QWidget):
         '''ui'''
         self.initUI()
     def initUI(self):
-        '''config (right)'''
+        '''border-auto (right)'''
         # components
         self.sl_grid.setMinimum(0)
         self.sl_grid.setMaximum(10)
@@ -53,20 +62,40 @@ class Panel_Output(QWidget):
         self.sl_grid.setTickInterval(2)
         self.sl_grid.setTickPosition(QSlider.TicksBelow)
         self.sl_grid.valueChanged.connect(self.change_grid)
-        self.sl_smc.setMinimum(0)
-        self.sl_smc.setMaximum(10)
-        self.sl_smc.setValue(0)
-        self.sl_smc.setTickInterval(2)
-        self.sl_smc.setTickPosition(QSlider.TicksBelow)
-        self.sl_smc.valueChanged.connect(self.change_smc)
         # layout
         self.lo_grid.addWidget(self.sl_grid)
         self.gr_grid.setLayout(self.lo_grid)
-        self.lo_smc.addWidget(self.sl_smc)
-        self.gr_smc.setLayout(self.lo_smc)
-        self.lo_config.addWidget(self.gr_grid)
-        self.lo_config.addWidget(self.gr_smc)
-        self.gr_config.setLayout(self.lo_config)
+        self.lo_auto.addWidget(self.gr_grid)
+        self.gr_auto.setLayout(self.lo_auto)
+        '''border-fix (right)'''
+        # components
+        self.sl_width.setMinimum(0)
+        self.sl_width.setMaximum(10)
+        self.sl_width.setValue(2)
+        self.sl_width.setTickInterval(2)
+        self.sl_width.setTickPosition(QSlider.TicksBelow)
+        self.sl_width.valueChanged.connect(self.change_width)
+        self.sl_length.setMinimum(0)
+        self.sl_length.setMaximum(10)
+        self.sl_length.setValue(2)
+        self.sl_length.setTickInterval(2)
+        self.sl_length.setTickPosition(QSlider.TicksBelow)
+        self.sl_length.valueChanged.connect(self.change_length)
+        # layout
+        self.lo_width.addWidget(self.sl_width)
+        self.gr_width.setLayout(self.lo_width)
+        self.lo_length.addWidget(self.sl_length)
+        self.gr_length.setLayout(self.lo_length)
+        self.lo_fix.addWidget(self.gr_width)
+        self.lo_fix.addWidget(self.gr_length)
+        self.gr_fix.setLayout(self.lo_fix)
+        '''border'''
+        # layout
+        self.lo_border.addWidget(self.gr_auto)
+        self.lo_border.addWidget(self.gr_fix)
+        self.gr_border.setLayout(self.lo_border)
+
+
         '''display (right)'''
         # components
         self.rb_srgb.setChecked(True)
@@ -95,7 +124,7 @@ class Panel_Output(QWidget):
         # left
         # NONE
         # right
-        self.lo_right.addWidget(self.gr_config)
+        self.lo_right.addWidget(self.gr_border)
         self.lo_right.addWidget(self.gr_dis)
         self.lo_right.addWidget(self.gr_out)
         self.pn_right.setLayout(self.lo_right)
@@ -111,8 +140,6 @@ class Panel_Output(QWidget):
         self.layout.addWidget(self.pn_right)
         self.setLayout(self.layout)
         self.show()
-        """test"""
-        self.idx=0
     def change_grid(self):
         '''
         '''

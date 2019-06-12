@@ -34,6 +34,7 @@ class Panel_Kmeaner(QWidget):
         # Binarization
         self.gr_bin = QGroupBox("Binarization")
         self.lo_bin = QVBoxLayout()
+        # Binarization (auto)
         self.gr_cut = QGroupBox("Auto cutoff = 1")
         self.lo_cut = QVBoxLayout()
         self.sl_cut = QSlider(Qt.Horizontal)

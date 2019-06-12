@@ -84,8 +84,8 @@ class Panel_Input(QWidget):
         import pandas as pd
         import io
         import urllib.request
-        import rasterio
         if self.gr_user.isChecked():
+            import rasterio
             # user input
             ras = rasterio.open(self.fd_img.text())
             nCh = ras.count
