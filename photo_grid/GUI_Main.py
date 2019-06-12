@@ -43,7 +43,7 @@ class Window_Main(QMainWindow):
         self.pn_navi = QWidget()
         self.bt_next = QPushButton()
         self.bt_back = QPushButton()
-        self.layout = None
+        self.Layout = None
         # params
         self.params = dict()
         # image-related
@@ -161,11 +161,11 @@ class Window_Main(QMainWindow):
         layout_navi.addWidget(self.bt_next)
         self.pn_navi.setLayout(layout_navi)
     def assemble_and_show(self):
-        self.layout = QVBoxLayout()
-        self.layout.addWidget(self.pn_main, Qt.AlignCenter)
-        self.layout.addWidget(self.pn_navi)
+        self.Layout = QVBoxLayout()
+        self.Layout.addWidget(self.pn_main, Qt.AlignCenter)
+        self.Layout.addWidget(self.pn_navi)
         self.pn_content = QWidget()
-        self.pn_content.setLayout(self.layout)
+        self.pn_content.setLayout(self.Layout)
         self.setCentralWidget(self.pn_content)
         self.show()
     def test(self):
@@ -175,5 +175,7 @@ class Window_Main(QMainWindow):
         np.save("img_crop", self.params['crop'])
         np.save("img_bin", self.params['bin'])
         np.save("map", self.params['map'])
+        np.save("img_k", self.params['k'])
+        np.save("ls_bin", self.params['ls_bin'])
         print("nc:%d"%(self.params['nc']))
         print("nr:%d"%(self.params['nr']))

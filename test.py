@@ -1,4 +1,8 @@
+# /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages
 cp /Users/jameschen/Dropbox/photo_grid/photo_grid/*.py /Users/jameschen/Dropbox/James_Git/env/lib/python3.6/site-packages/photo_grid/
+# sudo cp /Users/jameschen/Dropbox/photo_grid/photo_grid/*.py /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/photo_grid/
+
+
 import photo_grid
 photo_grid.run()
 
@@ -26,12 +30,6 @@ img_np = img_np.astype(np.uint8)
 plt.imshow(img_np)
 plt.show()
 
-# img = cv2.imread(path, cv2.IMREAD_UNCHANGED).astype(np.uint8)
-# img = np.array(Image.open(path)).astype(np.uint8)
-# img[:,:,:3] = img[:,:,:3][:,:,[2,1,0]] # swap to rgb instead of bgr
-
-
-img.mean(axis=(0,1))
 
 ''' TEST OUTPUT '''
 import cv2
@@ -41,17 +39,23 @@ import pandas as pd
 import json, os, sys
 from PyQt5.QtWidgets import QApplication
 import photo_grid
-
+import cv2
+import rasterio
 os.chdir("/Users/jameschen/Dropbox/James_Git")
-img_crop = np.load("img_crop.npy")
-img_bin = np.load("img_bin.npy")
-anchors = json.load(open('anchors'))
-map = pd.DataFrame(np.load("map.npy", allow_pickle=True))
-nc = 6
-nr = 9
-
+params = dict()
+params['anchors'] = json.load(open('anchors'))
+params['nc'] = 12
+params['nr'] = 23
+params['map'] = pd.DataFrame(np.load("map.npy", allow_pickle=True))
+params['bin'] = np.load("img_bin.npy")
+params['crop'] = np.load("img_crop.npy")
+params['k'] = np.load("img_k.npy")
+params['ls_bin'] = np.load("ls_bin.npy")
+params['ch_nir'] = 1
+params['ch_red'] = 0
 app = QApplication(sys.argv)
-pn_main = photo_grid.Panel_Output(img_raw=img_crop, img_bin=img_bin, map=map, nc=nc, nr=nr, anchors=anchors)
+pn_main = photo_grid.Panel_Output(**params)
+
 
 
 #

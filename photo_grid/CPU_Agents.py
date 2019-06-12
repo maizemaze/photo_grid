@@ -1,6 +1,7 @@
 from enum import Enum
 import pandas as pd
 import numpy as np
+import copy
 
 class Dir(Enum):
     NORTH=0
@@ -24,11 +25,12 @@ class Field():
         self.ch_nir, self.ch_red = params['ch_nir'], params['ch_red']
         self.n_ch = self.img_raw.shape[2]
         self.agents = []
+        self.agents_base = []
         self.cpu_seg()
-    def cpu_seg(self, coef_grid=.2, center=0):
-        self.agents = []
-        self.set_anchors(center=center)
+    def cpu_seg(self, coef_grid=.2):
+        self.set_anchors()
         self.cpu_pre_dim()
+        self.agents_base = copy.deepcopy(self.agents)
         self.cpu_bound(coef_grid=coef_grid)
     def set_anchors(self, center=0):
         '''
@@ -151,12 +153,14 @@ class Field():
         for row in range(self.nrow):
             for col in range(self.ncol):
                 agent_self = self.get_agent(row, col)
-                # save_self = 0 if agent_self.save else -999
                 for dir in list([Dir.EAST, Dir.SOUTH]):
                     agent_neig = self.get_agent_neighbor(row, col, dir)
                     dir_neig = list(Dir)[(dir.value+2)%4] # reverse the direction
                     if agent_neig:
-                        # save_neig = 0 if agent_neig.save else -999
+                        # reset agent border
+                        agent_self.border[dir.name] = self.agents_base[row][col].border[dir.name]
+                        agent_neig.border[dir_neig.name] = self.agents_base[agent_neig.row][agent_neig.col].border[dir_neig.name]
+                        # calculate border
                         dist_agents = abs(agent_self.x-agent_neig.x) if dir==Dir.EAST else abs(agent_self.y-agent_neig.y)
                         while abs(agent_self.get_border(dir)-agent_neig.get_border(dir_neig))>1:
                             scA_self = agent_self.get_score_area(dir, self.img_bin)

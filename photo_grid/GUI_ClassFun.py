@@ -23,13 +23,15 @@ class Widget_Img(QWidget):
         qImg.setColor(1, qRgb(241, 225, 29))
         self.qimg = QPixmap(qImg)
     def make_idx8_img(self, img, k):
-        colormap = [qRgb(0, 0, 0),
-                    # qRgb(60, 5, 74),
-                    qRgb(241, 225, 29),
-                    qRgb(52, 177, 106),
-                    qRgb(46, 85, 130),
-                    qRgb(224, 79, 59),
-                    qRgb(247, 248, 177)]
+        colormap = [qRgb(141,211,199),
+                    qRgb(255,255,179),
+                    qRgb(190,186,218),
+                    qRgb(251,128,114),
+                    qRgb(128,177,211),
+                    qRgb(253,180,98),
+                    qRgb(179,222,105),
+                    qRgb(252,205,229),
+                    qRgb(217,217,217)]
         h, w = img.shape[0], img.shape[1]
         qImg = QImage(img.astype(np.uint8), w, h, w*1, QImage.Format_Indexed8)
         for i in range(k):

@@ -253,7 +253,8 @@ class Panel_Kmeaner(QWidget):
         ch_NIR = int(self.cb_nir.currentText())
         ch_Red = int(self.cb_red.currentText())
         img_raw, img_k, img_bin = self.wg_img.getImages()
-        return img_raw, img_k, img_bin, ch_NIR, ch_Red, self.ls_bin
+        ls_bin = self.wg_img.ls_bin_k
+        return img_raw, img_k, img_bin, ch_NIR, ch_Red, ls_bin
 
 class Widget_Kmeans(Widget_Img):
     def __init__(self, img):
@@ -309,8 +310,8 @@ class Widget_Kmeans(Widget_Img):
             idx_select = rank_g[self.ls_bin]
         except:
             idx_select = []
-        self.ls_bin = idx_select
-        self.img_bin = ((np.isin(self.img_k, self.ls_bin))*1).astype(np.int)
+        self.ls_bin_k = idx_select
+        self.img_bin = ((np.isin(self.img_k, self.ls_bin_k))*1).astype(np.int)
         self.img_bin_sm = self.img_bin.copy()
         self.img_temp = self.img_bin.copy()
         self.val_sm = 0

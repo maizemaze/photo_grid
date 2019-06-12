@@ -82,7 +82,6 @@ class Panel_Input(QWidget):
         self.fd_map.setText(path)
     def get_img(self):
         import pandas as pd
-        import cv2
         import io
         import urllib.request
         import rasterio

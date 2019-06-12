@@ -49,7 +49,7 @@ class Panel_Anchor(QWidget):
         '''mouse'''
         '''image'''
         qImg = QImage(self.img, self.imgW, self.imgH, self.imgW*1, QImage.Format_Indexed8)
-        qImg.setColor(0, qRgb(60, 5, 74))
+        qImg.setColor(0, qRgb(0, 0, 0))
         qImg.setColor(1, qRgb(241, 225, 29))
         self.qimg = QPixmap(qImg)
         '''button'''

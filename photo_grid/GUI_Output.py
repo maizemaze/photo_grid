@@ -11,13 +11,12 @@ class Panel_Output(QWidget):
         '''
         '''
         super().__init__()
-        self.setFocusPolicy(Qt.StrongFocus)
-        self.setFocus()
-        self.update()
-        self.field = Field(**params)
+        # self.setFocusPolicy(Qt.StrongFocus)
+        # self.setFocus()
+        # self.update()
         self.layout = QHBoxLayout()
         '''left side'''
-        self.wg_img = Widget_Seg(field=self.field)
+        self.wg_img = Widget_Seg(**params)
         '''right side'''
         self.pn_right = QWidget()
         self.lo_right = QVBoxLayout()
@@ -112,23 +111,17 @@ class Panel_Output(QWidget):
         self.layout.addWidget(self.pn_right)
         self.setLayout(self.layout)
         self.show()
+        """test"""
+        self.idx=0
     def change_grid(self):
         '''
         '''
         value = self.sl_grid.value()
         self.gr_grid.setTitle("Grid Coef. = %.2f" %(value/10))
         self.change_config()
-    def change_smc(self):
-        '''
-        '''
-        value = self.sl_smc.value()
-        self.gr_smc.setTitle("Center = %.2f" %(value/10))
-        self.change_config()
     def change_config(self):
         val_grid = (self.sl_grid.value()/10)
-        val_center = (self.sl_smc.value()/10)
-        self.field.cpu_seg(coef_grid=val_grid, center=val_center)
-        self.wg_img.repaint()
+        self.wg_img.update_seg(coef_grid=val_grid)
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_A:
             self.rb_srgb.setChecked(True)
@@ -146,9 +139,9 @@ class Panel_Output(QWidget):
         painter = QPainter(qimg)
         painter.setPen(pen)
         painter.setBrush(Qt.transparent)
-        for row in range(self.field.nrow):
-            for col in range(self.field.ncol):
-                agent = self.field.get_agent(row, col)
+        for row in range(self.wg_img.field.nrow):
+            for col in range(self.wg_img.field.ncol):
+                agent = self.wg_img.field.get_agent(row, col)
                 rect = agent.get_rect()
                 painter.drawRect(rect)
         painter.end()
@@ -205,6 +198,7 @@ class Panel_Output(QWidget):
     def output(self):
         """
         """
+        field = self.wg_img.field
         path_out = self.fd_output.text()+"/"+self.fd_project.text()
         '''figure'''
         self.out_raw(path=path_out)
@@ -214,51 +208,50 @@ class Panel_Output(QWidget):
         self.out_seg(path=path_out)
         self.out_bin(path=path_out)
         '''dataframe'''
-        df = self.field.get_DF()
+        df = field.get_DF()
         # NDVI
-        idx = self.field.get_index(ch_1=3, ch_2=0, isContrast=True, name_index="NDVI")
+        idx = field.get_index(ch_1=3, ch_2=0, isContrast=True, name_index="NDVI")
         df = pd.merge(df, idx, on='var', how='left')
         # GNDVI
-        idx = self.field.get_index(ch_1=3, ch_2=1, isContrast=True, name_index="GNDVI")
+        idx = field.get_index(ch_1=3, ch_2=1, isContrast=True, name_index="GNDVI")
         df = pd.merge(df, idx, on='var', how='left')
         # NDGI
-        idx = self.field.get_index(ch_1=1, ch_2=0, isContrast=True, name_index="NDGI")
+        idx = field.get_index(ch_1=1, ch_2=0, isContrast=True, name_index="NDGI")
         df = pd.merge(df, idx, on='var', how='left')
         # CNDVI
-        idx = self.field.get_index(ch_1=3, ch_2=0, ch_3=1, isThree=True, name_index="CNDVI")
+        idx = field.get_index(ch_1=3, ch_2=0, ch_3=1, isThree=True, name_index="CNDVI")
         df = pd.merge(df, idx, on='var', how='left')
         # RVI
-        idx = self.field.get_index(ch_1=3, ch_2=0, isRatio=True, name_index="RVI")
+        idx = field.get_index(ch_1=3, ch_2=0, isRatio=True, name_index="RVI")
         df = pd.merge(df, idx, on='var', how='left')
         # GRVI
-        idx = self.field.get_index(ch_1=3, ch_2=1, isRatio=True, name_index="GRVI")
+        idx = field.get_index(ch_1=3, ch_2=1, isRatio=True, name_index="GRVI")
         df = pd.merge(df, idx, on='var', how='left')
         # channels
-        for i in range(self.field.n_ch):
-            idx = self.field.get_index(ch_1=i, isSingle=True, name_index="ch_%d"%i)
+        for i in range(field.n_ch):
+            idx = field.get_index(ch_1=i, isSingle=True, name_index="ch_%d"%i)
             df = pd.merge(df, idx, on='var', how='left')
         # clusters
-        idx = self.field.get_index(ch_1=self.field.ch_nir, ch_2=self.field.ch_red, isContrast=True, name_index="CLUSTER_INDEX")
+        idx = field.get_index(ch_1=field.ch_nir, ch_2=field.ch_red, isContrast=True, name_index="CLUSTER_INDEX")
         df = pd.merge(df, idx, on='var', how='left')
-        idx = self.field.get_cluster()
+        idx = field.get_cluster()
         df = pd.merge(df, idx, on='var', how='left')
         # export
         df.to_csv(path_out+"_data.csv", index=False)
 
 class Widget_Seg(Widget_Img):
-    def __init__(self, field):
+    def __init__(self, **params):
         '''
         '''
-        super().__init__(field.img_raw)
+        super().__init__(params['crop'])
         self.setMouseTracking(True)
         self.zoom = 1
         '''attr'''
         # basic
-        self.field = field
-        self.agents_reset = copy.deepcopy(self.field.agents)
-        self.img_raw = field.img_raw
-        self.img_bin = field.img_bin
-        self.img_k = field.img_k
+        self.field = Field(**params)
+        self.img_raw = self.field.img_raw
+        self.img_bin = self.field.img_bin
+        self.img_k = self.field.img_k
         # painter
         self.is_fit_width = False
         self.pt_st_img = 0
@@ -368,7 +361,9 @@ class Widget_Seg(Widget_Img):
     def switch_imgSVis(self):
         super().make_rgb_img(self.img_seg)
         self.repaint()
-    def reset(self):
-        self.field.agents = None
-        self.field.agents = copy.deepcopy(self.agents_reset)
+    def cpu_seg(self, coef_grid=0):
+        self.field.cpu_seg(coef_grid=coef_grid)
+        self.repaint()
+    def update_seg(self, coef_grid=0):
+        self.field.cpu_bound(coef_grid=coef_grid)
         self.repaint()
