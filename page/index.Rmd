@@ -21,7 +21,8 @@ cover-image: md/icon.png
 # Why GRID? {-}
 Greenfield imagery decoder (GRID) is a tool allowing you to trace individual crop's imagery features from a remote sensing image. Performing plot segmentation could be a painful job without a proper tool. GRID comes with several essential imaging processing techniques such as  K-means clustering and convolutional operation, accelerating the segmentation process and improving the precision of estimated imagery features.
 
-# Get Started {-}
+
+### Get Started
 
 The following installations are required to use GRID:
 

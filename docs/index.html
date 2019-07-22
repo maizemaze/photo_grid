@@ -33,7 +33,7 @@
   
   
 
-<link rel="next" href="get-started.html">
+<link rel="next" href="get-started-1.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -127,8 +127,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Why GRID?</a></li>
-<li class="chapter" data-level="" data-path="get-started.html"><a href="get-started.html"><i class="fa fa-check"></i>Get Started</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Why GRID?</a><ul>
+<li class="chapter" data-level="0.0.1" data-path="index.html"><a href="index.html#get-started"><i class="fa fa-check"></i><b>0.0.1</b> Get Started</a></li>
+</ul></li>
 <li class="chapter" data-level="1" data-path="get-started-1.html"><a href="get-started-1.html"><i class="fa fa-check"></i><b>1</b> Get started</a><ul>
 <li class="chapter" data-level="1.1" data-path="get-started-1.html"><a href="get-started-1.html#windows-users"><i class="fa fa-check"></i><b>1.1</b> Windows users</a></li>
 <li class="chapter" data-level="1.2" data-path="get-started-1.html"><a href="get-started-1.html#mac-os-users"><i class="fa fa-check"></i><b>1.2</b> Mac OS users</a></li>
@@ -225,6 +226,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="why-grid" class="section level1 unnumbered">
 <h1>Why GRID?</h1>
 <p>Greenfield imagery decoder (GRID) is a tool allowing you to trace individual crop’s imagery features from a remote sensing image. Performing plot segmentation could be a painful job without a proper tool. GRID comes with several essential imaging processing techniques such as K-means clustering and convolutional operation, accelerating the segmentation process and improving the precision of estimated imagery features.</p>
+<div id="get-started" class="section level3">
+<h3><span class="header-section-number">0.0.1</span> Get Started</h3>
+<p>The following installations are required to use GRID:</p>
+<ul>
+<li><p><a href="https://www.python.org/downloads/">Python 3</a>: <strong>Version 3</strong> or later.</p></li>
+<li><p><a href="https://pip.pypa.io/en/stable/">pip</a>: The Python package installer</p></li>
+<li><p><a href="https://pypi.org/project/photo-grid/">photo-grid</a>: The Python package GRID can be found on <a href="https://pypi.org/project/photo-grid/">PyPI</a></p></li>
+</ul>
+<p>Launch GRID in Python 3:</p>
+<pre><code>import photo_grid
+photo_grid.run()</code></pre>
+
+</div>
 </div>
             </section>
 
@@ -232,7 +246,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 
-<a href="get-started.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="get-started-1.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
