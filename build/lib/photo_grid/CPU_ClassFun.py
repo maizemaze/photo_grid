@@ -1,4 +1,4 @@
-def get_peak(img, map, n_smooth=50, axis=0):
+def get_peak(img, map, n_smooth=100, axis=0):
     '''
     '''
     from scipy.signal import find_peaks

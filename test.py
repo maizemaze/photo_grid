@@ -1,5 +1,5 @@
-/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages
-cp /Users/jameschen/Dropbox/photo_grid/photo_grid/*.py /Users/jameschen/Dropbox/James_Git/env/lib/python3.6/site-packages/photo_grid/
+# /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages
+cp /Users/jameschen/Dropbox/photo_grid/photo_grid/*.py /Users/jameschen/Dropbox/photo_grid/env/lib/python3.6/site-packages/photo_grid/
 # sudo cp /Users/jameschen/Dropbox/photo_grid/photo_grid/*.py /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/photo_grid/
 
 
@@ -32,7 +32,6 @@ plt.show()
 
 
 ''' TEST OUTPUT '''
-import cv2
 # import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -44,9 +43,12 @@ import rasterio
 os.chdir("/Users/jameschen/Dropbox/James_Git")
 params = dict()
 params['anchors'] = json.load(open('anchors'))
-params['nc'] = 12
-params['nr'] = 23
-params['map'] = pd.DataFrame(np.load("map.npy", allow_pickle=True))
+params['nc'] = 26
+params['nr'] = 4
+# params['nc'] = 12
+# params['nr'] = 23
+# params['map'] = pd.DataFrame(np.load("map.npy", allow_pickle=True))
+params['map'] = None
 params['bin'] = np.load("img_bin.npy")
 params['crop'] = np.load("img_crop.npy")
 params['k'] = np.load("img_k.npy")
@@ -71,3 +73,4 @@ pn_main = photo_grid.Panel_Output(**params)
 # ==== row:8, col:0 ====
 # range(0, 61)
 # 325
+#

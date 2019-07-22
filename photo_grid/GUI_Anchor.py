@@ -29,16 +29,21 @@ class Panel_Anchor(QWidget):
         self.x_acr_r, self.y_acr_r = 0, 0
         # image
         self.img = img
+        self.map = map
         self.imgH = self.img.shape[0]
         self.imgW = self.img.shape[1]
         self.margin = 70
         self.space = 5
         self.rec_img = QRect(QPoint(0, 0), QSize(0, 0))
         # button
+        self.gr_button = QGroupBox("Options")
+        self.lo_button = QGridLayout()
+        self.bt_evenH = QCheckBox("Evenly Distributed (X)")
+        self.bt_evenV = QCheckBox("Evenly Distributed (Y)")
         self.bt_reset = QPushButton("Reset")
         '''get peaks'''
-        acr_r_temp, _ = get_peak(img=self.img, map=map, axis=0)
-        acr_c_temp, _ = get_peak(img=self.img, map=map, axis=1)
+        acr_r_temp, _ = get_peak(img=self.img, map=self.map, axis=0)
+        acr_c_temp, _ = get_peak(img=self.img, map=self.map, axis=1)
         self.acr_r = scaleTo0and1(acr_r_temp, self.imgH)
         self.acr_c = scaleTo0and1(acr_c_temp, self.imgW)
         self.acr_r_raw = self.acr_r.copy()
@@ -106,11 +111,29 @@ class Panel_Anchor(QWidget):
         elif self.rec_img.contains(pos):
             # mag module
             if self.zoom!=0:
-                magnifying_glass(self, pos, area=200, zoom=self.zoom*2)
+                magnifying_glass(self, pos, area=200, zoom=self.zoom*1.5)
             else:
                 self.setCursor(QCursor(Qt.ArrowCursor))
         else:
             self.setCursor(QCursor(Qt.ArrowCursor))
+    def evenH(self):
+        if self.bt_evenH.isChecked():
+            size = len(self.acr_c)
+            space = 0.02
+            length = 1-(space*2)
+            self.acr_c = np.arange(space, 1-space, length/size)
+        else:
+            self.acr_c = self.acr_c_raw
+        self.repaint()
+    def evenV(self):
+        if self.bt_evenV.isChecked():
+            size = len(self.acr_r)
+            space = 0.02
+            length = 1-(space*2)
+            self.acr_r = np.arange(space, 1-space, length/size)
+        else:
+            self.acr_r = self.acr_r_raw
+        self.repaint()
     def reset_Anchors(self):
         self.acr_c = self.acr_c_raw
         self.acr_r = self.acr_r_raw

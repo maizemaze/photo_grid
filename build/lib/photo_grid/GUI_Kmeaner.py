@@ -20,6 +20,7 @@ class Panel_Kmeaner(QWidget):
         self.bt_ccw = QPushButton("rotate ccw (Q)")
         self.bt_cw = QPushButton("rorate cw (E)")
         # K mean (right)
+        self.k = 9
         self.gr_pre = QGroupBox("K-means Algo.")
         self.lo_pre = QVBoxLayout()
         self.gr_ch = QGroupBox("Channel")
@@ -34,15 +35,16 @@ class Panel_Kmeaner(QWidget):
         # Binarization
         self.gr_bin = QGroupBox("Binarization")
         self.lo_bin = QVBoxLayout()
+        # Binarization (auto)
         self.gr_cut = QGroupBox("Auto cutoff = 1")
         self.lo_cut = QVBoxLayout()
         self.sl_cut = QSlider(Qt.Horizontal)
         self.gr_cusb = QGroupBox("Custom")
         self.lo_cusb = QHBoxLayout()
         self.ck_cusb = []
-        for i in range(1, 7):
+        for i in range(1, self.k+1):
             checkbox = QCheckBox(str(i))
-            checkbox.stateChanged.connect(self.append_cut)
+            checkbox.stateChanged.connect(self.custom_cut)
             if i>3:
                 checkbox.setEnabled(False)
             self.ck_cusb.extend([checkbox])
@@ -77,7 +79,7 @@ class Panel_Kmeaner(QWidget):
         '''pre keans (right)'''
         # components
         self.sl_k.setMinimum(2)
-        self.sl_k.setMaximum(6)
+        self.sl_k.setMaximum(self.k)
         self.sl_k.setValue(3)
         self.sl_k.setTickInterval(1)
         self.sl_k.setTickPosition(QSlider.TicksBelow)
@@ -107,20 +109,20 @@ class Panel_Kmeaner(QWidget):
         # component
         self.gr_cut.setCheckable(True)
         self.gr_cut.setChecked(True)
-        self.gr_cut.clicked.connect(lambda: self.toggle(self.gr_cut))
+        self.gr_cut.clicked.connect(self.auto_cut)
         self.sl_cut.setMinimum(1)
         self.sl_cut.setMaximum(3)
         self.sl_cut.setValue(1)
         self.sl_cut.setTickInterval(1)
         self.sl_cut.setTickPosition(QSlider.TicksBelow)
-        self.sl_cut.valueChanged.connect(self.change_cut)
+        self.sl_cut.valueChanged.connect(self.auto_cut)
         self.gr_cusb.setCheckable(True)
         self.gr_cusb.setChecked(False)
-        self.gr_cusb.clicked.connect(lambda: self.toggle(self.gr_cusb))
+        self.gr_cusb.clicked.connect(self.custom_cut)
         # layout
         self.lo_cut.addWidget(self.sl_cut)
         self.gr_cut.setLayout(self.lo_cut)
-        for i in range(6):
+        for i in range(self.k):
             self.lo_cusb.addWidget(self.ck_cusb[i])
         self.gr_cusb.setLayout(self.lo_cusb)
         self.lo_bin.addWidget(self.gr_cut)
@@ -178,38 +180,33 @@ class Panel_Kmeaner(QWidget):
         self.do_kmeans()
         self.wg_img.set_binarize([0])
         self.show()
-    def toggle(self, groupbox):
-        if (groupbox.title()=="Custom"):
-            self.gr_cut.setChecked(not self.gr_cut.isChecked())
-        else:
-            self.gr_cusb.setChecked(not self.gr_cusb.isChecked())
-        if self.gr_cusb.isChecked():
-            self.append_cut()
-        else:
-            self.change_cut()
     def change_k(self):
         value = self.sl_k.value()
         self.sl_cut.setMaximum(value)
         self.gr_k.setTitle("K = %d" % value)
         self.do_kmeans()
         if self.gr_cusb.isChecked():
-            self.append_cut()
+            self.custom_cut()
         else:
-            self.change_cut()
+            self.auto_cut()
         self.refresh()
-    def change_cut(self):
+    def auto_cut(self):
+        self.gr_cut.setChecked(True)
+        self.gr_cusb.setChecked(False)
         value = self.sl_cut.value()
         self.gr_cut.setTitle("Auto cutoff = %d" % value)
         self.ls_bin = []
-        for i in range(6):
+        for i in range(self.k):
             self.ck_cusb[i].setEnabled(False)
             if i<value:
                 self.ls_bin.extend([i])
         self.wg_img.set_binarize(list=self.ls_bin)
-    def append_cut(self):
+    def custom_cut(self):
+        self.gr_cut.setChecked(False)
+        self.gr_cusb.setChecked(True)
         value = self.sl_k.value()
         self.ls_bin = []
-        for i in range(6):
+        for i in range(self.k):
             if i<value:
                 self.ck_cusb[i].setEnabled(True)
                 if self.ck_cusb[i].isChecked():

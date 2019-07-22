@@ -23,13 +23,15 @@ class Widget_Img(QWidget):
         qImg.setColor(1, qRgb(241, 225, 29))
         self.qimg = QPixmap(qImg)
     def make_idx8_img(self, img, k):
-        colormap = [qRgb(0, 0, 0),
-                    # qRgb(60, 5, 74),
-                    qRgb(241, 225, 29),
-                    qRgb(52, 177, 106),
-                    qRgb(46, 85, 130),
-                    qRgb(224, 79, 59),
-                    qRgb(247, 248, 177)]
+        colormap = [qRgb(228,26,28),
+                    qRgb(55,126,184),
+                    qRgb(77,175,74),
+                    qRgb(152,78,163),
+                    qRgb(255,127,0),
+                    qRgb(255,255,51),
+                    qRgb(166,86,40),
+                    qRgb(247,129,191),
+                    qRgb(153,153,153)]
         h, w = img.shape[0], img.shape[1]
         qImg = QImage(img.astype(np.uint8), w, h, w*1, QImage.Format_Indexed8)
         for i in range(k):
@@ -58,7 +60,7 @@ def magnifying_glass(widget, pos, area=200, zoom=4):
         rate_screen = size/pixmap.width()
         pixmap = pixmap.scaled(int(area/rate_screen), int(area/rate_screen))
         painter = QPainter(pixmap)
-        '''Rect'''
+        'Rect'
         pen = QPen()
         pen.setWidth(2)
         pen.setColor(Qt.black)

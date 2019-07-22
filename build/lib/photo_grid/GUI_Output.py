@@ -14,22 +14,44 @@ class Panel_Output(QWidget):
         self.setFocusPolicy(Qt.StrongFocus)
         self.setFocus()
         self.update()
-        self.field = Field(**params)
         self.layout = QHBoxLayout()
+        '''dimension'''
+        self.dim = params['bin'].shape
+        self.imgH = self.dim[0]
+        self.imgW = self.dim[1]
         '''left side'''
-        self.wg_img = Widget_Seg(field=self.field)
+        self.wg_img = Widget_Seg(**params)
         '''right side'''
         self.pn_right = QWidget()
         self.lo_right = QVBoxLayout()
-        # Config
-        self.gr_config = QGroupBox("Config")
-        self.lo_config = QVBoxLayout()
-        self.gr_grid = QGroupBox("Grid Coef. = 0.2")
+        # Boundary
+        self.gr_seg = QGroupBox("Segmentation")
+        self.lo_seg = QGridLayout()
+        # Boundary (auto)
+        self.gr_auto = QGroupBox("Auto")
+        self.lo_auto = QVBoxLayout()
+        self.gr_grid = QGroupBox("Grid Coef. = 0.0")
         self.lo_grid = QVBoxLayout()
         self.sl_grid = QSlider(Qt.Horizontal)
-        self.gr_smc = QGroupBox("Center = 0")
-        self.lo_smc = QVBoxLayout()
-        self.sl_smc = QSlider(Qt.Horizontal)
+        # Boundary (fix)
+        self.gr_fix = QGroupBox("Fixed")
+        self.lo_fix = QVBoxLayout()
+        self.gr_width = QGroupBox("Width = 50 units")
+        self.lo_width = QVBoxLayout()
+        self.sl_width = QSlider(Qt.Horizontal)
+        self.gr_length = QGroupBox("Length = 50 units")
+        self.lo_length = QVBoxLayout()
+        self.sl_length = QSlider(Qt.Horizontal)
+        # misc
+        self.gr_misc = QGroupBox("Alignment Options")
+        self.lo_misc = QGridLayout()
+        self.lb_alignX = QLabel("Align Columns")
+        self.cb_alignX = QComboBox()
+        self.lb_alignY = QLabel("Align Rows")
+        self.cb_alignY = QComboBox()
+        self.ck_evenH = QCheckBox("Evenly Distributed\nColumns")
+        self.ck_evenV = QCheckBox("Evenly Distributed\nRows")
+        self.bt_reset = QPushButton("Reset")
         # Display
         self.gr_dis = QGroupBox("Display")
         self.lo_dis = QHBoxLayout()
@@ -46,28 +68,76 @@ class Panel_Output(QWidget):
         '''ui'''
         self.initUI()
     def initUI(self):
-        '''config (right)'''
+        '''seg-auto (right)'''
         # components
         self.sl_grid.setMinimum(0)
         self.sl_grid.setMaximum(10)
-        self.sl_grid.setValue(2)
+        self.sl_grid.setValue(0)
         self.sl_grid.setTickInterval(2)
         self.sl_grid.setTickPosition(QSlider.TicksBelow)
         self.sl_grid.valueChanged.connect(self.change_grid)
-        self.sl_smc.setMinimum(0)
-        self.sl_smc.setMaximum(10)
-        self.sl_smc.setValue(0)
-        self.sl_smc.setTickInterval(2)
-        self.sl_smc.setTickPosition(QSlider.TicksBelow)
-        self.sl_smc.valueChanged.connect(self.change_smc)
+        self.gr_auto.setCheckable(True)
+        self.gr_auto.setChecked(True)
+        self.gr_auto.clicked.connect(self.auto_seg)
         # layout
         self.lo_grid.addWidget(self.sl_grid)
         self.gr_grid.setLayout(self.lo_grid)
-        self.lo_smc.addWidget(self.sl_smc)
-        self.gr_smc.setLayout(self.lo_smc)
-        self.lo_config.addWidget(self.gr_grid)
-        self.lo_config.addWidget(self.gr_smc)
-        self.gr_config.setLayout(self.lo_config)
+        self.lo_auto.addWidget(self.gr_grid)
+        self.gr_auto.setLayout(self.lo_auto)
+        '''seg-fix (right)'''
+        # components
+        self.sl_width.setMinimum(0)
+        self.sl_width.setMaximum(100)
+        self.sl_width.setValue(50)
+        self.sl_width.setTickInterval(2)
+        self.sl_width.setTickPosition(QSlider.TicksBelow)
+        self.sl_width.valueChanged.connect(self.change_width)
+        self.sl_length.setMinimum(0)
+        self.sl_length.setMaximum(100)
+        self.sl_length.setValue(50)
+        self.sl_length.setTickInterval(2)
+        self.sl_length.setTickPosition(QSlider.TicksBelow)
+        self.sl_length.valueChanged.connect(self.change_length)
+        self.gr_fix.setCheckable(True)
+        self.gr_fix.setChecked(False)
+        self.gr_fix.clicked.connect(self.fix_seg)
+        # layout
+        self.lo_width.addWidget(self.sl_width)
+        self.gr_width.setLayout(self.lo_width)
+        self.lo_length.addWidget(self.sl_length)
+        self.gr_length.setLayout(self.lo_length)
+        self.lo_fix.addWidget(self.gr_width)
+        self.lo_fix.addWidget(self.gr_length)
+        self.gr_fix.setLayout(self.lo_fix)
+        '''misc (right)'''
+        # components
+        self.cb_alignX.addItem("None")
+        self.cb_alignX.addItem("Left")
+        self.cb_alignX.addItem("Center")
+        self.cb_alignX.addItem("Right")
+        self.cb_alignY.addItem("None")
+        self.cb_alignY.addItem("Top")
+        self.cb_alignY.addItem("Middle")
+        self.cb_alignY.addItem("Bottom")
+        self.cb_alignX.currentIndexChanged.connect(self.alignX)
+        self.cb_alignY.currentIndexChanged.connect(self.alignY)
+        self.ck_evenH.clicked.connect(self.evenH)
+        self.ck_evenV.clicked.connect(self.evenV)
+        self.bt_reset.clicked.connect(self.reset)
+        # layout
+        self.lo_misc.addWidget(self.lb_alignX, 0, 0)
+        self.lo_misc.addWidget(self.cb_alignX, 1, 0)
+        self.lo_misc.addWidget(self.lb_alignY, 0, 1)
+        self.lo_misc.addWidget(self.cb_alignY, 1, 1)
+        self.lo_misc.addWidget(self.ck_evenH, 2, 0)
+        self.lo_misc.addWidget(self.ck_evenV, 2, 1)
+        self.lo_misc.addWidget(self.bt_reset, 0, 2, 3, 1)
+        self.gr_misc.setLayout(self.lo_misc)
+        '''seg (right)'''
+        # layout
+        self.lo_seg.addWidget(self.gr_auto)
+        self.lo_seg.addWidget(self.gr_fix)
+        self.gr_seg.setLayout(self.lo_seg)
         '''display (right)'''
         # components
         self.rb_srgb.setChecked(True)
@@ -96,7 +166,8 @@ class Panel_Output(QWidget):
         # left
         # NONE
         # right
-        self.lo_right.addWidget(self.gr_config)
+        self.lo_right.addWidget(self.gr_seg)
+        self.lo_right.addWidget(self.gr_misc)
         self.lo_right.addWidget(self.gr_dis)
         self.lo_right.addWidget(self.gr_out)
         self.pn_right.setLayout(self.lo_right)
@@ -112,23 +183,64 @@ class Panel_Output(QWidget):
         self.layout.addWidget(self.pn_right)
         self.setLayout(self.layout)
         self.show()
+    def auto_seg(self):
+        self.gr_auto.setChecked(True)
+        self.gr_fix.setChecked(False)
+        val_grid = 1-(self.sl_grid.value()/10)
+        self.wg_img.auto_seg(coef_grid=val_grid)
+    def fix_seg(self):
+        '''
+        '''
+        self.gr_auto.setChecked(False)
+        self.gr_fix.setChecked(True)
+        value_width = self.sl_width.value()
+        value_length = self.sl_length.value()
+        self.wg_img.fix_seg(value_width, value_length)
     def change_grid(self):
         '''
         '''
         value = self.sl_grid.value()
         self.gr_grid.setTitle("Grid Coef. = %.2f" %(value/10))
-        self.change_config()
-    def change_smc(self):
+        self.auto_seg()
+    def change_width(self):
         '''
         '''
-        value = self.sl_smc.value()
-        self.gr_smc.setTitle("Center = %.2f" %(value/10))
-        self.change_config()
-    def change_config(self):
-        val_grid = (self.sl_grid.value()/10)
-        val_center = (self.sl_smc.value()/10)
-        self.field.cpu_seg(coef_grid=val_grid, center=val_center)
-        self.wg_img.repaint()
+        value = self.sl_width.value()
+        self.gr_width.setTitle("Width = %d units" %(value))
+        self.fix_seg()
+    def change_length(self):
+        '''
+        '''
+        value = self.sl_length.value()
+        self.gr_length.setTitle("Length = %d units" %(value))
+        self.fix_seg()
+    def alignX(self):
+        '''
+        '''
+        index = self.cb_alignX.currentIndex()
+        # self.wg_img.align(method=0, axis=1)
+        self.wg_img.align(method=index, axis=1)
+    def alignY(self):
+        '''
+        '''
+        index = self.cb_alignY.currentIndex()
+        # self.wg_img.align(method=0, axis=0)
+        self.wg_img.align(method=index, axis=0)
+    def evenH(self):
+        '''
+        '''
+        self.wg_img.distributed(axis=1, isEven=self.ck_evenH.isChecked())
+    def evenV(self):
+        '''
+        '''
+        self.wg_img.distributed(axis=0, isEven=self.ck_evenV.isChecked())
+    def reset(self):
+        '''
+        '''
+        self.cb_alignX.setCurrentIndex(0)
+        self.cb_alignY.setCurrentIndex(0)
+        self.wg_img.field.reset_coordinate()
+        self.auto_seg()
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_A:
             self.rb_srgb.setChecked(True)
@@ -141,14 +253,14 @@ class Panel_Output(QWidget):
         """
         """
         pen = QPen()
-        pen.setWidth(1)
+        pen.setWidth(3)
         pen.setColor(Qt.red)
         painter = QPainter(qimg)
         painter.setPen(pen)
         painter.setBrush(Qt.transparent)
-        for row in range(self.field.nrow):
-            for col in range(self.field.ncol):
-                agent = self.field.get_agent(row, col)
+        for row in range(self.wg_img.field.nrow):
+            for col in range(self.wg_img.field.ncol):
+                agent = self.wg_img.field.get_agent(row, col)
                 rect = agent.get_rect()
                 painter.drawRect(rect)
         painter.end()
@@ -205,6 +317,7 @@ class Panel_Output(QWidget):
     def output(self):
         """
         """
+        field = self.wg_img.field
         path_out = self.fd_output.text()+"/"+self.fd_project.text()
         '''figure'''
         self.out_raw(path=path_out)
@@ -214,57 +327,56 @@ class Panel_Output(QWidget):
         self.out_seg(path=path_out)
         self.out_bin(path=path_out)
         '''dataframe'''
-        df = self.field.get_DF()
+        df = field.get_DF()
         # NDVI
-        idx = self.field.get_index(ch_1=3, ch_2=0, isContrast=True, name_index="NDVI")
+        idx = field.get_index(ch_1=3, ch_2=0, isContrast=True, name_index="NDVI")
         df = pd.merge(df, idx, on='var', how='left')
         # GNDVI
-        idx = self.field.get_index(ch_1=3, ch_2=1, isContrast=True, name_index="GNDVI")
+        idx = field.get_index(ch_1=3, ch_2=1, isContrast=True, name_index="GNDVI")
         df = pd.merge(df, idx, on='var', how='left')
         # NDGI
-        idx = self.field.get_index(ch_1=1, ch_2=0, isContrast=True, name_index="NDGI")
+        idx = field.get_index(ch_1=1, ch_2=0, isContrast=True, name_index="NDGI")
         df = pd.merge(df, idx, on='var', how='left')
         # CNDVI
-        idx = self.field.get_index(ch_1=3, ch_2=0, ch_3=1, isThree=True, name_index="CNDVI")
+        idx = field.get_index(ch_1=3, ch_2=0, ch_3=1, isThree=True, name_index="CNDVI")
         df = pd.merge(df, idx, on='var', how='left')
         # RVI
-        idx = self.field.get_index(ch_1=3, ch_2=0, isRatio=True, name_index="RVI")
+        idx = field.get_index(ch_1=3, ch_2=0, isRatio=True, name_index="RVI")
         df = pd.merge(df, idx, on='var', how='left')
         # GRVI
-        idx = self.field.get_index(ch_1=3, ch_2=1, isRatio=True, name_index="GRVI")
+        idx = field.get_index(ch_1=3, ch_2=1, isRatio=True, name_index="GRVI")
         df = pd.merge(df, idx, on='var', how='left')
         # channels
-        for i in range(self.field.n_ch):
-            idx = self.field.get_index(ch_1=i, isSingle=True, name_index="ch_%d"%i)
+        for i in range(field.n_ch):
+            idx = field.get_index(ch_1=i, isSingle=True, name_index="ch_%d"%i)
             df = pd.merge(df, idx, on='var', how='left')
         # clusters
-        idx = self.field.get_index(ch_1=self.field.ch_nir, ch_2=self.field.ch_red, isContrast=True, name_index="CLUSTER_INDEX")
+        idx = field.get_index(ch_1=field.ch_nir, ch_2=field.ch_red, isContrast=True, name_index="CLUSTER_INDEX")
         df = pd.merge(df, idx, on='var', how='left')
-        idx = self.field.get_cluster()
+        idx = field.get_cluster()
         df = pd.merge(df, idx, on='var', how='left')
         # export
         df.to_csv(path_out+"_data.csv", index=False)
 
 class Widget_Seg(Widget_Img):
-    def __init__(self, field):
+    def __init__(self, **params):
         '''
         '''
-        super().__init__(field.img_raw)
+        super().__init__(params['crop'])
         self.setMouseTracking(True)
-        self.zoom = 1
+        self.task = 1 # 0 none, 1 zoom, 2 panV, 3 panH
         '''attr'''
         # basic
-        self.field = field
-        self.agents_reset = copy.deepcopy(self.field.agents)
-        self.img_raw = field.img_raw
-        self.img_bin = field.img_bin
-        self.img_k = field.img_k
+        self.field = Field(**params)
+        self.img_raw = self.field.img_raw
+        self.img_bin = self.field.img_bin
+        self.img_k = self.field.img_k
         # painter
         self.is_fit_width = False
         self.pt_st_img = 0
         self.ratio = 0
         # mouse
-        self.agent_click = None
+        self.agent_click = False
         self.dir = None
         # calculate index image
         ch_1 = self.field.ch_nir
@@ -281,6 +393,8 @@ class Widget_Seg(Widget_Img):
         self.img_seg[(self.img_seg.mean(axis=2)==0), :] = 255
         self.switch_imgSVis()
         self.show()
+    def mouseReleaseEvent(self, event):
+        self.agent_click = False
     def mousePressEvent(self, event):
         pos = event.pos()
         for row in range(self.field.nrow):
@@ -294,56 +408,75 @@ class Widget_Seg(Widget_Img):
                     self.ratio = self.height()/self.qimg.height()
                     rec_agent = QRect(rect.x()*self.ratio+self.pt_st_img, rect.y()*self.ratio, rect.width()*self.ratio, rect.height()*self.ratio)
                 if rec_agent.contains(pos):
-                    bd_W = rec_agent.x()
-                    bd_N = rec_agent.y()
-                    bd_E = bd_W + rec_agent.width()
-                    bd_S = bd_N + rec_agent.height()
-                    dis_W = abs(pos.x()-bd_W)
-                    dis_N = abs(pos.y()-bd_N)
-                    dis_E = abs(pos.x()-bd_E)
-                    dis_S = abs(pos.y()-bd_S)
-                    # print("W:%.2f, N:%.2f, E:%.2f, S:%.2f" %(dis_W, dis_N, dis_E, dis_S))
-                    dir_idx = np.argmin(np.array([dis_N, dis_W, dis_S, dis_E]))
-                    if dir_idx==0:
-                        self.dir = Dir.NORTH
-                    elif dir_idx==1:
-                        self.dir = Dir.WEST
-                    elif dir_idx==2:
-                        self.dir = Dir.SOUTH
-                    elif dir_idx==3:
-                        self.dir = Dir.EAST
                     self.agent_click = agent
+                    if self.task==1:
+                        # zoom and mod border
+                        bd_W = rec_agent.x()
+                        bd_N = rec_agent.y()
+                        bd_E = bd_W + rec_agent.width()
+                        bd_S = bd_N + rec_agent.height()
+                        dis_W = abs(pos.x()-bd_W)
+                        dis_N = abs(pos.y()-bd_N)
+                        dis_E = abs(pos.x()-bd_E)
+                        dis_S = abs(pos.y()-bd_S)
+                        # print("W:%.2f, N:%.2f, E:%.2f, S:%.2f" %(dis_W, dis_N, dis_E, dis_S))
+                        dir_idx = np.argmin(np.array([dis_N, dis_W, dis_S, dis_E]))
+                        if dir_idx==0:
+                            self.dir = Dir.NORTH
+                        elif dir_idx==1:
+                            self.dir = Dir.WEST
+                        elif dir_idx==2:
+                            self.dir = Dir.SOUTH
+                        elif dir_idx==3:
+                            self.dir = Dir.EAST
                     break
         # mag module
         if event.button() == Qt.RightButton:
-            self.zoom = (self.zoom+1)%3
+            self.task = (self.task+1)%4
+            print(self.task)
             self.mouseMoveEvent(event)
     def mouseMoveEvent(self, event):
         pos = event.pos()
-        if event.buttons() == Qt.LeftButton:
-            # adjust the border
-            if self.is_fit_width:
-                if self.dir==Dir.NORTH or self.dir==Dir.SOUTH:
-                    value = (pos.y()-self.pt_st_img)/self.ratio
-                elif self.dir==Dir.WEST or self.dir==Dir.EAST:
-                    value = pos.x()/self.ratio
-            else:
-                if self.dir==Dir.NORTH or self.dir==Dir.SOUTH:
-                    value = pos.y()/self.ratio
-                elif self.dir==Dir.WEST or self.dir==Dir.EAST:
-                    value = (pos.x()-self.pt_st_img)/self.ratio
-            self.agent_click.set_border(self.dir, value)
-        # mag module
-        if self.zoom!=0:
-            magnifying_glass(self, pos, area=200, zoom=self.zoom*2)
-        else:
+        # change cursor
+        if self.task==0:
             self.setCursor(QCursor(Qt.ArrowCursor))
+        elif self.task==1:
+            magnifying_glass(self, pos, area=200, zoom=1.5)
+        elif self.task==2:
+            self.setCursor(QCursor(Qt.SizeVerCursor))
+        elif self.task==3:
+            self.setCursor(QCursor(Qt.SizeHorCursor))
+        # pan
+        if (event.button()==Qt.LeftButton)&(self.task>0)&(self.agent_click!=False):
+            if self.is_fit_width:
+                posX = pos.x()/self.ratio
+                posY = (pos.y()-self.pt_st_img)/self.ratio
+            else:
+                posX = (pos.x()-self.pt_st_img)/self.ratio
+                posY = pos.y()/self.ratio
+            # adjust border
+            if self.task==1:
+                if self.dir==Dir.NORTH or self.dir==Dir.SOUTH:
+                    value = posY
+                elif self.dir==Dir.WEST or self.dir==Dir.EAST:
+                    value = posX
+                self.agent_click.set_border(self.dir, value)
+            # V pan
+            elif self.task==2:
+                value = posY
+                row = self.agent_click.row
+                self.field.pan(axis=0, target=row, value=value)
+            # H pan
+            elif self.task==3:
+                value = posX
+                col = self.agent_click.col
+                self.field.pan(axis=1, target=col, value=value)
         self.repaint()
     def paintEvent(self, paint_event):
         painter = QPainter(self)
         super().paintImage(painter)
         pen = QPen()
-        pen.setWidth(1)
+        pen.setWidth(3)
         pen.setColor(Qt.red)
         painter.setPen(pen)
         painter.setBrush(Qt.transparent)
@@ -368,7 +501,15 @@ class Widget_Seg(Widget_Img):
     def switch_imgSVis(self):
         super().make_rgb_img(self.img_seg)
         self.repaint()
-    def reset(self):
-        self.field.agents = None
-        self.field.agents = copy.deepcopy(self.agents_reset)
+    def auto_seg(self, coef_grid=0):
+        self.field.cpu_bound(coef_grid=coef_grid)
+        self.repaint()
+    def fix_seg(self, width, length):
+        self.field.fix_bound(width=width, length=length)
+        self.repaint()
+    def align(self, method, axis=0):
+        self.field.align(method=method, axis=axis)
+        self.repaint()
+    def distributed(self, axis=0, isEven=False):
+        self.field.distributed(axis=axis, isEven=isEven)
         self.repaint()

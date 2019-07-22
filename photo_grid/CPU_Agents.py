@@ -25,12 +25,10 @@ class Field():
         self.ch_nir, self.ch_red = params['ch_nir'], params['ch_red']
         self.n_ch = self.img_raw.shape[2]
         self.agents = []
-        self.agents_base = []
         self.cpu_seg()
     def cpu_seg(self, coef_grid=.2):
         self.set_anchors()
         self.cpu_pre_dim()
-        self.agents_base = copy.deepcopy(self.agents)
         self.cpu_bound(coef_grid=coef_grid)
     def set_anchors(self, center=0):
         '''
@@ -47,7 +45,7 @@ class Field():
                     name = "id_%d" %(idx_name)
                     idx_name += 1
                 # initialize agent
-                agent = Agent(name, row, col)
+                agent = Agent(name, row, col, self.px_H, self.px_W)
                 px_anchors = self.anchors[idx]
                 # set position
                 pos_x = int(px_anchors['x'])
@@ -158,8 +156,8 @@ class Field():
                     dir_neig = list(Dir)[(dir.value+2)%4] # reverse the direction
                     if agent_neig:
                         # reset agent border
-                        agent_self.border[dir.name] = self.agents_base[row][col].border[dir.name]
-                        agent_neig.border[dir_neig.name] = self.agents_base[agent_neig.row][agent_neig.col].border[dir_neig.name]
+                        agent_self.border[dir.name] = agent_self.border_reset[dir.name]
+                        agent_neig.border[dir_neig.name] = agent_neig.border_reset[dir_neig.name]
                         # calculate border
                         dist_agents = abs(agent_self.x-agent_neig.x) if dir==Dir.EAST else abs(agent_self.y-agent_neig.y)
                         while abs(agent_self.get_border(dir)-agent_neig.get_border(dir_neig))>1:
@@ -176,6 +174,22 @@ class Field():
                             else:
                                 agent_self.update_border(dir, 1)
                                 agent_neig.update_border(dir_neig, -1)
+    def fix_bound(self, width, length):
+        '''
+        '''
+        w_unit = (self.px_H/self.nrow)/100
+        l_unit = (self.px_W/self.ncol)/100
+        w_side = round(width/2*w_unit)
+        l_side = round(length/2*l_unit)
+        for row in range(self.nrow):
+            for col in range(self.ncol):
+                agent = self.get_agent(row, col)
+                agent.reset_border()
+                # set border
+                agent.set_border(Dir.NORTH, agent.y-w_side)
+                agent.set_border(Dir.WEST, agent.x-l_side)
+                agent.set_border(Dir.SOUTH, agent.y+w_side)
+                agent.set_border(Dir.EAST, agent.x+l_side)
     def denoise(self, img, n_denoise=1):
         '''
         '''
@@ -289,20 +303,155 @@ class Field():
             df_final = pd.merge(df_final, df, on='var', how='left')
             cluster += 1
         return df_final
-
+    def align(self, method, axis=0):
+        '''
+        '''
+        if method==0:
+            # None
+            for row in range(self.nrow):
+                for col in range(self.ncol):
+                    agent = self.get_agent(row=row, col=col)
+                    if axis==0:
+                        dist = agent.y_reset - agent.y
+                    elif axis==1:
+                        dist = agent.x_reset - agent.x
+                    agent.update_coordinate(dist, axis=axis)
+        elif method==1:
+            # Top/Left
+            if axis==0:
+                for row in range(self.nrow):
+                    val = 1e10
+                    for col in range(self.ncol):
+                        agent = self.get_agent(row=row, col=col)
+                        val_temp = agent.y
+                        val = val_temp if val_temp<val else val
+                    for col in range(self.ncol):
+                        agent = self.get_agent(row=row, col=col)
+                        dist = val - agent.y
+                        agent.update_coordinate(dist, axis=axis)
+            elif axis==1:
+                for col in range(self.ncol):
+                    val = 1e10
+                    for row in range(self.nrow):
+                        agent = self.get_agent(row=row, col=col)
+                        val_temp = agent.x
+                        val = val_temp if val_temp<val else val
+                    for row in range(self.nrow):
+                        agent = self.get_agent(row=row, col=col)
+                        dist = val - agent.x
+                        agent.update_coordinate(dist, axis=axis)
+        elif method==3:
+            # Bottom/Right
+            if axis==0:
+                for row in range(self.nrow):
+                    val = -1
+                    for col in range(self.ncol):
+                        agent = self.get_agent(row=row, col=col)
+                        val_temp = agent.y
+                        val = val_temp if val_temp>val else val
+                    for col in range(self.ncol):
+                        agent = self.get_agent(row=row, col=col)
+                        dist = val - agent.y
+                        agent.update_coordinate(dist, axis=axis)
+            elif axis==1:
+                for col in range(self.ncol):
+                    val = -1
+                    for row in range(self.nrow):
+                        agent = self.get_agent(row=row, col=col)
+                        val_temp = agent.x
+                        val = val_temp if val_temp>val else val
+                    for row in range(self.nrow):
+                        agent = self.get_agent(row=row, col=col)
+                        dist = val - agent.x
+                        agent.update_coordinate(dist, axis=axis)
+        elif method==2:
+            # Middle/Center
+            if axis==0:
+                for row in range(self.nrow):
+                    val = 0
+                    for col in range(self.ncol):
+                        agent = self.get_agent(row=row, col=col)
+                        val += agent.y
+                    val = int(val/(self.ncol))
+                    for col in range(self.ncol):
+                        agent = self.get_agent(row=row, col=col)
+                        dist = val - agent.y
+                        agent.update_coordinate(dist, axis=axis)
+            elif axis==1:
+                for col in range(self.ncol):
+                    val = 0
+                    for row in range(self.nrow):
+                        agent = self.get_agent(row=row, col=col)
+                        val += agent.x
+                    val = int(val/(self.nrow))
+                    for row in range(self.nrow):
+                        agent = self.get_agent(row=row, col=col)
+                        dist = val - agent.x
+                        agent.update_coordinate(dist, axis=axis)
+    def pan(self, axis, target, value):
+        if axis==0:
+            for col in range(self.ncol):
+                agent = self.get_agent(row=target, col=col)
+                dist = value - agent.y
+                agent.update_coordinate(dist, axis=axis)
+        elif axis==1:
+            for row in range(self.nrow):
+                agent = self.get_agent(row=row, col=target)
+                dist = value - agent.x
+                agent.update_coordinate(dist, axis=axis)
+    def distributed(self, axis, isEven):
+        if isEven:
+            if axis==0:
+                y_North = self.get_agent(row=0, col=0).y
+                y_South = self.get_agent(row=self.nrow-1, col=0).y
+                dist = y_South-y_North
+                pos_new = np.arange(y_North, y_South, dist/(self.nrow-1))
+                pos_new = np.append(pos_new, y_South)
+                for row in range(self.nrow):
+                    for col in range(self.ncol):
+                        agent = self.get_agent(row=row, col=col)
+                        dist = pos_new[row] - agent.y
+                        agent.update_coordinate(dist, axis=0)
+            else:
+                x_West = self.get_agent(row=0, col=0).x
+                x_East = self.get_agent(row=0, col=self.ncol-1).x
+                dist = x_East-x_West
+                pos_new = np.arange(x_West, x_East, dist/(self.ncol-1))
+                pos_new = np.append(pos_new, x_East)
+                for col in range(self.ncol):
+                    for row in range(self.nrow):
+                        agent = self.get_agent(row=row, col=col)
+                        dist = pos_new[col] - agent.x
+                        agent.update_coordinate(dist, axis=1)
+        else:
+            for row in range(self.nrow):
+                for col in range(self.ncol):
+                    agent = self.get_agent(row=row, col=col)
+                    if axis==0:
+                        dist = agent.y_reset - agent.y
+                    elif axis==1:
+                        dist = agent.x_reset - agent.x
+                    agent.update_coordinate(dist, axis=axis)
+    def reset_coordinate(self):
+        for row in range(self.nrow):
+            for col in range(self.ncol):
+                agent = self.get_agent(row=row, col=col)
+                agent.reset_coordinate()
 
 class Agent():
-    def __init__(self, name, row, col):
+    def __init__(self, name, row, col, imgH, imgW):
         '''
         '''
         self.name = name
         self.row, self.col = row, col
+        self.imgH, self.imgW = int(imgH), int(imgW)
         self.y, self.x = 0, 0
-        self.save = False
+        self.y_reset, self.x_reset = 0, 0
         self.pre_rg_W, self.pre_rg_H = range(0), range(0)
-        self.border = dict()
+        self.border, self.border_reset = dict(), dict()
         for dir in list([Dir.NORTH, Dir.EAST, Dir.SOUTH, Dir.WEST]):
             self.border[dir.name] = 0
+            self.border_reset[dir.name] = 0
     def get_col(self):
         '''
         '''
@@ -350,8 +499,8 @@ class Agent():
     def set_coordinate(self, x, y):
         '''
         '''
-        self.x = int(x)
-        self.y = int(y)
+        self.x, self.y = int(x), int(y)
+        self.x_reset, self.y_reset = int(x), int(y)
         self.set_border(Dir.NORTH, y)
         self.set_border(Dir.SOUTH, y)
         self.set_border(Dir.WEST, x)
@@ -363,13 +512,52 @@ class Agent():
         self.pre_rg_H = range(rg['NORTH'], rg['SOUTH'])
         self.x = int((rg['EAST']+rg['WEST'])/2)
         self.y = int((rg['NORTH']+rg['SOUTH'])/2)
+        self.x_reset, self.y_reset = self.x, self.y
+        for dir in list([Dir.NORTH, Dir.WEST, Dir.SOUTH, Dir.EAST]):
+            self.border_reset[dir.name] = self.border[dir.name]
     def set_border(self, dir, value):
         '''
         '''
         self.border[dir.name] = int(value)
+        self.check_border()
     def update_border(self, dir, value):
         '''
         '''
         self.border[dir.name] += int(value)
+        self.check_border()
+    def update_coordinate(self, val, axis=0):
+        '''
+        '''
+        val = int(val)
+        if axis==0:
+            self.y += val
+            self.border[Dir.NORTH.name] += val
+            self.border[Dir.SOUTH.name] += val
+        elif axis==1:
+            self.x += val
+            self.border[Dir.WEST.name] += val
+            self.border[Dir.EAST.name] += val
+        self.check_border()
+    def check_border(self):
+        if self.border[Dir.NORTH.name]<0:
+            self.border[Dir.NORTH.name] = 0
+        if self.border[Dir.WEST.name]<0:
+            self.border[Dir.WEST.name] = 0
+        if self.border[Dir.SOUTH.name]>=self.imgH:
+            self.border[Dir.SOUTH.name] = self.imgH-1
+        if self.border[Dir.EAST.name]>=self.imgW:
+            self.border[Dir.EAST.name] = self.imgW-1
     def set_save(self, save=False):
-        self.save = save
+        "do nothing"
+    def reset_coordinate(self):
+        self.x = self.x_reset
+        self.y = self.y_reset
+        self.reset_border()
+    def reset_border(self):
+        for dir in list([Dir.NORTH, Dir.WEST, Dir.SOUTH, Dir.EAST]):
+            self.border[dir.name] = self.border_reset[dir.name]
+
+# agent.border[Dir.NORTH.name] = self.agents_base[row][col].border[Dir.NORTH.name]
+# agent.border[Dir.WEST.name] = self.agents_base[row][col].border[Dir.WEST.name]
+# agent.border[Dir.SOUTH.name] = self.agents_base[row][col].border[Dir.SOUTH.name]
+# agent.border[Dir.EAST.name] = self.agents_base[row][col].border[Dir.EAST.name]

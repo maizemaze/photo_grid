@@ -18,17 +18,17 @@ monofont: "Source Code Pro"
 monofontoptions: "Scale=0.7"
 cover-image: md/icon.png
 ---
-# Why iPat? {-}
-<p align="center"><img src = "md/icon.png" width = 200></p>
+# Why GRID? {-}
+Greenfield imagery decoder (GRID) is a tool allowing you to trace individual crop's imagery features from a remote sensing image. Performing plot segmentation could be a painful job without a proper tool. GRID comes with several essential imaging processing techniques such as  K-means clustering and convolutional operation, accelerating the segmentation process and improving the precision of estimated imagery features.
 
-<center>**[iPat for Windows](http://zzlab.net/iPat/iPat.zip)**</center>
+# Get Started
+The following installations are required to use GRID:
+- [Python 3](https://www.python.org/downloads/): **Version 3** or later.
+- [pip](https://pip.pypa.io/en/stable/): The Python package installer
+- [photo-grid](https://pypi.org/project/photo-grid/): The Python package GRID can be found on [PyPI](https://pypi.org/project/photo-grid/)  
 
-<center>**[iPat for Mac OS](http://zzlab.net/iPat/iPatMac.zip)**</center>
-
-<center>**[Demo data](http://zzlab.net/iPat/demo.zip)**</center>
-
-<br>
-Intelligent Prediction and Association Tool (iPat) is a software for genomic studies with a user-friendly graphical user interface (GUI). With iPat, GWAS or GS can be performed using a pointing device to simply drag and/or click on graphical elements to specify input data files, choose input parameters, and select analytical models. It can also serve as a format converter for people who want to use the converted files for other purposes.
-
-<br>
-<p align="center"><img src = "md/Welcom_Demo.gif"></p>
+Launch GRID:
+```{python}
+import photo_grid
+photo_grid.run()
+```
