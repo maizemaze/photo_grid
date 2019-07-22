@@ -28,7 +28,7 @@ The following installations are required to use GRID:
 - [photo-grid](https://pypi.org/project/photo-grid/): The Python package GRID can be found on [PyPI](https://pypi.org/project/photo-grid/)  
 
 Launch GRID:
-```{python}
+```
 import photo_grid
 photo_grid.run()
 ```
