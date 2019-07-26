@@ -177,8 +177,8 @@ class Field():
     def fix_bound(self, width, length):
         '''
         '''
-        w_unit = (self.px_H/self.nrow)/100
-        l_unit = (self.px_W/self.ncol)/100
+        w_unit = (self.px_W/self.ncol)/100
+        l_unit = (self.px_H/self.nrow)/100
         w_side = round(width/2*w_unit)
         l_side = round(length/2*l_unit)
         for row in range(self.nrow):
@@ -186,10 +186,22 @@ class Field():
                 agent = self.get_agent(row, col)
                 agent.reset_border()
                 # set border
-                agent.set_border(Dir.NORTH, agent.y-w_side)
-                agent.set_border(Dir.WEST, agent.x-l_side)
-                agent.set_border(Dir.SOUTH, agent.y+w_side)
-                agent.set_border(Dir.EAST, agent.x+l_side)
+                if (row==(self.nrow-1)) & (length==100):
+                    agent.set_border(Dir.SOUTH, self.px_H)
+                else:
+                    agent.set_border(Dir.SOUTH, agent.y+l_side)
+                if (row==0) & (length==100):
+                    agent.set_border(Dir.NORTH, 0)
+                else:
+                    agent.set_border(Dir.SOUTH, agent.y-l_side)
+                if (col==(self.ncol-1)) & (width==100):
+                    agent.set_border(Dir.EAST, self.px_W)
+                else:
+                    agent.set_border(Dir.EAST, agent.x+w_side)
+                if (col==0) & (width==100):
+                    agent.set_border(Dir.WEST, 0)
+                else:
+                    agent.set_border(Dir.WEST, agent.x-w_side)
     def denoise(self, img, n_denoise=1):
         '''
         '''

@@ -54,7 +54,7 @@ class Window_Main(QMainWindow):
         # info
         self.title = "GRID"
         self.width = 1440
-        self.height = 720
+        self.height = 900
         '''initialize UI'''
         self.initUI()
     def initUI(self):
