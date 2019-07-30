@@ -14,7 +14,6 @@
 |plot_4 |plot_9  |plot_14 |plot_19 |
 |plot_5 |plot_10 |plot_15 |plot_20 |
 
-
 - The values arranged in this file are based on users’ field layout. For example, if the field has 4 rows and 5 columns of plots, then the file should also have 4 rows and 5 columns.
 
 - Values in the map file are plot IDs, which have to be unique.
