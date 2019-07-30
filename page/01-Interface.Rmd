@@ -28,6 +28,7 @@ Here you can find the general usage of GRID in 5 steps.
 ## Load data
 For the map file, no header or row name needed. It can be a simple tab-delimited text file or comma-separated values (CSV) file.
 
+### tested
 The values arranged in this file are based on users’ field layout. For example, if the field has 4 rows and 5 columns of plots, then the file should also have 4 rows and 5 columns.
 
 Values in the map file are plot IDs, which have to be unique.
