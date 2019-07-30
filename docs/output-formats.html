@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Chapter 5 Get started | GRID: Greenfield Image Decoder</title>
+  <title>4.2 Output formats | GRID: Greenfield Image Decoder</title>
   <meta name="description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Chapter 5 Get started | GRID: Greenfield Image Decoder />
+  <meta property="og:title" content="4.2 Output formats | GRID: Greenfield Image Decoder />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://github.com/poissonfish/photo_grid" />
   <meta property="og:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="poissonfish/photo_grid" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Get started | GRID: Greenfield Image Decoder />
+  <meta name="twitter:title" content="4.2 Output formats | GRID: Greenfield Image Decoder />
   
   <meta name="twitter:description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping" />
   <meta name="twitter:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="output-formats.html">
-<link rel="next" href="windows-users.html">
+<link rel="prev" href="input-formats.html">
+<link rel="next" href="get-started-1.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -240,28 +240,634 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="get-started-1" class="section level1">
-<h1><span class="header-section-number">Chapter 5</span> Get started</h1>
-<p>The operation environment need to meet the following requirements:</p>
-<ul>
-<li><p><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Runtime Environment (JRE)</a>: <strong>Version 8</strong> or later.</p></li>
-<li><p><a href="https://www.r-project.org">R</a>: Version <strong>3.5</strong> or later.
-(It’s highly recommended to update R to the latest version for first-time users, since some packages may not be available to download in older versions of R)</p></li>
-</ul>
-<p>Install all the required R libraries by running following code. This command will download all the missing packages that are required in iPat.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;http://zzlab.net/iPat/iPat_installation.r&quot;</span>)</code></pre>
+<div id="output-formats" class="section level2">
+<h2><span class="header-section-number">4.2</span> Output formats</h2>
+<div id="figures" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Figures</h3>
+<div id="manhattan-plot" class="section level4 unnumbered">
+<h4><strong><em>Manhattan plot</em></strong></h4>
 <p align="center">
+<img src = "md/3.2-ManhattanPlot.png" width = 700>
+</p>
 <p align="center">
-<img src = "md/installation.png" width = 1200>
-</p> 
+Fig. Manhattan plot by GWAS
+</p>
 </div>
+<div id="scatter-plot-q-q-plot" class="section level4 unnumbered">
+<h4><strong><em>Scatter plot: Q-Q plot</em></strong></h4>
+<p align="center">
+<img src = "md/3.2-QQPlot.png" width = 400>
+</p>
+<p align="center">
+Fig. Q-Q plot by GWAS
+</p>
+</div>
+<div id="histogram-gebv-distribution" class="section level4 unnumbered">
+<h4><strong><em>Histogram: GEBV distribution</em></strong></h4>
+<p align="center">
+<img src = "md/3.2-GEBVDist.png" width = 400>
+</p>
+<p align="center">
+Fig. Distribution for GEBVs
+</p>
+</div>
+<div id="density-function-accuracies-for-gs-validations" class="section level4 unnumbered">
+<h4><strong><em>Density function: Accuracies for GS validations</em></strong></h4>
+<p align="center">
+<img src = "md/3.2-AccCV.png" width = 400>
+</p>
+<p align="center">
+Fig. Distribution for prediction accuracies
+</p>
+</div>
+<div id="scatter-plot-gs-predictions-against-observations" class="section level4 unnumbered">
+<h4><strong><em>Scatter plot: GS predictions against observations</em></strong></h4>
+<p align="center">
+<img src = "md/3.2-ScatterPreObs.png" width = 400>
+</p>
+<p align="center">
+Fig. Distribution for prediction accuracies
+</p>
+</div>
+<div id="histogram-heterozygosity-distribution" class="section level4 unnumbered">
+<h4><strong><em>Histogram: Heterozygosity distribution</em></strong></h4>
+<p align="center">
+<img src = "md/3.2-HeterozygotePlot.png" width = 600>
+</p>
+<p align="center">
+Fig. Histograms for overview of heterozygosity
+</p>
+</div>
+<div id="phenotype-overview" class="section level4 unnumbered">
+<h4><strong><em>Phenotype overview</em></strong></h4>
+<p align="center">
+<img src = "md/3.2-PhenotypePlot.png" width = 700>
+</p>
+<p align="center">
+Fig. Figure for overview of phenotypes
+</p>
+</div>
+</div>
+<div id="tabular-results" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Tabular results</h3>
+<div id="gwas-report" class="section level4 unnumbered">
+<h4><strong><em>GWAS report</em></strong></h4>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-10">TABLE 3.10: </span>Tabular GWAS results
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+SNP
+</th>
+<th style="text-align:right;">
+Chromosome
+</th>
+<th style="text-align:right;">
+Position
+</th>
+<th style="text-align:right;">
+P.value
+</th>
+<th style="text-align:right;">
+maf
+</th>
+<th style="text-align:right;">
+effect
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+PZB00859.1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+157104
+</td>
+<td style="text-align:right;">
+0.8796673
+</td>
+<td style="text-align:right;">
+0.2402135
+</td>
+<td style="text-align:right;">
+0.0513818
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PZA01271.1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1947984
+</td>
+<td style="text-align:right;">
+0.0450554
+</td>
+<td style="text-align:right;">
+0.4893238
+</td>
+<td style="text-align:right;">
+0.5985480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PZA03613.2
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2914066
+</td>
+<td style="text-align:right;">
+0.0152657
+</td>
+<td style="text-align:right;">
+0.2900356
+</td>
+<td style="text-align:right;">
+0.7550551
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PZA03613.1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2914171
+</td>
+<td style="text-align:right;">
+0.7736487
+</td>
+<td style="text-align:right;">
+0.2508897
+</td>
+<td style="text-align:right;">
+-0.1049524
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PZA03614.2
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2915078
+</td>
+<td style="text-align:right;">
+0.1072168
+</td>
+<td style="text-align:right;">
+0.4697509
+</td>
+<td style="text-align:right;">
+-0.4744598
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="gs-gebv" class="section level4 unnumbered">
+<h4><strong><em>GS: GEBV</em></strong></h4>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-11">TABLE 3.11: </span>GEBV for each individual
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+taxa
+</th>
+<th style="text-align:left;">
+GEBV
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;width: 10em; ">
+ID_1
+</td>
+<td style="text-align:left;width: 10em; ">
+-1.77193474724802
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; ">
+ID_2
+</td>
+<td style="text-align:left;width: 10em; ">
+1.72387204220987
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; ">
+ID_3
+</td>
+<td style="text-align:left;width: 10em; ">
+1.68334659084122
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; ">
+ID_4
+</td>
+<td style="text-align:left;width: 10em; ">
+-2.41038775121833
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; ">
+ID_5
+</td>
+<td style="text-align:left;width: 10em; ">
+-5.74618607007748
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; ">
+…
+</td>
+<td style="text-align:left;width: 10em; ">
+…
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="gs-marker-effects" class="section level4 unnumbered">
+<h4><strong><em>GS: Marker effects</em></strong></h4>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-12">TABLE 3.12: </span>Genetic effects for each marker
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+V1
+</th>
+<th style="text-align:left;">
+u
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;width: 10em; ">
+M_1
+</td>
+<td style="text-align:left;width: 10em; ">
+-0.00567222219641276
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; ">
+M_2
+</td>
+<td style="text-align:left;width: 10em; ">
+0.0212495891997373
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; ">
+M_3
+</td>
+<td style="text-align:left;width: 10em; ">
+0.030552733100474
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; ">
+M_4
+</td>
+<td style="text-align:left;width: 10em; ">
+-0.0212824623926987
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; ">
+M_5
+</td>
+<td style="text-align:left;width: 10em; ">
+-0.0126398188395629
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 10em; ">
+…
+</td>
+<td style="text-align:left;width: 10em; ">
+…
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="gs-validation-results" class="section level4 unnumbered">
+<h4><strong><em>GS: Validation results</em></strong></h4>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-13">TABLE 3.13: </span>Accuracies from GS validation
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+r
+</th>
+<th style="text-align:right;">
+rmse
+</th>
+<th style="text-align:left;">
+trait
+</th>
+<th style="text-align:right;">
+iter
+</th>
+<th style="text-align:right;">
+fold
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.6141
+</td>
+<td style="text-align:right;">
+5.8551
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.5466
+</td>
+<td style="text-align:right;">
+5.0126
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.6173
+</td>
+<td style="text-align:right;">
+4.7957
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.5112
+</td>
+<td style="text-align:right;">
+5.8834
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.5525
+</td>
+<td style="text-align:right;">
+4.5914
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="gs-predicted-values" class="section level4 unnumbered">
+<h4><strong><em>GS: Predicted values</em></strong></h4>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-14">TABLE 3.14: </span>List of predicted and observed phenotypes
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+obs
+</th>
+<th style="text-align:right;">
+pre
+</th>
+<th style="text-align:left;">
+trait
+</th>
+<th style="text-align:right;">
+iter
+</th>
+<th style="text-align:right;">
+fold
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;width: 10em; ">
+-1.2619
+</td>
+<td style="text-align:right;width: 10em; ">
+-2.8336
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 10em; ">
+2.5937
+</td>
+<td style="text-align:right;width: 10em; ">
+-0.1296
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 10em; ">
+-7.4122
+</td>
+<td style="text-align:right;width: 10em; ">
+-0.6723
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 10em; ">
+-4.3864
+</td>
+<td style="text-align:right;width: 10em; ">
+-3.1929
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 10em; ">
+-3.9676
+</td>
+<td style="text-align:right;width: 10em; ">
+-7.8634
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 10em; ">
+-8.4040
+</td>
+<td style="text-align:right;width: 10em; ">
+-2.2128
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 10em; ">
+-4.4187
+</td>
+<td style="text-align:right;width: 10em; ">
+-4.3261
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 10em; ">
+16.0423
+</td>
+<td style="text-align:right;width: 10em; ">
+1.9852
+</td>
+<td style="text-align:left;">
+y75
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<!-- </div> -->
             </section>
 
           </div>
         </div>
       </div>
-<a href="output-formats.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="windows-users.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="input-formats.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="get-started-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

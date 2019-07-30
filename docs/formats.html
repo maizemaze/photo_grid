@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>4 Formats | GRID: Greenfield Image Decoder</title>
+  <title>Chapter 4 Formats | GRID: Greenfield Image Decoder</title>
   <meta name="description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="4 Formats | GRID: Greenfield Image Decoder />
+  <meta property="og:title" content="Chapter 4 Formats | GRID: Greenfield Image Decoder />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://github.com/poissonfish/photo_grid" />
   <meta property="og:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="poissonfish/photo_grid" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="4 Formats | GRID: Greenfield Image Decoder />
+  <meta name="twitter:title" content="Chapter 4 Formats | GRID: Greenfield Image Decoder />
   
   <meta name="twitter:description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping" />
   <meta name="twitter:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="step-by-step-tutorial.html">
-<link rel="next" href="get-started-1.html">
+<link rel="prev" href="convert-hapmap-to-plink-format.html">
+<link rel="next" href="input-formats.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -115,6 +115,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 
 <body>
@@ -127,95 +128,101 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
+<li><a href="./index.html">User Manuel for iPat</a></li>
+
+<li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Why GRID?</a><ul>
-<li class="chapter" data-level="0.1" data-path="index.html"><a href="index.html#get-started"><i class="fa fa-check"></i><b>0.1</b> Get Started</a></li>
-<li class="chapter" data-level="0.2" data-path="index.html"><a href="index.html#overview-of-grid"><i class="fa fa-check"></i><b>0.2</b> Overview of GRID</a><ul>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#load-data"><i class="fa fa-check"></i>Load data</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#crop-your-image"><i class="fa fa-check"></i>Crop your image</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#plots-extraction"><i class="fa fa-check"></i>Plots extraction</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#set-up-center-points"><i class="fa fa-check"></i>Set up center points</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#finalize-plots-boundary"><i class="fa fa-check"></i>Finalize plot’s boundary</a></li>
+<li class="chapter" data-level="0.1" data-path="get-started.html"><a href="get-started.html"><i class="fa fa-check"></i><b>0.1</b> Get Started</a></li>
+<li class="chapter" data-level="0.2" data-path="overview-of-grid.html"><a href="overview-of-grid.html"><i class="fa fa-check"></i><b>0.2</b> Overview of GRID</a><ul>
+<li class="chapter" data-level="" data-path="overview-of-grid.html"><a href="overview-of-grid.html#load-data"><i class="fa fa-check"></i>Load data</a></li>
+<li class="chapter" data-level="" data-path="overview-of-grid.html"><a href="overview-of-grid.html#crop-your-image"><i class="fa fa-check"></i>Crop your image</a></li>
+<li class="chapter" data-level="" data-path="overview-of-grid.html"><a href="overview-of-grid.html#plots-extraction"><i class="fa fa-check"></i>Plots extraction</a></li>
+<li class="chapter" data-level="" data-path="overview-of-grid.html"><a href="overview-of-grid.html#set-up-center-points"><i class="fa fa-check"></i>Set up center points</a></li>
+<li class="chapter" data-level="" data-path="overview-of-grid.html"><a href="overview-of-grid.html#finalize-plots-boundary"><i class="fa fa-check"></i>Finalize plot’s boundary</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="1" data-path="interface-and-usage.html"><a href="interface-and-usage.html"><i class="fa fa-check"></i><b>1</b> Interface and Usage</a><ul>
-<li class="chapter" data-level="1.1" data-path="interface-and-usage.html"><a href="interface-and-usage.html#load-data-1"><i class="fa fa-check"></i><b>1.1</b> Load data</a><ul>
-<li><a href="interface-and-usage.html#map-files"><strong>Map files</strong></a></li>
-<li><a href="interface-and-usage.html#image-files"><strong>Image files</strong></a></li>
+<li class="chapter" data-level="1.1" data-path="load-data-1.html"><a href="load-data-1.html"><i class="fa fa-check"></i><b>1.1</b> Load data</a><ul>
+<li><a href="load-data-1.html#map-files"><strong>Map files</strong></a></li>
+<li><a href="load-data-1.html#image-files"><strong>Image files</strong></a></li>
 </ul></li>
-<li class="chapter" data-level="1.2" data-path="interface-and-usage.html"><a href="interface-and-usage.html#crop-images"><i class="fa fa-check"></i><b>1.2</b> Crop Images</a></li>
-<li class="chapter" data-level="1.3" data-path="interface-and-usage.html"><a href="interface-and-usage.html#plots-extraction-1"><i class="fa fa-check"></i><b>1.3</b> Plots extraction</a></li>
+<li class="chapter" data-level="1.2" data-path="crop-images.html"><a href="crop-images.html"><i class="fa fa-check"></i><b>1.2</b> Crop Images</a></li>
+<li class="chapter" data-level="1.3" data-path="plots-extraction-1.html"><a href="plots-extraction-1.html"><i class="fa fa-check"></i><b>1.3</b> Plots extraction</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="load-data-2.html"><a href="load-data-2.html"><i class="fa fa-check"></i><b>2</b> Load data</a></li>
 <li class="chapter" data-level="3" data-path="step-by-step-tutorial.html"><a href="step-by-step-tutorial.html"><i class="fa fa-check"></i><b>3</b> Step by Step Tutorial</a><ul>
-<li class="chapter" data-level="3.1" data-path="step-by-step-tutorial.html"><a href="step-by-step-tutorial.html#gwas-in-gapit"><i class="fa fa-check"></i><b>3.1</b> GWAS in GAPIT</a><ul>
-<li><a href="step-by-step-tutorial.html#prepare-plink-files"><strong><em>Prepare PLINK files</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#import-files"><strong><em>Import files</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#define-gapit"><strong><em>Define GAPIT</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#inspect-results"><strong><em>Inspect results</em></strong></a></li>
+<li class="chapter" data-level="3.1" data-path="gwas-in-gapit.html"><a href="gwas-in-gapit.html"><i class="fa fa-check"></i><b>3.1</b> GWAS in GAPIT</a><ul>
+<li><a href="gwas-in-gapit.html#prepare-plink-files"><strong><em>Prepare PLINK files</em></strong></a></li>
+<li><a href="gwas-in-gapit.html#import-files"><strong><em>Import files</em></strong></a></li>
+<li><a href="gwas-in-gapit.html#define-gapit"><strong><em>Define GAPIT</em></strong></a></li>
+<li><a href="gwas-in-gapit.html#inspect-results"><strong><em>Inspect results</em></strong></a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="step-by-step-tutorial.html"><a href="step-by-step-tutorial.html#k-fold-cross-validation-gs-in-bglr"><i class="fa fa-check"></i><b>3.2</b> K-fold cross-validation GS in BGLR</a><ul>
-<li><a href="step-by-step-tutorial.html#prepare-vcf-files"><strong><em>Prepare VCF files</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#import-files-1"><strong><em>Import files</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#define-bglr"><strong><em>Define BGLR</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#inspect-results-1"><strong><em>Inspect results</em></strong></a></li>
+<li class="chapter" data-level="3.2" data-path="k-fold-cross-validation-gs-in-bglr.html"><a href="k-fold-cross-validation-gs-in-bglr.html"><i class="fa fa-check"></i><b>3.2</b> K-fold cross-validation GS in BGLR</a><ul>
+<li><a href="k-fold-cross-validation-gs-in-bglr.html#prepare-vcf-files"><strong><em>Prepare VCF files</em></strong></a></li>
+<li><a href="k-fold-cross-validation-gs-in-bglr.html#import-files-1"><strong><em>Import files</em></strong></a></li>
+<li><a href="k-fold-cross-validation-gs-in-bglr.html#define-bglr"><strong><em>Define BGLR</em></strong></a></li>
+<li><a href="k-fold-cross-validation-gs-in-bglr.html#inspect-results-1"><strong><em>Inspect results</em></strong></a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="step-by-step-tutorial.html"><a href="step-by-step-tutorial.html#gwas-assisted-gs-in-rrblup"><i class="fa fa-check"></i><b>3.3</b> GWAS-assisted GS in rrBLUP</a><ul>
-<li><a href="step-by-step-tutorial.html#import-files-2"><strong><em>Import files</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#define-farmcpu-gwas"><strong><em>Define FarmCPU (GWAS)</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#define-rrblup-gs"><strong><em>Define rrBLUP (GS)</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#inspect-progress"><strong><em>Inspect Progress</em></strong></a></li>
+<li class="chapter" data-level="3.3" data-path="gwas-assisted-gs-in-rrblup.html"><a href="gwas-assisted-gs-in-rrblup.html"><i class="fa fa-check"></i><b>3.3</b> GWAS-assisted GS in rrBLUP</a><ul>
+<li><a href="gwas-assisted-gs-in-rrblup.html#import-files-2"><strong><em>Import files</em></strong></a></li>
+<li><a href="gwas-assisted-gs-in-rrblup.html#define-farmcpu-gwas"><strong><em>Define FarmCPU (GWAS)</em></strong></a></li>
+<li><a href="gwas-assisted-gs-in-rrblup.html#define-rrblup-gs"><strong><em>Define rrBLUP (GS)</em></strong></a></li>
+<li><a href="gwas-assisted-gs-in-rrblup.html#inspect-progress"><strong><em>Inspect Progress</em></strong></a></li>
 </ul></li>
-<li class="chapter" data-level="3.4" data-path="step-by-step-tutorial.html"><a href="step-by-step-tutorial.html#convert-hapmap-to-plink-format"><i class="fa fa-check"></i><b>3.4</b> Convert Hapmap to PLINK format</a><ul>
-<li><a href="step-by-step-tutorial.html#prepare-hapmap-files"><strong><em>Prepare Hapmap files</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#import-files-3"><strong><em>Import files</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#define-bglr-1"><strong><em>Define BGLR</em></strong></a></li>
-<li><a href="step-by-step-tutorial.html#inspect-results-2"><strong><em>Inspect results</em></strong></a></li>
+<li class="chapter" data-level="3.4" data-path="convert-hapmap-to-plink-format.html"><a href="convert-hapmap-to-plink-format.html"><i class="fa fa-check"></i><b>3.4</b> Convert Hapmap to PLINK format</a><ul>
+<li><a href="convert-hapmap-to-plink-format.html#prepare-hapmap-files"><strong><em>Prepare Hapmap files</em></strong></a></li>
+<li><a href="convert-hapmap-to-plink-format.html#import-files-3"><strong><em>Import files</em></strong></a></li>
+<li><a href="convert-hapmap-to-plink-format.html#define-bglr-1"><strong><em>Define BGLR</em></strong></a></li>
+<li><a href="convert-hapmap-to-plink-format.html#inspect-results-2"><strong><em>Inspect results</em></strong></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="formats.html"><a href="formats.html"><i class="fa fa-check"></i><b>4</b> Formats</a><ul>
-<li class="chapter" data-level="4.1" data-path="formats.html"><a href="formats.html#input-formats"><i class="fa fa-check"></i><b>4.1</b> Input formats</a><ul>
-<li class="chapter" data-level="4.1.1" data-path="formats.html"><a href="formats.html#genotype"><i class="fa fa-check"></i><b>4.1.1</b> Genotype</a></li>
-<li class="chapter" data-level="4.1.2" data-path="formats.html"><a href="formats.html#phenotype"><i class="fa fa-check"></i><b>4.1.2</b> Phenotype</a></li>
-<li class="chapter" data-level="4.1.3" data-path="formats.html"><a href="formats.html#map"><i class="fa fa-check"></i><b>4.1.3</b> Map</a></li>
-<li class="chapter" data-level="4.1.4" data-path="formats.html"><a href="formats.html#covariates"><i class="fa fa-check"></i><b>4.1.4</b> Covariates</a></li>
-<li class="chapter" data-level="4.1.5" data-path="formats.html"><a href="formats.html#kinship"><i class="fa fa-check"></i><b>4.1.5</b> Kinship</a></li>
+<li class="chapter" data-level="4.1" data-path="input-formats.html"><a href="input-formats.html"><i class="fa fa-check"></i><b>4.1</b> Input formats</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="input-formats.html"><a href="input-formats.html#genotype"><i class="fa fa-check"></i><b>4.1.1</b> Genotype</a></li>
+<li class="chapter" data-level="4.1.2" data-path="input-formats.html"><a href="input-formats.html#phenotype"><i class="fa fa-check"></i><b>4.1.2</b> Phenotype</a></li>
+<li class="chapter" data-level="4.1.3" data-path="input-formats.html"><a href="input-formats.html#map"><i class="fa fa-check"></i><b>4.1.3</b> Map</a></li>
+<li class="chapter" data-level="4.1.4" data-path="input-formats.html"><a href="input-formats.html#covariates"><i class="fa fa-check"></i><b>4.1.4</b> Covariates</a></li>
+<li class="chapter" data-level="4.1.5" data-path="input-formats.html"><a href="input-formats.html#kinship"><i class="fa fa-check"></i><b>4.1.5</b> Kinship</a></li>
 </ul></li>
-<li class="chapter" data-level="4.2" data-path="formats.html"><a href="formats.html#output-formats"><i class="fa fa-check"></i><b>4.2</b> Output formats</a><ul>
-<li class="chapter" data-level="4.2.1" data-path="formats.html"><a href="formats.html#figures"><i class="fa fa-check"></i><b>4.2.1</b> Figures</a></li>
-<li class="chapter" data-level="4.2.2" data-path="formats.html"><a href="formats.html#tabular-results"><i class="fa fa-check"></i><b>4.2.2</b> Tabular results</a></li>
+<li class="chapter" data-level="4.2" data-path="output-formats.html"><a href="output-formats.html"><i class="fa fa-check"></i><b>4.2</b> Output formats</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="output-formats.html"><a href="output-formats.html#figures"><i class="fa fa-check"></i><b>4.2.1</b> Figures</a></li>
+<li class="chapter" data-level="4.2.2" data-path="output-formats.html"><a href="output-formats.html#tabular-results"><i class="fa fa-check"></i><b>4.2.2</b> Tabular results</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="get-started-1.html"><a href="get-started-1.html"><i class="fa fa-check"></i><b>5</b> Get started</a><ul>
-<li class="chapter" data-level="5.1" data-path="get-started-1.html"><a href="get-started-1.html#windows-users"><i class="fa fa-check"></i><b>5.1</b> Windows users</a></li>
-<li class="chapter" data-level="5.2" data-path="get-started-1.html"><a href="get-started-1.html#mac-os-users"><i class="fa fa-check"></i><b>5.2</b> Mac OS users</a></li>
+<li class="chapter" data-level="5.1" data-path="windows-users.html"><a href="windows-users.html"><i class="fa fa-check"></i><b>5.1</b> Windows users</a></li>
+<li class="chapter" data-level="5.2" data-path="mac-os-users.html"><a href="mac-os-users.html"><i class="fa fa-check"></i><b>5.2</b> Mac OS users</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html"><i class="fa fa-check"></i><b>6</b> Interface and Usage</a><ul>
-<li class="chapter" data-level="6.1" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#workflow"><i class="fa fa-check"></i><b>6.1</b> Workflow</a><ul>
-<li><a href="interface-and-usage-1.html#create-a-new-module"><strong><em>Create a new module</em></strong></a></li>
-<li><a href="interface-and-usage-1.html#import-files-4"><strong><em>Import files</em></strong></a></li>
-<li><a href="interface-and-usage-1.html#choose-an-analysis"><strong><em>Choose an analysis</em></strong></a></li>
-<li><a href="interface-and-usage-1.html#config-and-run"><strong><em>Config and run</em></strong></a></li>
-<li><a href="interface-and-usage-1.html#monitor-progress"><strong><em>Monitor progress</em></strong></a></li>
-<li><a href="interface-and-usage-1.html#inspect-results-3"><strong><em>Inspect results</em></strong></a></li>
+<li class="chapter" data-level="6.1" data-path="workflow.html"><a href="workflow.html"><i class="fa fa-check"></i><b>6.1</b> Workflow</a><ul>
+<li><a href="workflow.html#create-a-new-module"><strong><em>Create a new module</em></strong></a></li>
+<li><a href="workflow.html#import-files-4"><strong><em>Import files</em></strong></a></li>
+<li><a href="workflow.html#choose-an-analysis"><strong><em>Choose an analysis</em></strong></a></li>
+<li><a href="workflow.html#config-and-run"><strong><em>Config and run</em></strong></a></li>
+<li><a href="workflow.html#monitor-progress"><strong><em>Monitor progress</em></strong></a></li>
+<li><a href="workflow.html#inspect-results-3"><strong><em>Inspect results</em></strong></a></li>
 </ul></li>
-<li class="chapter" data-level="6.2" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#global-settings"><i class="fa fa-check"></i><b>6.2</b> Global settings</a><ul>
-<li class="chapter" data-level="6.2.1" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#working-directory"><i class="fa fa-check"></i><b>6.2.1</b> Working directory</a></li>
-<li class="chapter" data-level="6.2.2" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#phenotype-1"><i class="fa fa-check"></i><b>6.2.2</b> Phenotype</a></li>
-<li class="chapter" data-level="6.2.3" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#quality-control"><i class="fa fa-check"></i><b>6.2.3</b> Quality Control</a></li>
+<li class="chapter" data-level="6.2" data-path="global-settings.html"><a href="global-settings.html"><i class="fa fa-check"></i><b>6.2</b> Global settings</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="global-settings.html"><a href="global-settings.html#working-directory"><i class="fa fa-check"></i><b>6.2.1</b> Working directory</a></li>
+<li class="chapter" data-level="6.2.2" data-path="global-settings.html"><a href="global-settings.html#phenotype-1"><i class="fa fa-check"></i><b>6.2.2</b> Phenotype</a></li>
+<li class="chapter" data-level="6.2.3" data-path="global-settings.html"><a href="global-settings.html#quality-control"><i class="fa fa-check"></i><b>6.2.3</b> Quality Control</a></li>
 </ul></li>
-<li class="chapter" data-level="6.3" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#gwas"><i class="fa fa-check"></i><b>6.3</b> GWAS</a><ul>
-<li class="chapter" data-level="6.3.1" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#gapit"><i class="fa fa-check"></i><b>6.3.1</b> GAPIT</a></li>
-<li class="chapter" data-level="6.3.2" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#farmcpu"><i class="fa fa-check"></i><b>6.3.2</b> FarmCPU</a></li>
-<li class="chapter" data-level="6.3.3" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#plink-1"><i class="fa fa-check"></i><b>6.3.3</b> PLINK</a></li>
+<li class="chapter" data-level="6.3" data-path="gwas.html"><a href="gwas.html"><i class="fa fa-check"></i><b>6.3</b> GWAS</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="gwas.html"><a href="gwas.html#gapit"><i class="fa fa-check"></i><b>6.3.1</b> GAPIT</a></li>
+<li class="chapter" data-level="6.3.2" data-path="gwas.html"><a href="gwas.html#farmcpu"><i class="fa fa-check"></i><b>6.3.2</b> FarmCPU</a></li>
+<li class="chapter" data-level="6.3.3" data-path="gwas.html"><a href="gwas.html#plink-1"><i class="fa fa-check"></i><b>6.3.3</b> PLINK</a></li>
 </ul></li>
-<li class="chapter" data-level="6.4" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#gs"><i class="fa fa-check"></i><b>6.4</b> GS</a><ul>
-<li class="chapter" data-level="6.4.1" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#gblup-and-rrblup"><i class="fa fa-check"></i><b>6.4.1</b> gBLUP and rrBLUP</a></li>
-<li class="chapter" data-level="6.4.2" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#bglr"><i class="fa fa-check"></i><b>6.4.2</b> BGLR</a></li>
+<li class="chapter" data-level="6.4" data-path="gs.html"><a href="gs.html"><i class="fa fa-check"></i><b>6.4</b> GS</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="gs.html"><a href="gs.html#gblup-and-rrblup"><i class="fa fa-check"></i><b>6.4.1</b> gBLUP and rrBLUP</a></li>
+<li class="chapter" data-level="6.4.2" data-path="gs.html"><a href="gs.html#bglr"><i class="fa fa-check"></i><b>6.4.2</b> BGLR</a></li>
 </ul></li>
-<li class="chapter" data-level="6.5" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#gwas-assisted-gs"><i class="fa fa-check"></i><b>6.5</b> GWAS-assisted GS</a></li>
-<li class="chapter" data-level="6.6" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#format-converter"><i class="fa fa-check"></i><b>6.6</b> Format converter</a></li>
-<li class="chapter" data-level="6.7" data-path="interface-and-usage-1.html"><a href="interface-and-usage-1.html#multi-thread-is-supported"><i class="fa fa-check"></i><b>6.7</b> Multi-thread is supported</a></li>
+<li class="chapter" data-level="6.5" data-path="gwas-assisted-gs.html"><a href="gwas-assisted-gs.html"><i class="fa fa-check"></i><b>6.5</b> GWAS-assisted GS</a></li>
+<li class="chapter" data-level="6.6" data-path="format-converter.html"><a href="format-converter.html"><i class="fa fa-check"></i><b>6.6</b> Format converter</a></li>
+<li class="chapter" data-level="6.7" data-path="multi-thread-is-supported.html"><a href="multi-thread-is-supported.html"><i class="fa fa-check"></i><b>6.7</b> Multi-thread is supported</a></li>
 </ul></li>
+<li class="divider"></li>
+<li><a href="https://academic.oup.com/bioinformatics/article/34/11/1925/4802224" target="_blank">Article on Bioinformatics</a></li>
+
 </ul>
 
       </nav>
@@ -234,1282 +241,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="formats" class="section level1">
-<h1><span class="header-section-number">4</span> Formats</h1>
-<div id="input-formats" class="section level2">
-<h2><span class="header-section-number">4.1</span> Input formats</h2>
-<div id="genotype" class="section level3">
-<h3><span class="header-section-number">4.1.1</span> Genotype</h3>
-<div id="hapmap" class="section level4 unnumbered">
-<h4><strong><em>Hapmap</em></strong></h4>
-<table>
-<caption><span id="tab:hapmap">Table 4.1: </span>Hapmap format</caption>
-<thead>
-<tr class="header">
-<th align="left">rs</th>
-<th align="left">alleles</th>
-<th align="right">chrom</th>
-<th align="right">pos</th>
-<th align="left">strand</th>
-<th align="left">assembly</th>
-<th align="left">center</th>
-<th align="left">protLSID</th>
-<th align="left">assayLSID</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">SNP_1</td>
-<td align="left">A/C</td>
-<td align="right">1</td>
-<td align="right">1000</td>
-<td align="left">+</td>
-<td align="left">AGPv1</td>
-<td align="left">Panzea</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">SNP_2</td>
-<td align="left">C/G</td>
-<td align="right">1</td>
-<td align="right">1010</td>
-<td align="left">+</td>
-<td align="left">AGPv1</td>
-<td align="left">Panzea</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">SNP_3</td>
-<td align="left">G/T</td>
-<td align="right">1</td>
-<td align="right">1020</td>
-<td align="left">+</td>
-<td align="left">AGPv1</td>
-<td align="left">Panzea</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-</tr>
-</tbody>
-</table>
-<table>
-<caption><span id="tab:hapmap">Table 4.1: </span>Hapmap format (Continued)</caption>
-<thead>
-<tr class="header">
-<th align="left">panel</th>
-<th align="left">QCcode</th>
-<th align="left">ID_1</th>
-<th align="left">ID_2</th>
-<th align="left">ID_3</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">nam</td>
-<td align="left">NA</td>
-<td align="left">CC</td>
-<td align="left">NA</td>
-<td align="left">AC</td>
-</tr>
-<tr class="even">
-<td align="left">nam</td>
-<td align="left">NA</td>
-<td align="left">CC</td>
-<td align="left">GG</td>
-<td align="left">CC</td>
-</tr>
-<tr class="odd">
-<td align="left">nam</td>
-<td align="left">NA</td>
-<td align="left">GG</td>
-<td align="left">GG</td>
-<td align="left">TT</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="vcf" class="section level4 unnumbered">
-<h4><strong><em>VCF</em></strong></h4>
-<p><a href="https://samtools.github.io/hts-specs/VCFv4.1.pdf" class="unnumbered">Reference</a></p>
-<table>
-<caption><span id="tab:vcf">Table 4.2: </span>VCF format</caption>
-<thead>
-<tr class="header">
-<th align="right">CHROM</th>
-<th align="right">POS</th>
-<th align="left">ID</th>
-<th align="left">REF</th>
-<th align="left">ALT</th>
-<th align="right">QUAL</th>
-<th align="left">FILTER</th>
-<th align="left">INFO</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">1000</td>
-<td align="left">SNP_1</td>
-<td align="left">A</td>
-<td align="left">C</td>
-<td align="right">29</td>
-<td align="left">PASS</td>
-<td align="left">NS=3;DP=14;AF=0.5;DB;H2</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">1010</td>
-<td align="left">SNP_2</td>
-<td align="left">C</td>
-<td align="left">G</td>
-<td align="right">3</td>
-<td align="left">q10</td>
-<td align="left">NS=3;DP=11;AF=0.017</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">1020</td>
-<td align="left">SNP_3</td>
-<td align="left">G</td>
-<td align="left">T</td>
-<td align="right">67</td>
-<td align="left">PASS</td>
-<td align="left">NS=2;DP=10;AF=0.333,0.667</td>
-</tr>
-</tbody>
-</table>
-<table>
-<caption><span id="tab:vcf">Table 4.2: </span>VCF format (Continued)</caption>
-<thead>
-<tr class="header">
-<th align="left">FORMAT</th>
-<th align="left">ID_1</th>
-<th align="left">ID_2</th>
-<th align="left">ID_3</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">GT:GQ:DP:HQ</td>
-<td align="left">1|1:48:1:51,51</td>
-<td align="left">.|.:8:8:51,51</td>
-<td align="left">0/1:43:5:.,.</td>
-</tr>
-<tr class="even">
-<td align="left">GT:GQ:DP:HQ</td>
-<td align="left">0|0:49:3:58,50</td>
-<td align="left">1|1:3:5:65,3</td>
-<td align="left">0/0:41:3</td>
-</tr>
-<tr class="odd">
-<td align="left">GT:GQ:DP:HQ</td>
-<td align="left">0|0:21:6:23,27</td>
-<td align="left">0|0:2:0:18,2</td>
-<td align="left">1/1:35:4</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="numerical-data" class="section level4 unnumbered">
-<h4><strong><em>Numerical Data</em></strong></h4>
-<pre><code>## Warning in kableExtra::kable_styling(., full_width = F): Please specify
-## format in kable. kableExtra can customize either HTML or LaTeX outputs. See
-## https://haozhu233.github.io/kableExtra/ for details.</code></pre>
-<table>
-<caption><span id="tab:unnamed-chunk-3">Table 4.3: </span>Numerical format</caption>
-<thead>
-<tr class="header">
-<th align="left">taxa</th>
-<th align="right">SNP_1</th>
-<th align="right">SNP_2</th>
-<th align="right">SNP_3</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">ID_1</td>
-<td align="right">2</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="left">ID_2</td>
-<td align="right">NA</td>
-<td align="right">2</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="left">ID_3</td>
-<td align="right">2</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="plink" class="section level4 unnumbered">
-<h4><strong><em>PLINK</em></strong></h4>
-<p><a href="http://zzz.bwh.harvard.edu/plink/data.shtml">Reference</a></p>
-<p>Missing values must be assigned as 0</p>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:unnamed-chunk-4">Table 4.4: </span>PLINK format
-</caption>
-<tbody>
-<tr>
-<td style="text-align:left;">
-ID_1
-</td>
-<td style="text-align:left;">
-ID_1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-C C
-</td>
-<td style="text-align:left;">
-C C
-</td>
-<td style="text-align:left;">
-G G
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ID_2
-</td>
-<td style="text-align:left;">
-ID_2
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-0 0
-</td>
-<td style="text-align:left;">
-G G
-</td>
-<td style="text-align:left;">
-G G
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ID_3
-</td>
-<td style="text-align:left;">
-ID_3
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-A C
-</td>
-<td style="text-align:left;">
-C C
-</td>
-<td style="text-align:left;">
-T T
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div id="phenotype" class="section level3">
-<h3><span class="header-section-number">4.1.2</span> Phenotype</h3>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:unnamed-chunk-5">Table 4.5: </span>Phenotype format
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-taxa
-</th>
-<th style="text-align:left;">
-y75
-</th>
-<th style="text-align:left;">
-y50
-</th>
-<th style="text-align:left;">
-y25
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-ID_1
-</td>
-<td style="text-align:left;">
--1.261850849964
-</td>
-<td style="text-align:left;">
--9.91585546798912
-</td>
-<td style="text-align:left;">
--6.36283902912281
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ID_2
-</td>
-<td style="text-align:left;">
-2.59372569418469
-</td>
-<td style="text-align:left;">
--6.51298727967311
-</td>
-<td style="text-align:left;">
-2.29326112214355
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ID_3
-</td>
-<td style="text-align:left;">
-2.91265183779147
-</td>
-<td style="text-align:left;">
--22.1380297243291
-</td>
-<td style="text-align:left;">
-19.6659577252647
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-…
-</td>
-<td style="text-align:left;">
-…
-</td>
-<td style="text-align:left;">
-…
-</td>
-<td style="text-align:left;">
-…
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="map" class="section level3">
-<h3><span class="header-section-number">4.1.3</span> Map</h3>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:unnamed-chunk-6">Table 4.6: </span>SNPs Map for numerical formats
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-SNP
-</th>
-<th style="text-align:left;">
-Chromosome
-</th>
-<th style="text-align:left;">
-Position
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;width: 10em; ">
-SNP_1
-</td>
-<td style="text-align:left;width: 10em; ">
-1
-</td>
-<td style="text-align:left;width: 10em; ">
-1000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-SNP_2
-</td>
-<td style="text-align:left;width: 10em; ">
-1
-</td>
-<td style="text-align:left;width: 10em; ">
-1010
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-SNP_3
-</td>
-<td style="text-align:left;width: 10em; ">
-1
-</td>
-<td style="text-align:left;width: 10em; ">
-1020
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-…
-</td>
-<td style="text-align:left;width: 10em; ">
-…
-</td>
-<td style="text-align:left;width: 10em; ">
-…
-</td>
-</tr>
-</tbody>
-</table>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:unnamed-chunk-7">Table 4.7: </span>SNPs Map for PLINK formats
-</caption>
-<tbody>
-<tr>
-<td style="text-align:left;width: 5em; ">
-1
-</td>
-<td style="text-align:left;width: 10em; ">
-SNP_1
-</td>
-<td style="text-align:left;width: 5em; ">
-0
-</td>
-<td style="text-align:left;width: 10em; ">
-1000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 5em; ">
-1
-</td>
-<td style="text-align:left;width: 10em; ">
-SNP_2
-</td>
-<td style="text-align:left;width: 5em; ">
-0
-</td>
-<td style="text-align:left;width: 10em; ">
-1010
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 5em; ">
-1
-</td>
-<td style="text-align:left;width: 10em; ">
-SNP_3
-</td>
-<td style="text-align:left;width: 5em; ">
-0
-</td>
-<td style="text-align:left;width: 10em; ">
-1020
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 5em; ">
-…
-</td>
-<td style="text-align:left;width: 10em; ">
-…
-</td>
-<td style="text-align:left;width: 5em; ">
-…
-</td>
-<td style="text-align:left;width: 10em; ">
-…
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="covariates" class="section level3">
-<h3><span class="header-section-number">4.1.4</span> Covariates</h3>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:unnamed-chunk-8">Table 4.8: </span>Covariates format
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-Taxa
-</th>
-<th style="text-align:right;">
-Cov1
-</th>
-<th style="text-align:right;">
-Cov2
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-ID_1
-</td>
-<td style="text-align:right;">
-3.617538
-</td>
-<td style="text-align:right;">
--0.9368706
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ID_2
-</td>
-<td style="text-align:right;">
-0.888413
-</td>
-<td style="text-align:right;">
--0.0546190
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ID_3
-</td>
-<td style="text-align:right;">
--1.276830
-</td>
-<td style="text-align:right;">
-0.2140963
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="kinship" class="section level3">
-<h3><span class="header-section-number">4.1.5</span> Kinship</h3>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:unnamed-chunk-9">Table 4.9: </span>Kinship format
-</caption>
-<tbody>
-<tr>
-<td style="text-align:left;">
-1.7675808170611
-</td>
-<td style="text-align:left;">
-0.0312931060706081
-</td>
-<td style="text-align:left;">
-0.0584911825909184
-</td>
-<td style="text-align:left;">
-…
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-0.0312931060706081
-</td>
-<td style="text-align:left;">
-1.85921066074289
-</td>
-<td style="text-align:left;">
-0.0206883855892893
-</td>
-<td style="text-align:left;">
-…
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-0.0584911825909184
-</td>
-<td style="text-align:left;">
-0.0206883855892893
-</td>
-<td style="text-align:left;">
-1.88643105515969
-</td>
-<td style="text-align:left;">
-…
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-…
-</td>
-<td style="text-align:left;">
-…
-</td>
-<td style="text-align:left;">
-…
-</td>
-<td style="text-align:left;">
-…
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div id="output-formats" class="section level2">
-<h2><span class="header-section-number">4.2</span> Output formats</h2>
-<div id="figures" class="section level3">
-<h3><span class="header-section-number">4.2.1</span> Figures</h3>
-<div id="manhattan-plot" class="section level4 unnumbered">
-<h4><strong><em>Manhattan plot</em></strong></h4>
-<p align="center">
-<img src = "md/3.2-ManhattanPlot.png" width = 700>
-</p>
-<p align="center">
-Fig. Manhattan plot by GWAS
-</p>
-</div>
-<div id="scatter-plot-q-q-plot" class="section level4 unnumbered">
-<h4><strong><em>Scatter plot: Q-Q plot</em></strong></h4>
-<p align="center">
-<img src = "md/3.2-QQPlot.png" width = 400>
-</p>
-<p align="center">
-Fig. Q-Q plot by GWAS
-</p>
-</div>
-<div id="histogram-gebv-distribution" class="section level4 unnumbered">
-<h4><strong><em>Histogram: GEBV distribution</em></strong></h4>
-<p align="center">
-<img src = "md/3.2-GEBVDist.png" width = 400>
-</p>
-<p align="center">
-Fig. Distribution for GEBVs
-</p>
-</div>
-<div id="density-function-accuracies-for-gs-validations" class="section level4 unnumbered">
-<h4><strong><em>Density function: Accuracies for GS validations</em></strong></h4>
-<p align="center">
-<img src = "md/3.2-AccCV.png" width = 400>
-</p>
-<p align="center">
-Fig. Distribution for prediction accuracies
-</p>
-</div>
-<div id="scatter-plot-gs-predictions-against-observations" class="section level4 unnumbered">
-<h4><strong><em>Scatter plot: GS predictions against observations</em></strong></h4>
-<p align="center">
-<img src = "md/3.2-ScatterPreObs.png" width = 400>
-</p>
-<p align="center">
-Fig. Distribution for prediction accuracies
-</p>
-</div>
-<div id="histogram-heterozygosity-distribution" class="section level4 unnumbered">
-<h4><strong><em>Histogram: Heterozygosity distribution</em></strong></h4>
-<p align="center">
-<img src = "md/3.2-HeterozygotePlot.png" width = 600>
-</p>
-<p align="center">
-Fig. Histograms for overview of heterozygosity
-</p>
-</div>
-<div id="phenotype-overview" class="section level4 unnumbered">
-<h4><strong><em>Phenotype overview</em></strong></h4>
-<p align="center">
-<img src = "md/3.2-PhenotypePlot.png" width = 700>
-</p>
-<p align="center">
-Fig. Figure for overview of phenotypes
-</p>
-</div>
-</div>
-<div id="tabular-results" class="section level3">
-<h3><span class="header-section-number">4.2.2</span> Tabular results</h3>
-<div id="gwas-report" class="section level4 unnumbered">
-<h4><strong><em>GWAS report</em></strong></h4>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:unnamed-chunk-10">Table 4.10: </span>Tabular GWAS results
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-SNP
-</th>
-<th style="text-align:right;">
-Chromosome
-</th>
-<th style="text-align:right;">
-Position
-</th>
-<th style="text-align:right;">
-P.value
-</th>
-<th style="text-align:right;">
-maf
-</th>
-<th style="text-align:right;">
-effect
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-PZB00859.1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-157104
-</td>
-<td style="text-align:right;">
-0.8796673
-</td>
-<td style="text-align:right;">
-0.2402135
-</td>
-<td style="text-align:right;">
-0.0513818
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-PZA01271.1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1947984
-</td>
-<td style="text-align:right;">
-0.0450554
-</td>
-<td style="text-align:right;">
-0.4893238
-</td>
-<td style="text-align:right;">
-0.5985480
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-PZA03613.2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-2914066
-</td>
-<td style="text-align:right;">
-0.0152657
-</td>
-<td style="text-align:right;">
-0.2900356
-</td>
-<td style="text-align:right;">
-0.7550551
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-PZA03613.1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-2914171
-</td>
-<td style="text-align:right;">
-0.7736487
-</td>
-<td style="text-align:right;">
-0.2508897
-</td>
-<td style="text-align:right;">
--0.1049524
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-PZA03614.2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-2915078
-</td>
-<td style="text-align:right;">
-0.1072168
-</td>
-<td style="text-align:right;">
-0.4697509
-</td>
-<td style="text-align:right;">
--0.4744598
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="gs-gebv" class="section level4 unnumbered">
-<h4><strong><em>GS: GEBV</em></strong></h4>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:unnamed-chunk-11">Table 4.11: </span>GEBV for each individual
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-taxa
-</th>
-<th style="text-align:left;">
-GEBV
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;width: 10em; ">
-ID_1
-</td>
-<td style="text-align:left;width: 10em; ">
--1.77193474724802
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-ID_2
-</td>
-<td style="text-align:left;width: 10em; ">
-1.72387204220987
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-ID_3
-</td>
-<td style="text-align:left;width: 10em; ">
-1.68334659084122
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-ID_4
-</td>
-<td style="text-align:left;width: 10em; ">
--2.41038775121833
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-ID_5
-</td>
-<td style="text-align:left;width: 10em; ">
--5.74618607007748
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-…
-</td>
-<td style="text-align:left;width: 10em; ">
-…
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="gs-marker-effects" class="section level4 unnumbered">
-<h4><strong><em>GS: Marker effects</em></strong></h4>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:unnamed-chunk-12">Table 4.12: </span>Genetic effects for each marker
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-V1
-</th>
-<th style="text-align:left;">
-u
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;width: 10em; ">
-M_1
-</td>
-<td style="text-align:left;width: 10em; ">
--0.00567222219641276
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-M_2
-</td>
-<td style="text-align:left;width: 10em; ">
-0.0212495891997373
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-M_3
-</td>
-<td style="text-align:left;width: 10em; ">
-0.030552733100474
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-M_4
-</td>
-<td style="text-align:left;width: 10em; ">
--0.0212824623926987
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-M_5
-</td>
-<td style="text-align:left;width: 10em; ">
--0.0126398188395629
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 10em; ">
-…
-</td>
-<td style="text-align:left;width: 10em; ">
-…
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="gs-validation-results" class="section level4 unnumbered">
-<h4><strong><em>GS: Validation results</em></strong></h4>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:unnamed-chunk-13">Table 4.13: </span>Accuracies from GS validation
-</caption>
-<thead>
-<tr>
-<th style="text-align:right;">
-r
-</th>
-<th style="text-align:right;">
-rmse
-</th>
-<th style="text-align:left;">
-trait
-</th>
-<th style="text-align:right;">
-iter
-</th>
-<th style="text-align:right;">
-fold
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0.6141
-</td>
-<td style="text-align:right;">
-5.8551
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.5466
-</td>
-<td style="text-align:right;">
-5.0126
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.6173
-</td>
-<td style="text-align:right;">
-4.7957
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.5112
-</td>
-<td style="text-align:right;">
-5.8834
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-4
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-0.5525
-</td>
-<td style="text-align:right;">
-4.5914
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-5
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="gs-predicted-values" class="section level4 unnumbered">
-<h4><strong><em>GS: Predicted values</em></strong></h4>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:unnamed-chunk-14">Table 4.14: </span>List of predicted and observed phenotypes
-</caption>
-<thead>
-<tr>
-<th style="text-align:right;">
-obs
-</th>
-<th style="text-align:right;">
-pre
-</th>
-<th style="text-align:left;">
-trait
-</th>
-<th style="text-align:right;">
-iter
-</th>
-<th style="text-align:right;">
-fold
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;width: 10em; ">
--1.2619
-</td>
-<td style="text-align:right;width: 10em; ">
--2.8336
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-</tr>
-<tr>
-<td style="text-align:right;width: 10em; ">
-2.5937
-</td>
-<td style="text-align:right;width: 10em; ">
--0.1296
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;width: 10em; ">
--7.4122
-</td>
-<td style="text-align:right;width: 10em; ">
--0.6723
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;width: 10em; ">
--4.3864
-</td>
-<td style="text-align:right;width: 10em; ">
--3.1929
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-4
-</td>
-</tr>
-<tr>
-<td style="text-align:right;width: 10em; ">
--3.9676
-</td>
-<td style="text-align:right;width: 10em; ">
--7.8634
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;width: 10em; ">
--8.4040
-</td>
-<td style="text-align:right;width: 10em; ">
--2.2128
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-1
-</td>
-</tr>
-<tr>
-<td style="text-align:right;width: 10em; ">
--4.4187
-</td>
-<td style="text-align:right;width: 10em; ">
--4.3261
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;width: 10em; ">
-16.0423
-</td>
-<td style="text-align:right;width: 10em; ">
-1.9852
-</td>
-<td style="text-align:left;">
-y75
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-3
-</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
+<h1><span class="header-section-number">Chapter 4</span> Formats</h1> 
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="step-by-step-tutorial.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="get-started-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="convert-hapmap-to-plink-format.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="input-formats.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -1523,8 +263,8 @@ y75
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
-"github": false,
-"facebook": true,
+"github": true,
+"facebook": false,
 "twitter": true,
 "google": false,
 "linkedin": false,
@@ -1546,9 +286,9 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": null,
+"download": ["bookdown.pdf"],
 "toc": {
-"collapse": "subsection"
+"collapse": "none"
 }
 });
 });

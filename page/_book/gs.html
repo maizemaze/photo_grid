@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Chapter 5 Get started | GRID: Greenfield Image Decoder</title>
+  <title>6.4 GS | GRID: Greenfield Image Decoder</title>
   <meta name="description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Chapter 5 Get started | GRID: Greenfield Image Decoder />
+  <meta property="og:title" content="6.4 GS | GRID: Greenfield Image Decoder />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://github.com/poissonfish/photo_grid" />
   <meta property="og:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="poissonfish/photo_grid" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Get started | GRID: Greenfield Image Decoder />
+  <meta name="twitter:title" content="6.4 GS | GRID: Greenfield Image Decoder />
   
   <meta name="twitter:description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping" />
   <meta name="twitter:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="output-formats.html">
-<link rel="next" href="windows-users.html">
+<link rel="prev" href="gwas.html">
+<link rel="next" href="gwas-assisted-gs.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -240,28 +240,174 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="get-started-1" class="section level1">
-<h1><span class="header-section-number">Chapter 5</span> Get started</h1>
-<p>The operation environment need to meet the following requirements:</p>
+<div id="gs" class="section level2">
+<h2><span class="header-section-number">6.4</span> GS</h2>
+<p>It’s required to provide <a href="input-formats.html#genotype">genotype</a> and <a href="input-formats.html#phenotype">phenotype</a> files to run GS in iPat. User-provided <a href="input-formats.html#covariates">covariates</a> will serve as fixed effects in the GS model, but none of GS methods will take user-defined <a href="input-formats.html#kinship">kinship</a> in iPat.</p>
+<p>In iPat, users can perform two types of GS. If the ‘validation’ option is unchecked, iPat would estimate genetic estimated breeding values (GEBV) for samples in the whole dataset based on the phenotyped samples. Whereas when users check the option ‘Validation on accuracy’, iPat will split whole dataset into training and testing samples in order to verify the capability of trained GS model. For this manner, validation accuracies will be reported instead of GEBVs.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-18">TABLE 6.4: </span>Arguments for GS
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Arguments
+</th>
+<th style="text-align:left;">
+Default
+</th>
+<th style="text-align:left;">
+Options
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Validation on accuracy
+</td>
+<td style="text-align:left;">
+unchecked
+</td>
+<td style="text-align:left;">
+checked, unchecked
+</td>
+<td style="text-align:left;width: 20em; ">
+If k-fold validation is performed in GS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Folds
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+3, 5, 10
+</td>
+<td style="text-align:left;width: 20em; ">
+K value for K-fold validation. For example, if k = 5, 20% samples will be tested as accuracy validation.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Iteration
+</td>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+Range from 10 to 100
+</td>
+<td style="text-align:left;width: 20em; ">
+Number of iterations. Each iteration will split whole dataset into training part and testing part based on the specified k value for K-fold validation.
+</td>
+</tr>
+</tbody>
+</table>
+<p align="center">
+<img src = "md/2.4-Validation.png" width = 500>
+</p>
+<p>Output files from GS include:</p>
 <ul>
-<li><p><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Runtime Environment (JRE)</a>: <strong>Version 8</strong> or later.</p></li>
-<li><p><a href="https://www.r-project.org">R</a>: Version <strong>3.5</strong> or later.
-(It’s highly recommended to update R to the latest version for first-time users, since some packages may not be available to download in older versions of R)</p></li>
+<li>Figures: <a href="output-formats.html#histogram-gebv-distribution">GEBV distribution</a>, <a href="#density-function-accuracies-for-gs-validation">Validation accuracies</a>, <a href="#scatter-plot-gs-predictions-against-observation">Predicted versus observed values</a>, <a href="output-formats.html#histogram-heterozygosity-distribution">Heterozygosity distribution</a>, and <a href="output-formats.html#phenotype-overview">Phenotype overview</a>.</li>
+<li>Tables: <a href="output-formats.html#gs-gebv">GEBV report</a>, <a href="output-formats.html#gs-marker-effects">Marker effects</a>, <a href="output-formats.html#gs-validation-results">Validation results</a>, and <a href="output-formats.html#gs-predicted-values">Predicted values</a></li>
 </ul>
-<p>Install all the required R libraries by running following code. This command will download all the missing packages that are required in iPat.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;http://zzlab.net/iPat/iPat_installation.r&quot;</span>)</code></pre>
+<div id="gblup-and-rrblup" class="section level3">
+<h3><span class="header-section-number">6.4.1</span> gBLUP and rrBLUP</h3>
+<p>There’s no specific arguments available for both of these methods.</p>
+<p><strong>Reference</strong></p>
+<ul>
+<li>Endelman,J. (2011) Ridge regression and other kernels for genomic selection in the R package rrBLUP. Plant Genome, 4, 250–255.</li>
+</ul>
+</div>
+<div id="bglr" class="section level3">
+<h3><span class="header-section-number">6.4.2</span> BGLR</h3>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-19">TABLE 6.5: </span>Arguments for BGLR
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Arguments
+</th>
+<th style="text-align:left;">
+Default
+</th>
+<th style="text-align:left;">
+Options
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Model for predictors
+</td>
+<td style="text-align:left;">
+BRR
+</td>
+<td style="text-align:left;">
+BRR, Bayes A, Bayes B, Bayes C, BL
+</td>
+<td style="text-align:left;width: 20em; ">
+Model to estimate marker effects
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nIter
+</td>
+<td style="text-align:left;">
+5k
+</td>
+<td style="text-align:left;">
+Range from 1k to 100k
+</td>
+<td style="text-align:left;width: 20em; ">
+Number of iteration
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+burnIn
+</td>
+<td style="text-align:left;">
+500
+</td>
+<td style="text-align:left;">
+Range from 200 to 10k
+</td>
+<td style="text-align:left;width: 20em; ">
+Burn-in values
+</td>
+</tr>
+</tbody>
+</table>
 <p align="center">
-<p align="center">
-<img src = "md/installation.png" width = 1200>
-</p> 
+<img src = "md/2.4-BGLR.png" width = 500>
+</p>
+<p><strong>Reference</strong></p>
+<ul>
+<li>Pérez, Paulino. et al. (2014) Genome-wide regression and prediction with the BGLR statistical package. Genetics, 198, 483-495.</li>
+</ul>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="output-formats.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="windows-users.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="gwas.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="gwas-assisted-gs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

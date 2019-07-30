@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Chapter 5 Get started | GRID: Greenfield Image Decoder</title>
+  <title>6.3 GWAS | GRID: Greenfield Image Decoder</title>
   <meta name="description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Chapter 5 Get started | GRID: Greenfield Image Decoder />
+  <meta property="og:title" content="6.3 GWAS | GRID: Greenfield Image Decoder />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://github.com/poissonfish/photo_grid" />
   <meta property="og:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="poissonfish/photo_grid" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Get started | GRID: Greenfield Image Decoder />
+  <meta name="twitter:title" content="6.3 GWAS | GRID: Greenfield Image Decoder />
   
   <meta name="twitter:description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping" />
   <meta name="twitter:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="output-formats.html">
-<link rel="next" href="windows-users.html">
+<link rel="prev" href="global-settings.html">
+<link rel="next" href="gs.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -240,28 +240,213 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="get-started-1" class="section level1">
-<h1><span class="header-section-number">Chapter 5</span> Get started</h1>
-<p>The operation environment need to meet the following requirements:</p>
+<div id="gwas" class="section level2">
+<h2><span class="header-section-number">6.3</span> GWAS</h2>
+<p>It’s required to provide <a href="input-formats.html#genotype">genotype</a>, <a href="input-formats.html#map">map</a> (if applicable), and <a href="input-formats.html#phenotype">phenotype</a> files to run GWAS in iPat. <a href="input-formats.html#covariates">Covariates</a> and <a href="input-formats.html#kinship">kinship</a> matrix are optional. User-provided <a href="input-formats.html#covariates">covariates</a> will serve as fixed effects in the GWAS model. Often time users are not recommended to provide a <a href="input-formats.html#kinship">kinship</a> matrix, since those implemented tools will generate one automatically and user-define <a href="input-formats.html#kinship">kinship</a> is used only in ‘MLM’ and ‘CMLM’ from GAPIT.</p>
+<p>Output files from GWAS include:</p>
 <ul>
-<li><p><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Runtime Environment (JRE)</a>: <strong>Version 8</strong> or later.</p></li>
-<li><p><a href="https://www.r-project.org">R</a>: Version <strong>3.5</strong> or later.
-(It’s highly recommended to update R to the latest version for first-time users, since some packages may not be available to download in older versions of R)</p></li>
+<li>Figures: <a href="output-formats.html#manhattan-plot">Manhattan plot</a>, <a href="output-formats.html#scatter-plot-q-q-plot">Q-Q plot</a>, <a href="output-formats.html#histogram-heterozygosity-distribution">Heterozygosity distribution</a>, and <a href="output-formats.html#phenotype-overview">Phenotype overview</a></li>
+<li>Tables: <a href="output-formats.html#gwas-report">GWAS report</a></li>
 </ul>
-<p>Install all the required R libraries by running following code. This command will download all the missing packages that are required in iPat.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;http://zzlab.net/iPat/iPat_installation.r&quot;</span>)</code></pre>
+<div id="gapit" class="section level3">
+<h3><span class="header-section-number">6.3.1</span> GAPIT</h3>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-15">TABLE 6.1: </span>Arguments for GAPIT
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Arguments
+</th>
+<th style="text-align:left;">
+Default
+</th>
+<th style="text-align:left;">
+Options
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Model
+</td>
+<td style="text-align:left;">
+GLM
+</td>
+<td style="text-align:left;">
+GLM, MLM, CMLM, FarmCPU
+</td>
+<td style="text-align:left;width: 20em; ">
+Implemented models: general linear model (GLM), mixed linear model (MLM), compressed mixed linear model (CMLM), and FarmCPU.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PC
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+Ranges between 3 to 10
+</td>
+<td style="text-align:left;width: 20em; ">
+Principal components to control spurious signals caused by population stratifications
+</td>
+</tr>
+</tbody>
+</table>
 <p align="center">
+<img src = "md/2.3-GAPIT.png" width = 500>
+</p>
 <p align="center">
-<img src = "md/installation.png" width = 1200>
-</p> 
+Fig. Configuration for GAPIT
+</p>
+<p><strong>Reference</strong></p>
+<ul>
+<li>Tang,Y. et al. (2016) GAPIT Version 2: An Enhanced Integrated Tool for Genomic Association and Prediction. Plant J., 9.</li>
+</ul>
+</div>
+<div id="farmcpu" class="section level3">
+<h3><span class="header-section-number">6.3.2</span> FarmCPU</h3>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-16">TABLE 6.2: </span>Arguments for FarmCPU
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Arguments
+</th>
+<th style="text-align:left;">
+Default
+</th>
+<th style="text-align:left;">
+Options
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Method bin
+</td>
+<td style="text-align:left;">
+optimum
+</td>
+<td style="text-align:left;">
+static, optimum
+</td>
+<td style="text-align:left;width: 20em; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+maxLoop
+</td>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+Ranges between 1 to 10
+</td>
+<td style="text-align:left;width: 20em; ">
+Number of iterations for FarmCPU to detect QTNs
+</td>
+</tr>
+</tbody>
+</table>
+<p align="center">
+<img src = "md/2.3-FarmCPU.png" width = 500>
+</p>
+<p align="center">
+Fig. Configuration for FarmCPU
+</p>
+<p><strong>Reference</strong></p>
+<ul>
+<li>Liu,X. et al. (2016) Iterative Usage of Fixed and Random Effect Models for Powerful and Efficient Genome-Wide Association Studies. PLoS Genet., 12 , e1005767</li>
+</ul>
+</div>
+<div id="plink-1" class="section level3">
+<h3><span class="header-section-number">6.3.3</span> PLINK</h3>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-17">TABLE 6.3: </span>Arguments for PLINK
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Arguments
+</th>
+<th style="text-align:left;">
+Default
+</th>
+<th style="text-align:left;">
+Options
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+C.I.
+</td>
+<td style="text-align:left;">
+0.95
+</td>
+<td style="text-align:left;">
+0.95, 0.975, 0.995
+</td>
+<td style="text-align:left;width: 20em; ">
+Confident interval for testing marker effects
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Method
+</td>
+<td style="text-align:left;">
+GLM
+</td>
+<td style="text-align:left;">
+GLM, Logistic Regression
+</td>
+<td style="text-align:left;width: 20em; ">
+Implemented models
+</td>
+</tr>
+</tbody>
+</table>
+<p align="center">
+<img src = "md/2.3-PLINK.png" width = 500>
+</p>
+<p align="center">
+Fig. Configuration for PLINK
+</p>
+<p><strong>Reference</strong></p>
+<ul>
+<li>Purcell,S. et al. (2007) PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. Am J Hum Genet, 81, 559–575.</li>
+</ul>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="output-formats.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="windows-users.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="global-settings.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="gs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

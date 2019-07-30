@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Chapter 5 Get started | GRID: Greenfield Image Decoder</title>
+  <title>6.6 Format converter | GRID: Greenfield Image Decoder</title>
   <meta name="description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Chapter 5 Get started | GRID: Greenfield Image Decoder />
+  <meta property="og:title" content="6.6 Format converter | GRID: Greenfield Image Decoder />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://github.com/poissonfish/photo_grid" />
   <meta property="og:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="poissonfish/photo_grid" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Get started | GRID: Greenfield Image Decoder />
+  <meta name="twitter:title" content="6.6 Format converter | GRID: Greenfield Image Decoder />
   
   <meta name="twitter:description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping" />
   <meta name="twitter:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="output-formats.html">
-<link rel="next" href="windows-users.html">
+<link rel="prev" href="gwas-assisted-gs.html">
+<link rel="next" href="multi-thread-is-supported.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -240,28 +240,107 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="get-started-1" class="section level1">
-<h1><span class="header-section-number">Chapter 5</span> Get started</h1>
-<p>The operation environment need to meet the following requirements:</p>
-<ul>
-<li><p><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Runtime Environment (JRE)</a>: <strong>Version 8</strong> or later.</p></li>
-<li><p><a href="https://www.r-project.org">R</a>: Version <strong>3.5</strong> or later.
-(It’s highly recommended to update R to the latest version for first-time users, since some packages may not be available to download in older versions of R)</p></li>
-</ul>
-<p>Install all the required R libraries by running following code. This command will download all the missing packages that are required in iPat.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;http://zzlab.net/iPat/iPat_installation.r&quot;</span>)</code></pre>
+<div id="format-converter" class="section level2">
+<h2><span class="header-section-number">6.6</span> Format converter</h2>
+<p>iPat not only provides a format-free environment for genomic studies, it also allows users to utilize the build-in converter to convert files for other further purposes. By providing a genotype file and a map file (if applicable) that meet a certain format, iPat can convert them into numerical-encoded genotypes or PLINK format that is compatible to other software.</p>
 <p align="center">
-<p align="center">
-<img src = "md/installation.png" width = 1200>
-</p> 
+<img src = "md/2.6-Converter.png" width = 900>
+</p>
+<p>Other than specifying requested formats and arguments for quality controls, users can decide whether they would like to have missing values filled as heterozygous genotypes. Also, the argument “Batch size” determines how many samples are read into the memory at a time. The larger the batch size is, the faster the conversion would be. However, for those computing units with limited memory resources, it’s highly recommended to start from a smaller number such as 64 or 32. Large batch size will crash the program easily when dealing with a large number of markers.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-20">TABLE 6.6: </span>Arguments for iPat converter
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Arguments
+</th>
+<th style="text-align:left;">
+Default
+</th>
+<th style="text-align:left;">
+Options
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Input formats
+</td>
+<td style="text-align:left;">
+None
+</td>
+<td style="text-align:left;">
+Numerical, Hapmap, VCF, PLINK
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Output formats
+</td>
+<td style="text-align:left;">
+None
+</td>
+<td style="text-align:left;">
+Numerical, PLINK
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+By missing rate
+</td>
+<td style="text-align:left;">
+0.2
+</td>
+<td style="text-align:left;">
+0, 0.05, 0.1, 0.2, 0.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+By MAF
+</td>
+<td style="text-align:left;">
+0.05
+</td>
+<td style="text-align:left;">
+0, 0.01, 0.05, 0.1, 0.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Fill NA
+</td>
+<td style="text-align:left;">
+unchecked
+</td>
+<td style="text-align:left;">
+checked, unchecked
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Batch size
+</td>
+<td style="text-align:left;">
+64
+</td>
+<td style="text-align:left;">
+32, 64, 128, 256, 512
+</td>
+</tr>
+</tbody>
+</table>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="output-formats.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="windows-users.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="gwas-assisted-gs.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="multi-thread-is-supported.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

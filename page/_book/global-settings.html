@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Chapter 5 Get started | GRID: Greenfield Image Decoder</title>
+  <title>6.2 Global settings | GRID: Greenfield Image Decoder</title>
   <meta name="description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping">
   <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Chapter 5 Get started | GRID: Greenfield Image Decoder />
+  <meta property="og:title" content="6.2 Global settings | GRID: Greenfield Image Decoder />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://github.com/poissonfish/photo_grid" />
   <meta property="og:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="poissonfish/photo_grid" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Get started | GRID: Greenfield Image Decoder />
+  <meta name="twitter:title" content="6.2 Global settings | GRID: Greenfield Image Decoder />
   
   <meta name="twitter:description" content="A Python Package of Greenfield Image Decoder for Aerial High-Throughput Phenotyping" />
   <meta name="twitter:image" content="https://github.com/poissonfish/photo_gridmd/icon.png" />
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="output-formats.html">
-<link rel="next" href="windows-users.html">
+<link rel="prev" href="workflow.html">
+<link rel="next" href="gwas.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -240,28 +240,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="get-started-1" class="section level1">
-<h1><span class="header-section-number">Chapter 5</span> Get started</h1>
-<p>The operation environment need to meet the following requirements:</p>
-<ul>
-<li><p><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Runtime Environment (JRE)</a>: <strong>Version 8</strong> or later.</p></li>
-<li><p><a href="https://www.r-project.org">R</a>: Version <strong>3.5</strong> or later.
-(It’s highly recommended to update R to the latest version for first-time users, since some packages may not be available to download in older versions of R)</p></li>
-</ul>
-<p>Install all the required R libraries by running following code. This command will download all the missing packages that are required in iPat.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;http://zzlab.net/iPat/iPat_installation.r&quot;</span>)</code></pre>
+<div id="global-settings" class="section level2">
+<h2><span class="header-section-number">6.2</span> Global settings</h2>
+<div id="working-directory" class="section level3">
+<h3><span class="header-section-number">6.2.1</span> Working directory</h3>
+<p>Users can specify the working directory and module names in this panel. Module names will be presented in the output, which can serve as a label for users to distinguish different analyses.</p>
 <p align="center">
+<img src = "md/2.2-WD.png" width = 900>
+</p>
 <p align="center">
-<img src = "md/installation.png" width = 1200>
-</p> 
+Fig. Panel for users to define working directory
+</p>
+</div>
+<div id="phenotype-1" class="section level3">
+<h3><span class="header-section-number">6.2.2</span> Phenotype</h3>
+<p>Sometimes users may have several traits in one phenotype file, but not all of them are traits of interest. To deal with this concern, in this panel, traits can be selected and excluded for the following analysis. Click ‘–&gt;’ button to exclude traits that are not the interest of this analysis, or click ‘&lt;–’ button to rescue back traits that are mistakenly excluded.</p>
+<p align="center">
+<img src = "md/2.2-Phenotype.png" width = 900>
+</p>
+<p align="center">
+Fig. Panel for users to select traits of interest
+</p>
+</div>
+<div id="quality-control" class="section level3">
+<h3><span class="header-section-number">6.2.3</span> Quality Control</h3>
+<p>Two ways of quality controls (QC) are available in this panel, both ways will be applied to genetic markers. ‘By missing rate’ will filter out any marker that has missing rate (i.e., 1 - calling rate) <strong>higher</strong> than the assigned value. ‘By MAF’ will filter out markers with minor allele frequency <strong>lower</strong> than the assigned value.</p>
+<p align="center">
+<img src = "md/2.2-QC.png" width = 900>
+</p>
+<p align="center">
+Fig. Sliders for performing quality controls
+</p>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="output-formats.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="windows-users.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="workflow.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="gwas.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
