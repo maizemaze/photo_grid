@@ -1,1 +1,12 @@
 # Load data
+
+
+
+```{r, echo = FALSE}
+knitr::kable(
+  data.table::data.table(matrix(paste0("plot_", 1:20), 5, 4)),
+  booktabs = TRUE,
+  caption = 'Map file',
+  col.names = c("", "", "", "")
+)
+```
