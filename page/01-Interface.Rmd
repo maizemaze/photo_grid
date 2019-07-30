@@ -1,0 +1,51 @@
+# Interface and Usage
+
+
+## Overview of GRID
+Here you can find the general usage of GRID in 5 steps.
+
+### Load data{-}
+<p align="center"><p align="center"><img src = "res/step1.png" width = 1200></p>
+
+- GRID only requires an image file to function normally. However, in order to improve the segmentation result, providing a map file could be helpful for GRID to know better about the field layout.
+
+- If users don't have suitable image, it's also possible to learn GRID by choosing "Demo files".
+
+- More information about file format can be found [here](#load-data)
+
+### Crop your image{-}
+<p align="center"><p align="center"><img src = "res/step2.gif" width = 1200></p>
+
+### Plots extraction{-}
+<p align="center"><p align="center"><img src = "res/step3.gif" width = 1200></p>
+
+### Set up center points{-}
+<p align="center"><p align="center"><img src = "res/step4.gif" width = 1200></p>
+
+### Finalize plot's boundary{-}
+<p align="center"><p align="center"><img src = "res/step5.gif" width = 1200></p>
+
+## Load data
+For the map file, no header or row name needed. It can be a simple tab-delimited text file or comma-separated values (CSV) file.
+
+The values arranged in this file are based on users’ field layout. For example, if the field has 4 rows and 5 columns of plots, then the file should also have 4 rows and 5 columns.
+
+Values in the map file are plot IDs, which have to be unique.
+
+GRID currently only supports images encoded in “uint8”. Other encoding may be problematic. There’s no limitation on the number of bands.
+
+## Crop Images
+There're 2 magnification levels available for the mouse cursor.
+Users can switch the level by right-clicking on any place of the image.
+
+Left-clicking on the image to define four corners of the sub-image you want to analyze on. The fifth click will reset all the red marks
+
+## Plots extraction
+This is a panel to define vegetation plots (i.e., area of interest, AOI).
+The yellow area is the one that will be selected, whereas pixels colored as black will be excluded from the following calculation.
+
+GRID will run a K-mean clustering algorithm to extract the vegetation areas.
+Only bands of red and near-infrared red (NIR) will be used in K-mean clustering.
+Selected K will tell GRID that how many clusters are expected in the image.
+
+To assign which clusters as AOI, users can either let the program decide automatically or select them manually.
