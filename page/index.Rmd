@@ -21,6 +21,8 @@ cover-image: md/icon.png
 # Why GRID? {-}
 Greenfield imagery decoder (GRID) is a tool allowing you to trace individual crop's imagery features from a remote sensing image. Performing plot segmentation could be a painful job without a proper tool. GRID comes with several essential imaging processing techniques such as  K-means clustering and convolutional operation, accelerating the segmentation process and improving the precision of estimated imagery features.
 
+<p align="center"><p align="center"><img src = "res/conv2.gif" width = 1200></p>
+
 
 ## Get Started
 
@@ -33,9 +35,6 @@ The following installations are required to use GRID:
 - [photo-grid](https://pypi.org/project/photo-grid/): The Python package GRID can be found on [PyPI](https://pypi.org/project/photo-grid/)  
 
 
-<p align="center"><p align="center"><img src = "res/conv2.gif" width = 1200></p>
-
-
 Launch GRID in Python 3:
 ```
 import photo_grid
@@ -46,7 +45,7 @@ photo_grid.run()
 Here you can find the general usage of GRID in 5 steps.
 
 ### Load data{-}
-<p align="center"><p align="center"><img src = "res/step1.png" width = 1200></p>
+<p align="center"><p align="center"><img src = "res/step1.png" width = 700></p>
 
 - GRID only requires an image file to function normally. However, in order to improve the segmentation result, providing a map file could be helpful for GRID to know better about the field layout.
 
@@ -55,13 +54,13 @@ Here you can find the general usage of GRID in 5 steps.
 - More information about file format can be found [here](#load-data)
 
 ### Crop your image{-}
-<p align="center"><p align="center"><img src = "res/step2.gif" width = 1200></p>
+<p align="center"><p align="center"><img src = "res/step2.gif" width = 700></p>
 
 ### Plots extraction{-}
-<p align="center"><p align="center"><img src = "res/step3.gif" width = 1200></p>
+<p align="center"><p align="center"><img src = "res/step3.gif" width = 700></p>
 
 ### Set up center points{-}
-<p align="center"><p align="center"><img src = "res/step4.gif" width = 1200></p>
+<p align="center"><p align="center"><img src = "res/step4.gif" width = 700></p>
 
 ### Finalize plot's boundary{-}
-<p align="center"><p align="center"><img src = "res/step5.gif" width = 1200></p>
+<p align="center"><p align="center"><img src = "res/step5.gif" width = 700></p>
