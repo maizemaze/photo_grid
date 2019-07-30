@@ -1,39 +1,26 @@
 # Interface and Usage
 
-
-## Overview of GRID
-Here you can find the general usage of GRID in 5 steps.
-
-### Load data{-}
-<p align="center"><p align="center"><img src = "res/step1.png" width = 1200></p>
-
-- GRID only requires an image file to function normally. However, in order to improve the segmentation result, providing a map file could be helpful for GRID to know better about the field layout.
-
-- If users don't have suitable image, it's also possible to learn GRID by choosing "Demo files".
-
-- More information about file format can be found [here](#load-data)
-
-### Crop your image{-}
-<p align="center"><p align="center"><img src = "res/step2.gif" width = 1200></p>
-
-### Plots extraction{-}
-<p align="center"><p align="center"><img src = "res/step3.gif" width = 1200></p>
-
-### Set up center points{-}
-<p align="center"><p align="center"><img src = "res/step4.gif" width = 1200></p>
-
-### Finalize plot's boundary{-}
-<p align="center"><p align="center"><img src = "res/step5.gif" width = 1200></p>
-
 ## Load data
-For the map file, no header or row name needed. It can be a simple tab-delimited text file or comma-separated values (CSV) file.
 
-### tested
-The values arranged in this file are based on users’ field layout. For example, if the field has 4 rows and 5 columns of plots, then the file should also have 4 rows and 5 columns.
+### **Map files**{-}
 
-Values in the map file are plot IDs, which have to be unique.
+- For the map file, no header or row name needed. It can be a simple tab-delimited text file or comma-separated values (CSV) file.
 
-GRID currently only supports images encoded in “uint8”. Other encoding may be problematic. There’s no limitation on the number of bands.
+```{r, echo = FALSE}
+knitr::kable(
+  data.table::data.table(matrix(paste0("plot_", 1:20), 5, 4)),
+  booktabs = TRUE,
+  caption = 'Map file',
+  col.names = F
+)
+```
+
+- The values arranged in this file are based on users’ field layout. For example, if the field has 4 rows and 5 columns of plots, then the file should also have 4 rows and 5 columns.
+
+- Values in the map file are plot IDs, which have to be unique.
+
+### **Image files**{-}
+- GRID currently only supports images encoded in “uint8”. Other encoding may be problematic. There’s no limitation on the number of bands.
 
 ## Crop Images
 There're 2 magnification levels available for the mouse cursor.
