@@ -128,21 +128,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <ul class="summary">
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Why GRID?</a><ul>
-<li class="chapter" data-level="0.0.1" data-path="index.html"><a href="index.html#get-started"><i class="fa fa-check"></i><b>0.0.1</b> Get Started</a></li>
+<li class="chapter" data-level="0.1" data-path="index.html"><a href="index.html#get-started"><i class="fa fa-check"></i><b>0.1</b> Get Started</a></li>
+<li class="chapter" data-level="0.2" data-path="index.html"><a href="index.html#overview-of-grid"><i class="fa fa-check"></i><b>0.2</b> Overview of GRID</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#load-data"><i class="fa fa-check"></i>Load data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#crop-your-image"><i class="fa fa-check"></i>Crop your image</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#plots-extraction"><i class="fa fa-check"></i>Plots extraction</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#set-up-center-points"><i class="fa fa-check"></i>Set up center points</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#finalize-plots-boundary"><i class="fa fa-check"></i>Finalize plot’s boundary</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="1" data-path="interface-and-usage.html"><a href="interface-and-usage.html"><i class="fa fa-check"></i><b>1</b> Interface and Usage</a><ul>
-<li class="chapter" data-level="1.1" data-path="interface-and-usage.html"><a href="interface-and-usage.html#overview-of-grid"><i class="fa fa-check"></i><b>1.1</b> Overview of GRID</a><ul>
-<li class="chapter" data-level="" data-path="interface-and-usage.html"><a href="interface-and-usage.html#load-data"><i class="fa fa-check"></i>Load data</a></li>
-<li class="chapter" data-level="" data-path="interface-and-usage.html"><a href="interface-and-usage.html#crop-your-image"><i class="fa fa-check"></i>Crop your image</a></li>
-<li class="chapter" data-level="" data-path="interface-and-usage.html"><a href="interface-and-usage.html#plots-extraction"><i class="fa fa-check"></i>Plots extraction</a></li>
-<li class="chapter" data-level="" data-path="interface-and-usage.html"><a href="interface-and-usage.html#set-up-center-points"><i class="fa fa-check"></i>Set up center points</a></li>
-<li class="chapter" data-level="" data-path="interface-and-usage.html"><a href="interface-and-usage.html#finalize-plots-boundary"><i class="fa fa-check"></i>Finalize plot’s boundary</a></li>
+<li class="chapter" data-level="1.1" data-path="interface-and-usage.html"><a href="interface-and-usage.html#load-data-1"><i class="fa fa-check"></i><b>1.1</b> Load data</a><ul>
+<li><a href="interface-and-usage.html#map-files"><strong>Map files</strong></a></li>
+<li><a href="interface-and-usage.html#image-files"><strong>Image files</strong></a></li>
 </ul></li>
-<li class="chapter" data-level="1.2" data-path="interface-and-usage.html"><a href="interface-and-usage.html#load-data-1"><i class="fa fa-check"></i><b>1.2</b> Load data</a><ul>
-<li class="chapter" data-level="1.2.1" data-path="interface-and-usage.html"><a href="interface-and-usage.html#tested"><i class="fa fa-check"></i><b>1.2.1</b> tested</a></li>
-</ul></li>
-<li class="chapter" data-level="1.3" data-path="interface-and-usage.html"><a href="interface-and-usage.html#crop-images"><i class="fa fa-check"></i><b>1.3</b> Crop Images</a></li>
-<li class="chapter" data-level="1.4" data-path="interface-and-usage.html"><a href="interface-and-usage.html#plots-extraction-1"><i class="fa fa-check"></i><b>1.4</b> Plots extraction</a></li>
+<li class="chapter" data-level="1.2" data-path="interface-and-usage.html"><a href="interface-and-usage.html#crop-images"><i class="fa fa-check"></i><b>1.2</b> Crop Images</a></li>
+<li class="chapter" data-level="1.3" data-path="interface-and-usage.html"><a href="interface-and-usage.html#plots-extraction-1"><i class="fa fa-check"></i><b>1.3</b> Plots extraction</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="load-data-2.html"><a href="load-data-2.html"><i class="fa fa-check"></i><b>2</b> Load data</a></li>
 <li class="chapter" data-level="3" data-path="step-by-step-tutorial.html"><a href="step-by-step-tutorial.html"><i class="fa fa-check"></i><b>3</b> Step by Step Tutorial</a><ul>
@@ -234,68 +235,69 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="interface-and-usage" class="section level1">
 <h1><span class="header-section-number">1</span> Interface and Usage</h1>
-<div id="overview-of-grid" class="section level2">
-<h2><span class="header-section-number">1.1</span> Overview of GRID</h2>
-<p>Here you can find the general usage of GRID in 5 steps.</p>
-<div id="load-data" class="section level3 unnumbered">
-<h3>Load data</h3>
-<p align="center">
-<p align="center">
-<img src = "res/step1.png" width = 1200>
-</p>
+<div id="load-data-1" class="section level2">
+<h2><span class="header-section-number">1.1</span> Load data</h2>
+<div id="map-files" class="section level3 unnumbered">
+<h3><strong>Map files</strong></h3>
 <ul>
-<li><p>GRID only requires an image file to function normally. However, in order to improve the segmentation result, providing a map file could be helpful for GRID to know better about the field layout.</p></li>
-<li><p>If users don’t have suitable image, it’s also possible to learn GRID by choosing “Demo files”.</p></li>
-<li><p>More information about file format can be found <a href="interface-and-usage.html#load-data">here</a></p></li>
+<li>For the map file, no header or row name needed. It can be a simple tab-delimited text file or comma-separated values (CSV) file.</li>
+</ul>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">plot_1</td>
+<td align="left">plot_6</td>
+<td align="left">plot_11</td>
+<td align="left">plot_16</td>
+</tr>
+<tr class="even">
+<td align="left">plot_2</td>
+<td align="left">plot_7</td>
+<td align="left">plot_12</td>
+<td align="left">plot_17</td>
+</tr>
+<tr class="odd">
+<td align="left">plot_3</td>
+<td align="left">plot_8</td>
+<td align="left">plot_13</td>
+<td align="left">plot_18</td>
+</tr>
+<tr class="even">
+<td align="left">plot_4</td>
+<td align="left">plot_9</td>
+<td align="left">plot_14</td>
+<td align="left">plot_19</td>
+</tr>
+<tr class="odd">
+<td align="left">plot_5</td>
+<td align="left">plot_10</td>
+<td align="left">plot_15</td>
+<td align="left">plot_20</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>The values arranged in this file are based on users’ field layout. For example, if the field has 4 rows and 5 columns of plots, then the file should also have 4 rows and 5 columns.</p></li>
+<li><p>Values in the map file are plot IDs, which have to be unique.</p></li>
 </ul>
 </div>
-<div id="crop-your-image" class="section level3 unnumbered">
-<h3>Crop your image</h3>
-<p align="center">
-<p align="center">
-<img src = "res/step2.gif" width = 1200>
-</p>
-</div>
-<div id="plots-extraction" class="section level3 unnumbered">
-<h3>Plots extraction</h3>
-<p align="center">
-<p align="center">
-<img src = "res/step3.gif" width = 1200>
-</p>
-</div>
-<div id="set-up-center-points" class="section level3 unnumbered">
-<h3>Set up center points</h3>
-<p align="center">
-<p align="center">
-<img src = "res/step4.gif" width = 1200>
-</p>
-</div>
-<div id="finalize-plots-boundary" class="section level3 unnumbered">
-<h3>Finalize plot’s boundary</h3>
-<p align="center">
-<p align="center">
-<img src = "res/step5.gif" width = 1200>
-</p>
-</div>
-</div>
-<div id="load-data-1" class="section level2">
-<h2><span class="header-section-number">1.2</span> Load data</h2>
-<p>For the map file, no header or row name needed. It can be a simple tab-delimited text file or comma-separated values (CSV) file.</p>
-<div id="tested" class="section level3">
-<h3><span class="header-section-number">1.2.1</span> tested</h3>
-<p>The values arranged in this file are based on users’ field layout. For example, if the field has 4 rows and 5 columns of plots, then the file should also have 4 rows and 5 columns.</p>
-<p>Values in the map file are plot IDs, which have to be unique.</p>
-<p>GRID currently only supports images encoded in “uint8”. Other encoding may be problematic. There’s no limitation on the number of bands.</p>
+<div id="image-files" class="section level3 unnumbered">
+<h3><strong>Image files</strong></h3>
+<ul>
+<li>GRID currently only supports images encoded in “uint8”. Other encoding may be problematic. There’s no limitation on the number of bands.</li>
+</ul>
 </div>
 </div>
 <div id="crop-images" class="section level2">
-<h2><span class="header-section-number">1.3</span> Crop Images</h2>
-<p>There’re 2 magnification levels available for the mouse cursor.
-Users can switch the level by right-clicking on any place of the image.</p>
+<h2><span class="header-section-number">1.2</span> Crop Images</h2>
+<ul>
+<li>There’re 2 magnification levels available for the mouse cursor.
+Users can switch the level by right-clicking on any place of the image.</li>
+</ul>
 <p>Left-clicking on the image to define four corners of the sub-image you want to analyze on. The fifth click will reset all the red marks</p>
 </div>
 <div id="plots-extraction-1" class="section level2">
-<h2><span class="header-section-number">1.4</span> Plots extraction</h2>
+<h2><span class="header-section-number">1.3</span> Plots extraction</h2>
 <p>This is a panel to define vegetation plots (i.e., area of interest, AOI).
 The yellow area is the one that will be selected, whereas pixels colored as black will be excluded from the following calculation.</p>
 <p>GRID will run a K-mean clustering algorithm to extract the vegetation areas.

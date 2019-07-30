@@ -6,21 +6,14 @@
 
 - For the map file, no header or row name needed. It can be a simple tab-delimited text file or comma-separated values (CSV) file.
 
+|       |        |        |        |
 |:------|:-------|:-------|:-------|
 |plot_1 |plot_6  |plot_11 |plot_16 |
 |plot_2 |plot_7  |plot_12 |plot_17 |
 |plot_3 |plot_8  |plot_13 |plot_18 |
 |plot_4 |plot_9  |plot_14 |plot_19 |
 |plot_5 |plot_10 |plot_15 |plot_20 |
-<!--
-```{r, echo = FALSE}
-knitr::kable(
-  data.table::data.table(matrix(paste0("plot_", 1:20), 5, 4)),
-  booktabs = TRUE,
-  caption = 'Map file',
-  col.names = NA
-)
-``` -->
+
 
 - The values arranged in this file are based on users’ field layout. For example, if the field has 4 rows and 5 columns of plots, then the file should also have 4 rows and 5 columns.
 
@@ -30,7 +23,7 @@ knitr::kable(
 - GRID currently only supports images encoded in “uint8”. Other encoding may be problematic. There’s no limitation on the number of bands.
 
 ## Crop Images
-There're 2 magnification levels available for the mouse cursor.
+- There're 2 magnification levels available for the mouse cursor.
 Users can switch the level by right-clicking on any place of the image.
 
 Left-clicking on the image to define four corners of the sub-image you want to analyze on. The fifth click will reset all the red marks
