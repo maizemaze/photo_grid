@@ -1,4 +1,4 @@
-6---
+---
 title: "GRID: Greenfield Image Decoder"
 author: "Chunpeng James Chen"
 date: "`r Sys.Date()`"
