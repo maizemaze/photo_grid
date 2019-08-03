@@ -19,5 +19,3 @@
 <p align="center"><p align="center"><img src = "res/demo9.png" width = 1200></p>
 
 <p align="center"><p align="center"><img src = "res/demo10.png" width = 1200></p>
-
-<p align="center"><p align="center"><img src = "res/demo11.png" width = 1200></p>
