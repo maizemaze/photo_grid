@@ -51,7 +51,7 @@ Users can switch the level by right-clicking on any place of the image.
 
 - This is a panel to define vegetation plots (i.e., area of interest, AOI). The yellow area is the one that will be selected, whereas pixels colored as black will be excluded from the following calculation.
 
-<p align="center"><p align="center"><img src = "res/iii.kmean.png" width = 700></p>
+<p align="center"><p align="center"><img src = "res/iii-kmean.png" width = 700></p>
 
 - GRID will run a K-mean clustering algorithm to extract the vegetation areas.
 
@@ -59,25 +59,25 @@ Users can switch the level by right-clicking on any place of the image.
 
 - Selected K will tell GRID that how many clusters are expected in the image.
 
-<p align="center"><p align="center"><img src = "res/iii.bin.png" width = 700></p>
+<p align="center"><p align="center"><img src = "res/iii-bin.png" width = 700></p>
 
 - To assign which clusters as AOI, users can either let the program decide automatically or select them manually.
 
-<p align="center"><p align="center"><img src = "res/iii.refine.png" width = 700></p>
+<p align="center"><p align="center"><img src = "res/iii-refine.png" width = 700></p>
 
 - De-shadow: This feature allows users to remove any pixel that is darker than the certain level.  
 
-<p align="center"><p align="center"><img src = "res/iii.shadow.png" width = 700></p>
+<p align="center"><p align="center"><img src = "res/iii-shadow.png" width = 700></p>
 
 - De-noise: This is a feature to remove noise signals existing in the background or canopy.
 
-<p align="center"><p align="center"><img src = "res/iii.noise.png" width = 700></p>
+<p align="center"><p align="center"><img src = "res/iii-noise.png" width = 700></p>
 
 <p align="center"><p align="center"><img src = "res/iii-noise2.png" width = 700></p>
 
 - Display mode: Users may verify the results by switching different view modes. “RGB” shows the original image; “Binary” is a mode showing the selected area (yellow) and the excluded part (black); And “K mean”  can show the clustering results by different colors.
 
-<p align="center"><p align="center"><img src = "res/iii-dis.png" width = 700></p>
+<p align="center"><p align="center"><img src = "res/iii-dis.png" width = 400></p>
 
 <p align="center"><p align="center"><img src = "res/iii-dis2.png" width = 700></p>
 
