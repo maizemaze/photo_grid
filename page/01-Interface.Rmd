@@ -1,5 +1,11 @@
 # Interface and Usage
 
+- GRID only requires an image file to function normally. However, in order to improve the segmentation result, providing a map file could be helpful for GRID to know better about the field layout.
+
+- If users don't have suitable image, it's also possible to learn GRID by choosing "Demo files".
+
+- More information about file format can be found [here](#load-data)
+
 ## Load data
 <p align="center"><p align="center"><img src = "res/step1.png" width = 700></p>
 
