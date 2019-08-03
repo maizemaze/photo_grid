@@ -64,7 +64,7 @@
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./index.html">User Manuel for iPat</a></li>
+<li><a href="./index.html">User Manuel for GRID</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Why GRID?</a><ul>
@@ -72,10 +72,7 @@
 <li class="chapter" data-level="0.2" data-path="overview-of-grid.html"><a href="overview-of-grid.html"><i class="fa fa-check"></i><b>0.2</b> Overview of GRID</a></li>
 </ul></li>
 <li class="chapter" data-level="1" data-path="interface-and-usage.html"><a href="interface-and-usage.html"><i class="fa fa-check"></i><b>1</b> Interface and Usage</a><ul>
-<li class="chapter" data-level="1.1" data-path="load-data.html"><a href="load-data.html"><i class="fa fa-check"></i><b>1.1</b> Load data</a><ul>
-<li class="chapter" data-level="" data-path="load-data.html"><a href="load-data.html#map-files"><i class="fa fa-check"></i>Map files</a></li>
-<li class="chapter" data-level="" data-path="load-data.html"><a href="load-data.html#image-files"><i class="fa fa-check"></i>Image files</a></li>
-</ul></li>
+<li class="chapter" data-level="1.1" data-path="load-data.html"><a href="load-data.html"><i class="fa fa-check"></i><b>1.1</b> Load data</a></li>
 <li class="chapter" data-level="1.2" data-path="crop-images.html"><a href="crop-images.html"><i class="fa fa-check"></i><b>1.2</b> Crop Images</a></li>
 <li class="chapter" data-level="1.3" data-path="plots-extraction.html"><a href="plots-extraction.html"><i class="fa fa-check"></i><b>1.3</b> Plots Extraction</a></li>
 <li class="chapter" data-level="1.4" data-path="set-up-central-points.html"><a href="set-up-central-points.html"><i class="fa fa-check"></i><b>1.4</b> Set Up Central Points</a></li>
@@ -104,16 +101,62 @@
             <section class="normal" id="section-">
 <div id="plots-extraction" class="section level2">
 <h2><span class="header-section-number">1.3</span> Plots Extraction</h2>
+<p align="center">
+<p align="center">
+<img src = "res/step3.gif" width = 700>
+</p>
 <ul>
-<li><p>This is a panel to define vegetation plots (i.e., area of interest, AOI). The yellow area is the one that will be selected, whereas pixels colored as black will be excluded from the following calculation.</p></li>
+<li>This is a panel to define vegetation plots (i.e., area of interest, AOI). The yellow area is the one that will be selected, whereas pixels colored as black will be excluded from the following calculation.</li>
+</ul>
+<p align="center">
+<p align="center">
+<img src = "res/iii.kmean.png" width = 700>
+</p>
+<ul>
 <li><p>GRID will run a K-mean clustering algorithm to extract the vegetation areas.</p></li>
 <li><p>Only bands of red and near-infrared red (NIR) will be used in K-mean clustering.</p></li>
 <li><p>Selected K will tell GRID that how many clusters are expected in the image.</p></li>
-<li><p>To assign which clusters as AOI, users can either let the program decide automatically or select them manually.</p></li>
-<li><p>De-shadow: This feature allows users to remove any pixel that is darker than the certain level.</p></li>
-<li><p>De-noise: This is a feature to remove noise signals existing in the background or canopy.</p></li>
-<li><p>Display mode: Users may verify the results by switching different view modes. “RGB” shows the original image; “Binary” is a mode showing the selected area (yellow) and the excluded part (black); And “K mean” can show the clustering results by different colors.</p></li>
 </ul>
+<p align="center">
+<p align="center">
+<img src = "res/iii.bin.png" width = 700>
+</p>
+<ul>
+<li>To assign which clusters as AOI, users can either let the program decide automatically or select them manually.</li>
+</ul>
+<p align="center">
+<p align="center">
+<img src = "res/iii.refine.png" width = 700>
+</p>
+<ul>
+<li>De-shadow: This feature allows users to remove any pixel that is darker than the certain level.</li>
+</ul>
+<p align="center">
+<p align="center">
+<img src = "res/iii.shadow.png" width = 700>
+</p>
+<ul>
+<li>De-noise: This is a feature to remove noise signals existing in the background or canopy.</li>
+</ul>
+<p align="center">
+<p align="center">
+<img src = "res/iii.noise.png" width = 700>
+</p>
+<p align="center">
+<p align="center">
+<img src = "res/iii-noise2.png" width = 700>
+</p>
+<ul>
+<li>Display mode: Users may verify the results by switching different view modes. “RGB” shows the original image; “Binary” is a mode showing the selected area (yellow) and the excluded part (black); And “K mean” can show the clustering results by different colors.</li>
+</ul>
+<p align="center">
+<p align="center">
+<img src = "res/iii-dis.png" width = 700>
+</p>
+<p align="center">
+<p align="center">
+<img src = "res/iii-dis2.png" width = 700>
+</p>
 </div>
             </section>
 

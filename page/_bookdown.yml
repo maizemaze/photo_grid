@@ -1,5 +1,5 @@
 book_filename: bookdown
-repo: https://github.com/poissonfish/iPat/
+repo: https://github.com/poissonfish/photo_grid/
 output_dir: _book
 clean: [packages.bib, bookdown.bbl]
 delete_merged_file: true
