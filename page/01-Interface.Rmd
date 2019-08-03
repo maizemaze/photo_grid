@@ -1,6 +1,7 @@
 # Interface and Usage
 
 ## Load data
+<p align="center"><p align="center"><img src = "res/step1.png" width = 700></p>
 
 ### Map files{-}
 
@@ -25,10 +26,17 @@ knitr::kable(
 
 ## Crop Images
 
+<p align="center"><p align="center"><img src = "res/step2.gif" width = 700></p>
+
 - There're two magnification levels available for the mouse cursor.
 Users can switch the level by right-clicking on any place of the image.
 
+<p align="center"><p align="center"><img src = "res/ii-zoom.gif" width = 700></p>
+
 - Left-clicking on the image to define four corners of the sub-image you want to analyze on. The fifth click will reset all the red marks
+
+<p align="center"><p align="center"><img src = "res/ii-corners.gif" width = 700></p>
+
 
 ## Plots Extraction
 
