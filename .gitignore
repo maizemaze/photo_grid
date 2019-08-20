@@ -24,3 +24,4 @@
 *.spec
 *.dat
 env/*
+*.npy
