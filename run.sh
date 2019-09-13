@@ -12,7 +12,7 @@ sudo python3 -m pip install --index-url https://test.pypi.org/simple --no-deps Z
 # Upload to the real PyPI
 python3 -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
 cd
-sudo python3 -m pip install Easy_GRID --upgrade
+sudo python3 -m pip install photo_grid --upgrade
 
 
 
