@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
+
 class Panel_Input(QWidget):
     def __init__(self):
         super().__init__()
@@ -89,11 +90,11 @@ class Panel_Input(QWidget):
             ras = rasterio.open(self.fd_img.text())
             nCh = ras.count
             if nCh<3:
-                img_np = np.zeros((ras.height, ras.width, 3))
+                img_np = np.zeros((ras.height, ras.width, 3), dtype="uint8")
                 for i in range(3):
                     img_np[:,:,i] = ras.read(1)
             else:
-                img_np = np.zeros((ras.height, ras.width, nCh))
+                img_np = np.zeros((ras.height, ras.width, nCh), dtype="uint8")
                 for i in range(nCh):
                     img_np[:,:,i] = ras.read(i+1)
             img = img_np.astype(np.uint8)

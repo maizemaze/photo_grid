@@ -23,5 +23,6 @@
 *.tidy
 *.spec
 *.dat
+**/data/*
 env/*
 *.npy

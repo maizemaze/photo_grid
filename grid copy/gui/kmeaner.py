@@ -1,34 +1,47 @@
+# basic imports
 import numpy as np
+
+# 3rd party imports
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from .Misc import *
 
-class Panel_Kmeaner(QWidget):
-    def __init__(self, np_img):
+# self imports
+from .customQt import *
+
+class PnKmeaner(QWidget):
+    """
+    """
+
+    def __init__(self, grid):
         super().__init__()
         self.setFocusPolicy(Qt.StrongFocus)
         self.setFocus()
         self.update()
         '''attr'''
+        self.grid = grid
         # main/img
         self.layout = QGridLayout()
         # img preview (left)
         self.gr_left = QGroupBox("Corrected Image")
         self.lo_left = QGridLayout()
-        self.wg_img = Widget_Kmeans(np_img)
+        self.wg_img = Widget_Kmeans(grid.imgs)
         self.bt_ccw = QPushButton("rotate ccw (Q)")
         self.bt_cw = QPushButton("rorate cw (E)")
         # K mean (right)
-        self.k = 9
+        self.kMax = 9
         self.gr_pre = QGroupBox("K-means Algo.")
-        self.lo_pre = QVBoxLayout()
-        self.gr_ch = QGroupBox("Channel")
-        self.lo_ch = QGridLayout()
-        self.lb_nir = QLabel("NIR")
-        self.cb_nir = QComboBox()
-        self.lb_red = QLabel("Red")
-        self.cb_red = QComboBox()
+        self.lo_pre = QGridLayout()
+        
+        self.gr_ft = QGroupBox("Features")
+        self.lo_ft = QHBoxLayout()
+        self.ck_ft = []
+        for i in range(1, self.nFeatures+1):
+            checkbox = QCheckBox(str(i))
+            checkbox.stateChanged.connect(self.change_k)
+            self.ck_ft.extend([checkbox])
+            self.lo_ft.addWidget(self.ck_ft[i])
+        self.lsSelect = [0]
         self.gr_k = QGroupBox("K = 3")
         self.lo_k = QVBoxLayout()
         self.sl_k = QSlider(Qt.Horizontal)
@@ -42,7 +55,7 @@ class Panel_Kmeaner(QWidget):
         self.gr_cusb = QGroupBox("Custom")
         self.lo_cusb = QHBoxLayout()
         self.ck_cusb = []
-        for i in range(1, self.k+1):
+        for i in range(1, self.kMax+1):
             checkbox = QCheckBox(str(i))
             checkbox.stateChanged.connect(self.custom_cut)
             if i>3:
@@ -64,13 +77,28 @@ class Panel_Kmeaner(QWidget):
         self.gr_gb = QGroupBox("De-Noise = 0")
         self.lo_gb = QVBoxLayout()
         self.sl_gb = QSlider(Qt.Horizontal)
+
+        # # grid params.
+        self.nFeatures = min(self.grid.imgs.depth, 5)
+        self.features = []
+        self.lsSelect = None
+        
         '''initialize UI'''
         self.initUI()
+
+    def rotate_CCW(self):
+        self.grid.rotateImg(nRot=1)
+        self.refresh()
+
+    def rotate_CW(self):
+        self.grid.rotateImg(nRot=3)
+        self.refresh()
+
     def initUI(self):
         '''img preview (left)'''
         # components
-        self.bt_ccw.clicked.connect(self.wg_img.rotate_CCW)
-        self.bt_cw.clicked.connect(self.wg_img.rotate_CW)
+        self.bt_ccw.clicked.connect(self.rotate_CCW)
+        self.bt_cw.clicked.connect(self.rotate_CW)
         # layout
         self.lo_left.addWidget(self.wg_img, 0, 0, 1, 2)
         self.lo_left.addWidget(self.bt_ccw, 1, 0)
@@ -79,32 +107,20 @@ class Panel_Kmeaner(QWidget):
         '''pre keans (right)'''
         # components
         self.sl_k.setMinimum(2)
-        self.sl_k.setMaximum(self.k)
+        self.sl_k.setMaximum(self.kMax)
         self.sl_k.setValue(3)
         self.sl_k.setTickInterval(1)
         self.sl_k.setTickPosition(QSlider.TicksBelow)
         self.sl_k.valueChanged.connect(self.change_k)
-        for i in range(self.wg_img.imgC):
-            self.cb_nir.addItem(str(i))
-            self.cb_red.addItem(str(i))
-        if self.wg_img.imgC>3:
-            self.cb_nir.setCurrentIndex(3)
-        else:
-            self.cb_nir.setCurrentIndex(1)
-        self.cb_nir.currentIndexChanged.connect(self.change_k)
-        self.cb_red.currentIndexChanged.connect(self.change_k)
+
         # layout
-        self.lo_ch.addWidget(self.lb_nir, 0, 0)
-        self.lo_ch.addWidget(self.lb_red, 0, 1)
-        self.lo_ch.addWidget(self.cb_nir, 1, 0)
-        self.lo_ch.addWidget(self.cb_red, 1, 1)
-        self.gr_ch.setLayout(self.lo_ch)
-        self.gr_ch.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed))
+        self.gr_ft.setLayout(self.lo_ft)
         self.lo_k.addWidget(self.sl_k)
         self.gr_k.setLayout(self.lo_k)
-        self.lo_pre.addWidget(self.gr_ch)
+        self.lo_pre.addWidget(self.gr_ft)
         self.lo_pre.addWidget(self.gr_k)
         self.gr_pre.setLayout(self.lo_pre)
+      
         '''binarization'''
         # component
         self.gr_cut.setCheckable(True)
@@ -122,12 +138,13 @@ class Panel_Kmeaner(QWidget):
         # layout
         self.lo_cut.addWidget(self.sl_cut)
         self.gr_cut.setLayout(self.lo_cut)
-        for i in range(self.k):
+        for i in range(self.kMax):
             self.lo_cusb.addWidget(self.ck_cusb[i])
         self.gr_cusb.setLayout(self.lo_cusb)
         self.lo_bin.addWidget(self.gr_cut)
         self.lo_bin.addWidget(self.gr_cusb)
         self.gr_bin.setLayout(self.lo_bin)
+     
         '''pro keans (right)'''
         # components
         self.sl_shad.setMinimum(0)
@@ -150,6 +167,7 @@ class Panel_Kmeaner(QWidget):
         self.lo_pro.addWidget(self.gr_shad)
         self.lo_pro.addWidget(self.gr_gb)
         self.gr_pro.setLayout(self.lo_pro)
+      
         '''display'''
         # components
         self.rb_bin.setChecked(True)
@@ -161,6 +179,7 @@ class Panel_Kmeaner(QWidget):
         self.lo_dis.addWidget(self.rb_rgb)
         self.lo_dis.addWidget(self.rb_k)
         self.gr_dis.setLayout(self.lo_dis)
+    
         '''assemble'''
         policy_right = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         policy_right.setHorizontalStretch(1)
@@ -177,55 +196,71 @@ class Panel_Kmeaner(QWidget):
         self.layout.addWidget(self.gr_pro, 2, 1)
         self.layout.addWidget(self.gr_dis, 3, 1)
         self.setLayout(self.layout)
-        self.do_kmeans()
-        self.wg_img.set_binarize([0])
         self.show()
+
+    def binarizeImgGUI(self):
+        self.grid.binarizeImg(
+            k=self.sl_k.value(),
+            features=self.features,
+            lsSelect=self.lsSelect, 
+            valShad=self.sl_shad.value(),
+            valSmth=self.sl_gb.value()
+        )
+        self.refresh()
+
     def change_k(self):
         value = self.sl_k.value()
+        ls_ft = []
+        for i in range(self.nFeatures):
+            if self.ck_ft[i].isChecked():
+                ls_ft.extend([i])
+        self.features = ls_ft
         self.sl_cut.setMaximum(value)
         self.gr_k.setTitle("K = %d" % value)
-        self.do_kmeans()
+        # will certainly go to either of cut function, no need to do binarize
         if self.gr_cusb.isChecked():
-            self.custom_cut()
+            self.custom_cut() 
         else:
             self.auto_cut()
-        self.refresh()
+        
     def auto_cut(self):
         self.gr_cut.setChecked(True)
         self.gr_cusb.setChecked(False)
         value = self.sl_cut.value()
         self.gr_cut.setTitle("Auto cutoff = %d" % value)
-        self.ls_bin = []
-        for i in range(self.k):
+        ls_bin = []
+        for i in range(self.kMax):
             self.ck_cusb[i].setEnabled(False)
             if i<value:
-                self.ls_bin.extend([i])
-        self.wg_img.set_binarize(list=self.ls_bin)
+                ls_bin.extend([i])
+        self.lsSelect = ls_bin
+        self.binarizeImgGUI()
+
     def custom_cut(self):
         self.gr_cut.setChecked(False)
         self.gr_cusb.setChecked(True)
         value = self.sl_k.value()
-        self.ls_bin = []
-        for i in range(self.k):
+        ls_bin = []
+        for i in range(self.kMax):
             if i<value:
                 self.ck_cusb[i].setEnabled(True)
                 if self.ck_cusb[i].isChecked():
-                    self.ls_bin.extend([i])
+                    ls_bin.extend([i])
             else:
-                self.ck_cusb[i].setEnabled(False)
-        self.wg_img.set_binarize(list=self.ls_bin)
+                self.ck_cusb[i].setEnabled(False) 
+        self.lsSelect = ls_bin
+        self.binarizeImgGUI()
+
     def change_shad(self):
         value = self.sl_shad.value()
         self.gr_shad.setTitle("De-Shadow = %d" % value)
-        # self.sl_shad.setValue(0)
-        self.wg_img.set_deshadow(value=value)
+        self.binarizeImgGUI()
+
     def change_gb(self):
         value = self.sl_gb.value()
         self.gr_gb.setTitle("De-Noise = %d" % value)
-        self.wg_img.set_smooth(value=value)
-    def do_kmeans(self):
-        # panel launch kmeans
-        self.wg_img.do_kmeans(k=self.sl_k.value(), ch_NIR=int(self.cb_nir.currentText()), ch_Red=int(self.cb_red.currentText()))
+        self.binarizeImgGUI()
+
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_A:
             self.rb_bin.setChecked(True)
@@ -239,6 +274,7 @@ class Panel_Kmeaner(QWidget):
             self.wg_img.rotate_CW()
     # def keyReleaseEvent(self, event):
         # self.rb_bin.setChecked(True)
+  
     def refresh(self):
         if self.rb_bin.isChecked():
             self.wg_img.switch_imgB()
@@ -246,167 +282,56 @@ class Panel_Kmeaner(QWidget):
             self.wg_img.switch_imgVis()
         elif self.rb_k.isChecked():
             self.wg_img.switch_imgK()
-    def get_img(self):
-        ch_NIR = int(self.cb_nir.currentText())
-        ch_Red = int(self.cb_red.currentText())
-        img_raw, img_k, img_bin = self.wg_img.getImages()
-        ls_bin = self.wg_img.ls_bin_k
-        return img_raw, img_k, img_bin, ch_NIR, ch_Red, ls_bin
+  
+    def run(self):
+        # GRID got everything done
+        return 0
 
 class Widget_Kmeans(Widget_Img):
-    def __init__(self, img):
-        super().__init__(img)
+    def __init__(self, gimg):
+        super().__init__(gimg.get("crop"))
         self.setMouseTracking(True)
         self.pos = None
         self.zoom = 1
-        self.imgC = img.shape[2]
-        self.img_k = None
-        self.img_bin, self.img_temp, self.img_bin_sm = None, None, None
-        self.nK, self.center = 0, None
-        # img process
-        self.img_deshad = np.ones((img.shape[0], img.shape[1]))
-        self.val_shad, self.val_shad_tp = 0, 0
-        self.val_sm, self.val_sm_tp = 0, 0
-        self.ls_bin = [0]
         #
         self.initUI()
+
     def initUI(self):
         self.show()
+
     def paintEvent(self, paint_event):
         painter = QPainter(self)
         super().paintImage(painter)
         painter.end()
-    def do_kmeans(self, k=3, ch_NIR=1, ch_Red=0):
-        self.nK = k
-        self.img_k, self.center = get_kmeans(self.img_raw, k, ch_NIR, ch_Red)
-    def set_binarize(self, list):
-        self.ls_bin = np.array(list)
-        self.do_process()
-    def set_deshadow(self, value=0):
-        self.val_shad_tp = value
-        self.do_process()
-    def set_smooth(self, value=0):
-        self.val_sm_tp = value
-        self.do_process()
-    def do_process(self):
-        # binary
-        self.do_binarize()
-        # smooth
-        self.do_smooth()
-        # deshadow
-        if self.val_shad!=self.val_shad_tp:
-            self.val_shad = self.val_shad_tp
-            self.do_deshadow()
-        self.switch_imgB()
-    def do_binarize(self):
-        # prop_g = [self.center[i, 0] for i in range(self.center.shape[0])]
-        # prop_g = [(self.center[i, 1]-self.center[i, 0]) for i in range(self.center.shape[0])]
-        prop_g = [(self.center[i, 0]-self.center[i, 1])/self.center[i, :].sum() for i in range(self.center.shape[0])]
-        rank_g = np.flip(np.argsort(prop_g), 0)
-        try:
-            idx_select = rank_g[self.ls_bin]
-        except:
-            idx_select = []
-        self.ls_bin_k = idx_select
-        self.img_bin = ((np.isin(self.img_k, self.ls_bin_k))*1).astype(np.int)
-        self.img_bin_sm = self.img_bin.copy()
-        self.img_temp = self.img_bin.copy()
-        self.val_sm = 0
-    def do_deshadow(self):
-        img_mean = self.img_raw[:,:,:3].mean(axis=2)
-        self.img_deshad = (img_mean >= self.val_shad)*1
-    def do_smooth(self):
-        '''
-        '''
-        from scipy.signal import convolve2d
-        k_blur = np.array((
-            [1, 4, 1],\
-            [4, 9, 4],\
-            [1, 4, 1]), dtype='int')/29
 
-        nSm_diff = self.val_sm_tp - self.val_sm
-        self.val_sm = self.val_sm_tp
-        if nSm_diff>0:
-            n_really_do = nSm_diff
-        elif nSm_diff<0:
-            n_really_do = self.val_sm_tp
-            self.img_temp = self.img_bin.copy()
-        else:
-            n_really_do = 0
-        # print("really do : %d, cur sm : %d" % (n_really_do, self.nSm))
-        for i in range(n_really_do):
-            self.img_temp = convolve2d(self.img_temp, k_blur, mode='same')
-        self.img_bin_sm[self.img_temp>0.5] = 1
-        self.img_bin_sm[self.img_temp<=0.5] = 0
-        self.img_bin_sm = self.img_bin_sm.astype(np.int)
     def switch_imgVis(self):
         super().make_rgb_img(self.img_vis)
         self.repaint()
         self.updateMag()
+
     def switch_imgK(self):
         super().make_idx8_img(self.img_k, self.nK)
         self.repaint()
         self.updateMag()
+
     def switch_imgB(self):
         img_b = np.multiply(self.img_bin_sm, self.img_deshad)
         super().make_bin_img(img_b)
         self.repaint()
         self.updateMag()
-    def rotate_CW(self):
-        self.img_raw = np.rot90(self.img_raw, 3).copy()
-        self.img_vis = np.rot90(self.img_vis, 3).copy()
-        self.img_k = np.rot90(self.img_k, 3).copy()
-        self.img_bin = np.rot90(self.img_bin, 3).copy()
-        self.img_temp = np.rot90(self.img_temp, 3).copy()
-        self.img_bin_sm = np.rot90(self.img_bin_sm, 3).copy()
-        self.img_deshad = np.rot90(self.img_deshad, 3).copy()
-        self.switch_imgB()
-    def rotate_CCW(self):
-        self.img_raw = np.rot90(self.img_raw, 1).copy()
-        self.img_vis = np.rot90(self.img_vis, 1).copy()
-        self.img_k = np.rot90(self.img_k, 1).copy()
-        self.img_bin = np.rot90(self.img_bin, 1).copy()
-        self.img_temp = np.rot90(self.img_temp, 1).copy()
-        self.img_bin_sm = np.rot90(self.img_bin_sm, 1).copy()
-        self.img_deshad = np.rot90(self.img_deshad, 1).copy()
-        self.switch_imgB()
+
     def mouseMoveEvent(self, event):
         self.updateMag()
         self.repaint()
+
     def mousePressEvent(self, event):
         if event.button() == Qt.RightButton:
             self.zoom = (self.zoom+1)%3
             self.mouseMoveEvent(event)
+
     def updateMag(self):
         pos = self.mapFromGlobal(QCursor().pos())
         if self.zoom!=0:
             magnifying_glass(self, pos, area=200, zoom=self.zoom*2)
         else:
             self.setCursor(QCursor(Qt.ArrowCursor))
-    def getImages(self):
-        self.img_bin_sm = np.multiply(self.img_bin_sm, self.img_deshad).astype(np.uint8)
-        return self.img_raw, self.img_k, self.img_bin_sm
-
-def get_kmeans(img, k=3, ch_NIR=1, ch_Red=0):
-    '''
-    '''
-    import cv2
-    # data type conversion for opencv
-    img = img[:,:,[ch_NIR, ch_Red]].copy()
-    img_max, img_min = img.max(axis=(0, 1)), img.min(axis=(0, 1))-(1e-8)
-    img = (img-img_min)/(img_max-img_min)
-    img_z = img.reshape((-1, img.shape[2])).astype(np.float32)
-    # define criteria, number of clusters(K) and apply kmeans()
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 50, 1.0)
-    param_k = dict(data=img_z,\
-                   K=k,\
-                   bestLabels=None,\
-                   criteria=criteria,\
-                   attempts=30,\
-                   flags=cv2.KMEANS_PP_CENTERS)
-                   # KMEANS_RANDOM_CENTERS
-    _, img_k_temp, center = cv2.kmeans(**param_k)
-    # Convert back
-    img_k = img_k_temp.astype(np.uint8).reshape((img.shape[0], -1))
-    # return
-    return img_k, center

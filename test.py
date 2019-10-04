@@ -1,5 +1,6 @@
 # /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages
-cp -r /Users/jameschen/Dropbox/photo_gridd/grid/* /Users/jameschen/Dropbox/photo_gridd/env/lib/python3.6/site-packages/grid/
+import cPickle as pickle
+cp -r /Users/jameschen/Dropbox/photo_grid/grid/* /Users/jameschen/Dropbox/photo_grid/env/lib/python3.6/site-packages/grid/
 # sudo cp /Users/jameschen/Dropbox/photo_grid/photo_grid/*.py /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/photo_grid/
 
 import photo_grid
@@ -194,3 +195,80 @@ class FrameLayout(QtGui.QWidget):
             painter.setPen(QtGui.QColor(64, 64, 64))
             painter.drawPolygon(*self._arrow)
             painter.end()
+
+
+
+from enum import Enum
+
+def funA(a, b):
+    return (a+b)
+
+
+def funB(a, b):
+    return (a*b)
+
+class Test(Enum):
+    AAA = 0, funA
+    BBB = 1, funB
+
+Test.AAA(3, 6)
+
+import pickle
+# An arbitrary collection of objects supported by pickle.
+data = {
+    'a': [1, 2.0, 3, 4+6j],
+    'b': ("character string", b"byte string"),
+    'c': {None, True, False}
+}
+
+with open('test.grid', 'wb') as f:
+    data = pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+
+with open('test.grid', 'rb') as f:
+    # The protocol version used is detected automatically, so we do not
+    # have to specify it.
+    data2 = pickle.load(f)
+
+
+# Implementation
+
+from grid import GRID
+grid = GRID()
+
+grid.run(pathImg="image.tiff")
+
+grid.run(pathImg="image.tiff",
+         k=9,
+         features=[0, 1, 2],
+         valShad=30,
+         valdSmth=10)
+
+grid.run(pathImg="image.tiff",
+         config="alfalfa_190922.grid")
+
+grid.run(pathDir="user/jameschen/target",
+         config="alfalfa_190922.grid")
+
+class T():
+
+    def __init__(self):
+        print("init")
+
+    #=== === === === === 
+    def A(self):
+        print("A")
+
+    #=== === === === ===
+    def B(self):
+        print("B")
+
+    #=== === === === ===
+    def C(self):
+        print("C")
+
+
+tt = T()
+tt.A()
+tt.B()
+tt.C()
+print("END")

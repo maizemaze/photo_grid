@@ -20,12 +20,12 @@ class Panel_Anchor(QWidget):
         self.size_imgPan = QSize(0, 0)
         self.size_img = QSize(0, 0)
         # anchor
-        self.acr_c, self.acr_c_raw = 0, 0
-        self.acr_r, self.acr_r_raw = 0, 0
+        self.acr_c, self.acr_c_raw = 0, 0 # ratio
+        self.acr_r, self.acr_r_raw = 0, 0 # ratio 
         self.rec_acr_c = QRect(0, 0, 0, 0)
         self.rec_acr_r = QRect(0, 0, 0, 0)
-        self.x_acr_c, self.y_acr_c = 0, 0
-        self.x_acr_r, self.y_acr_r = 0, 0
+        self.x_acr_c, self.y_acr_c = 0, 0 # px in the plot
+        self.x_acr_r, self.y_acr_r = 0, 0 # px in the plot
         # image
         self.img = img
         self.map = map
@@ -49,6 +49,7 @@ class Panel_Anchor(QWidget):
         self.acr_c_raw = self.acr_c.copy()
         '''UI'''
         self.initUI()
+
     def initUI(self):
         '''mouse'''
         '''image'''
@@ -66,6 +67,7 @@ class Panel_Anchor(QWidget):
         box_bt.addLayout(vbox)
         self.setLayout(box_bt)
         self.show()
+
     def mousePressEvent(self, event):
         pos = event.pos()
         self.pos_temp = QPoint(pos.x(), pos.y())
@@ -81,6 +83,7 @@ class Panel_Anchor(QWidget):
             # mag module
             self.zoom = (self.zoom+1)%3
             self.mouseMoveEvent(event)
+
     def mouseReleaseEvent(self, event):
         pos = event.pos()
         # add new anchors
@@ -94,6 +97,7 @@ class Panel_Anchor(QWidget):
                 new_acr_r = (pos.y()-correct)/(self.size_img.height())
                 self.acr_r = np.append(self.acr_r, new_acr_r)
         self.repaint()
+
     def mouseMoveEvent(self, event):
         pos = event.pos()
         correctX = 0 if self.is_fit_width else self.pt_st_img
@@ -115,6 +119,7 @@ class Panel_Anchor(QWidget):
                 self.setCursor(QCursor(Qt.ArrowCursor))
         else:
             self.setCursor(QCursor(Qt.ArrowCursor))
+
     def evenH(self):
         if self.bt_evenH.isChecked():
             size = len(self.acr_c)
@@ -124,6 +129,7 @@ class Panel_Anchor(QWidget):
         else:
             self.acr_c = self.acr_c_raw
         self.repaint()
+
     def evenV(self):
         if self.bt_evenV.isChecked():
             size = len(self.acr_r)
@@ -133,10 +139,12 @@ class Panel_Anchor(QWidget):
         else:
             self.acr_r = self.acr_r_raw
         self.repaint()
+
     def reset_Anchors(self):
         self.acr_c = self.acr_c_raw
         self.acr_r = self.acr_r_raw
         self.repaint()
+
     def paintEvent(self, paint_event):
         '''painter'''
         painter = QPainter(self)
@@ -213,6 +221,7 @@ class Panel_Anchor(QWidget):
         # print(self.x_acr_r)
         # print(self.y_acr_r)
         # print("========")
+        
     def get_anchors(self):
         imgW = self.qimg.size().width()
         imgH = self.qimg.size().height()
