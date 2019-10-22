@@ -1,7 +1,5 @@
 # /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages
-import cPickle as pickle
-cp -r /Users/jameschen/Dropbox/photo_grid/grid/* /Users/jameschen/Dropbox/photo_grid/env/lib/python3.6/site-packages/grid/
-# sudo cp /Users/jameschen/Dropbox/photo_grid/photo_grid/*.py /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/photo_grid/
+cp - r grid/* env/lib/python3.6/site-packages/grid / | python3 - m grid
 
 import photo_grid
 photo_grid.run()

@@ -108,7 +108,6 @@ class PnInputer(QWidget):
     def run(self):
         """
         """
-
         if self.gr_user.isChecked():
             self.grid.loadData(pathImg=self.fd_img.text(),
                                pathMap=self.fd_map.text())

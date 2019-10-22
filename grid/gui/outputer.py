@@ -1,11 +1,17 @@
+# basic imports
 import numpy as np
 import pandas as pd
 import os
+
+# 3rd party imports
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from .CPU_Field import *
-from .Misc import *
+
+# self imports
+from ..grid import *
+from ..io import *
+from .customQt import *
 
 
 class PnOutputer(QWidget):
@@ -17,6 +23,8 @@ class PnOutputer(QWidget):
         self.setFocus()
         self.update()
         self.grid = grid
+        self.grid.cpuSeg()
+        
         self.layout = QHBoxLayout()
         '''left side'''
         self.wg_img = Widget_Seg(grid)
@@ -202,7 +210,7 @@ class PnOutputer(QWidget):
         self.gr_fix.setChecked(False)
         self.collapse(isAuto=True)
         val_grid = 1-(self.sl_grid.value()/10)
-        self.wg_img.auto_seg(coef_grid=val_grid)
+        self.wg_img.auto_seg(coefGrid=val_grid)
 
     def fix_seg(self):
         '''
@@ -276,142 +284,32 @@ class PnOutputer(QWidget):
         path = QFileDialog().getExistingDirectory(self, "", "", QFileDialog.ShowDirsOnly)
         self.fd_output.setText(path)
 
-    def paint_grid(self, qimg):
-        """
-        """
-        pen = QPen()
-        pen.setWidth(3)
-        pen.setColor(Qt.red)
-        painter = QPainter(qimg)
-        painter.setPen(pen)
-        painter.setBrush(Qt.transparent)
-        for row in range(self.grid.map.nRow):
-            for col in range(self.grid.map.nCol):
-                agent = self.grid.agents.get(row, col)
-                rect = agent.getQRect()
-                painter.drawRect(rect)
-        painter.end()
-
-    def out_raw(self, path):
-        """
-        """
-        img = self.wg_img.img_raw[:,:,:3].copy()
-        self.wg_img.make_rgb_img(img)
-        qimg = self.wg_img.qimg
-        # self.paint_grid(qimg)
-        save_img(qimg, path+"_raw")
-        self.wg_img.switch_imgSVis()
-
-    def out_rgb(self, path):
-        """
-        """
-        img = self.wg_img.img_raw[:,:,:3].copy()
-        self.wg_img.make_rgb_img(img)
-        qimg = self.wg_img.qimg
-        self.paint_grid(qimg)
-        save_img(qimg, path+"_rgb")
-        self.wg_img.switch_imgSVis()
-
-    def out_k(self, path):
-        """
-        """
-        img = self.wg_img.img_k.copy()
-        self.wg_img.make_idx8_img(img, img.max()+1)
-        qimg = self.wg_img.qimg
-        self.paint_grid(qimg)
-        save_img(qimg, path+"_kmeans")
-        self.wg_img.switch_imgSVis()
-
-    def out_idx(self, path):
-        img = self.wg_img.img_idx.copy()
-        self.wg_img.make_gray_img(img)
-        qimg = self.wg_img.qimg
-        self.paint_grid(qimg)
-        save_img(qimg, path+"_index")
-        self.wg_img.switch_imgSVis()
-
-    def out_seg(self, path):
-        """
-        """
-        self.wg_img.make_rgb_img(self.wg_img.img_seg)
-        qimg = self.wg_img.qimg
-        self.paint_grid(qimg)
-        save_img(qimg, path+"_seg")
-        self.wg_img.switch_imgSVis()
-
-    def out_bin(self, path):
-        """
-        """
-        self.wg_img.make_bin_img(self.wg_img.img_bin)
-        qimg = self.wg_img.qimg
-        self.paint_grid(qimg)
-        save_img(qimg, path+"_kmean")
-        self.wg_img.switch_imgSVis()
-
-    def output(self):
-        """
-        """
-        field = self.wg_img.field
-        path_out = self.fd_output.text()+"/"+self.fd_project.text()
-        '''figure'''
-        self.out_raw(path=path_out)
-        self.out_rgb(path=path_out)
-        self.out_k(path=path_out)
-        self.out_idx(path=path_out)
-        self.out_seg(path=path_out)
-        self.out_bin(path=path_out)
-        '''dataframe'''
-        df = field.get_DF()
-        # NDVI
-        idx = field.get_index(ch_1=3, ch_2=0, isContrast=True, name_index="NDVI")
-        df = pd.merge(df, idx, on='var', how='left')
-        # GNDVI
-        idx = field.get_index(ch_1=3, ch_2=1, isContrast=True, name_index="GNDVI")
-        df = pd.merge(df, idx, on='var', how='left')
-        # NDGI
-        idx = field.get_index(ch_1=1, ch_2=0, isContrast=True, name_index="NDGI")
-        df = pd.merge(df, idx, on='var', how='left')
-        # CNDVI
-        idx = field.get_index(ch_1=3, ch_2=0, ch_3=1, isThree=True, name_index="CNDVI")
-        df = pd.merge(df, idx, on='var', how='left')
-        # RVI
-        idx = field.get_index(ch_1=3, ch_2=0, isRatio=True, name_index="RVI")
-        df = pd.merge(df, idx, on='var', how='left')
-        # GRVI
-        idx = field.get_index(ch_1=3, ch_2=1, isRatio=True, name_index="GRVI")
-        df = pd.merge(df, idx, on='var', how='left')
-        # channels
-        for i in range(field.n_ch):
-            idx = field.get_index(ch_1=i, isSingle=True, name_index="ch_%d"%i)
-            df = pd.merge(df, idx, on='var', how='left')
-        # clusters
-        idx = field.get_index(ch_1=field.ch_nir, ch_2=field.ch_red, isContrast=True, name_index="CLUSTER_INDEX")
-        df = pd.merge(df, idx, on='var', how='left')
-        idx = field.get_cluster()
-        df = pd.merge(df, idx, on='var', how='left')
-        # export
-        df.to_csv(path_out+"_data.csv", index=False)
 
 class Widget_Seg(Widget_Img):
     def __init__(self, grid):
         '''
         '''
-        super().__init__(grid.imgs.get('visSeg'))
+        super().__init__()
         self.setMouseTracking(True)
         self.grid = grid
+        self.img_raw = grid.imgs.get('visSeg')
         self.task = 1 # 0 none, 1 zoom, 2 panV, 3 panH
         '''attr'''
         # painter
-        self.is_fit_width = False
-        self.pt_st_img = 0
         self.ratio = 0
         # mouse
         self.agent_click = False
         self.dir = None
+        # seg
+        imgBin = self.grid.imgs.get("bin")
+        imgBinTemp = imgBin.reshape(imgBin.shape[0], imgBin.shape[1], 1)
+        self.img_seg = np.multiply(self.grid.imgs.get("crop")[:,:,:3], imgBinTemp).copy()
+        
         # ui
         self.initUI()
 
     def initUI(self):
+        self.make_rgb_img(self.img_raw)
         self.show()
 
     def mouseReleaseEvent(self, event):
@@ -426,12 +324,11 @@ class Widget_Seg(Widget_Img):
                 # compute rect of agent
                 agent = self.grid.agents.get(row, col)
                 rect = agent.getQRect()
-                if self.is_fit_width:
-                    self.ratio = self.width()/self.qimg.width()
-                    rec_agent = QRect(rect.x()*self.ratio, rect.y()*self.ratio+self.pt_st_img, rect.width()*self.ratio, rect.height()*self.ratio)
-                else:
-                    self.ratio = self.height()/self.qimg.height()
-                    rec_agent = QRect(rect.x()*self.ratio+self.pt_st_img, rect.y()*self.ratio, rect.width()*self.ratio, rect.height()*self.ratio)
+                self.ratio = self.width()/self.qimg.width() if self.isFitWidth else self.height() / self.qimg.height()
+                rec_agent = QRect(rect.x()*self.ratio+self.rgX[0], 
+                                  rect.y()*self.ratio+self.rgY[0], 
+                                  rect.width()*self.ratio, 
+                                  rect.height()*self.ratio)
                 # if contain cursor
                 if rec_agent.contains(pos):
                     self.agent_click = agent
@@ -476,12 +373,8 @@ class Widget_Seg(Widget_Img):
             self.setCursor(QCursor(Qt.SizeHorCursor))
         # pan
         if (event.button()==Qt.LeftButton)&(self.task>0)&(self.agent_click!=False):
-            if self.is_fit_width:
-                posX = pos.x()/self.ratio
-                posY = (pos.y()-self.pt_st_img)/self.ratio
-            else:
-                posX = (pos.x()-self.pt_st_img)/self.ratio
-                posY = pos.y()/self.ratio
+            posX = (pos.x()-self.rgX[0])/self.ratio
+            posY = (pos.y()-self.rgY[0])/self.ratio
             # adjust border
             if self.task==1:
                 if self.dir==Dir.NORTH or self.dir==Dir.SOUTH:
@@ -514,14 +407,13 @@ class Widget_Seg(Widget_Img):
                 agent = self.grid.agents.get(row, col)
                 rect = agent.getQRect()
                 pt_x, pt_y = agent.getCoordinate()
-                if self.is_fit_width:
-                    self.ratio = self.width()/self.qimg.width()
-                    rec_agent = QRect(rect.x()*self.ratio, rect.y()*self.ratio+self.pt_st_img, rect.width()*self.ratio, rect.height()*self.ratio)
-                    draw_cross(pt_x*self.ratio, pt_y*self.ratio+self.pt_st_img, painter)
-                else:
-                    self.ratio = self.height()/self.qimg.height()
-                    rec_agent = QRect(rect.x()*self.ratio+self.pt_st_img, rect.y()*self.ratio, rect.width()*self.ratio, rect.height()*self.ratio)
-                    draw_cross(pt_x*self.ratio+self.pt_st_img, pt_y*self.ratio, painter)
+                self.ratio = self.width()/self.qimg.width() if self.isFitWidth else self.height()/self.qimg.height()
+                rec_agent = QRect(rect.x()*self.ratio+self.rgX[0],
+                                  rect.y()*self.ratio+self.rgY[0],
+                                  rect.width()*self.ratio,
+                                  rect.height()*self.ratio)
+                drawCross(pt_x*self.ratio + self.rgX[0], 
+                          pt_y*self.ratio + self.rgY[0], painter)
                 painter.drawRect(rec_agent)
         painter.end()
         
@@ -533,8 +425,8 @@ class Widget_Seg(Widget_Img):
         super().make_rgb_img(self.grid.imgs.get('visSeg'))
         self.repaint()
 
-    def auto_seg(self, coef_grid=0):
-        self.grid.cpuSeg(coef_grid=coef_grid)
+    def auto_seg(self, coefGrid=0):
+        self.grid.cpuSeg(coefGrid=coefGrid)
         self.repaint()
 
     def fix_seg(self, width, length):

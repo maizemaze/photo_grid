@@ -1,17 +1,31 @@
 __author__ = "Chunpeng James Chen"
-__version__ = "0.0.17"
-__update__ = "Sep 17, 2019"
+__version__ = "0.1.3"
+__update__ = "Oct 19, 2019"
 
-# basic imports
-import warnings
+from sys import platform
+# for Mac OS users
+if platform == 'darwin':
+    print("use TkAgg")
+    import matplotlib
+    matplotlib.use('TkAgg')
 
 # self imports
 from .grid import *
 
 """
 Update Log
+
+- Oct 22, 2019 (0.1.3)
+    * Optimize default setting of refining parameters
+    * Fix wrong angle detection
+    * Minor bug fixes
+
+- Oct 19, 2019 (0.1.2)
+    * Support rhombus field layout
+    * Bug fixes
+
 - Sep 17, 2019 (0.0.16)
-    * Fix memory problems in Windows
+    * Improve memory efficiency on Windows OS
 
 - Sep 12, 2019 (0.0.15)
     * Fix problems wiht fixed segmentation

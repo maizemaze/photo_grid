@@ -1,4 +1,5 @@
 import platform
+import os
 
 class GUser():
     """
@@ -10,6 +11,7 @@ class GUser():
         self.architecture = platform.architecture()[0]
         self.release = platform.release()
         self.machine = platform.machine()
+        self.dirHome = os.path.expanduser("~")
     
     def printInfo(self):
         print("GRID User's Info")
@@ -18,3 +20,4 @@ class GUser():
         print("Architecture:  ",  self.architecture)
         print("Release:       ",  self.release)
         print("Machine:       ",  self.machine)
+        print("Home Dir:      ",  self.dirHome)

@@ -29,7 +29,6 @@ class GImage():
             'binSm'  : None,
             'bin'    : None,
             'binSeg' : None,
-            'binSegSm': None,
             'visSeg' : None
         }
 
@@ -87,25 +86,62 @@ class GImage():
         self.set(key='raw', value=imgInput)
         self.setShape(shape=imgInput.shape, isRaw=True)
 
+    def getParam(self, key):
+        """
+        ----------
+        Parameters
+        ----------
+        """
+
+        return self.paramKMs[key]
+
+    def setParam(self, key, value):
+        """
+        ----------
+        Parameters
+        ----------
+        """
+
+        self.paramKMs[key] = value
+    
+    def resetParam(self):
+        """
+        ----------
+        Parameters
+        ----------
+        """
+
+        self.paramKMs = {
+            'k': -1,
+            'center': None,
+            'features': [],
+            'lsSelect': [],
+            'lsKTobin': [],
+            'valShad': -1,
+            'valSmth': -1
+        }
+
     def crop(self, pts=None):
         """
         ----------
         Parameters
         ----------
         """
+
         if pts is None:
             self.set(key='crop',
                      value=self.imgs['raw'])
             self.set(key='mean',
-                    value=self.get('crop')[:, :, :3].mean(axis=2))
+                     value=self.get('crop')[:, :, :3].mean(axis=2))
             self.setShape(shape=self.get(key='crop').shape)
         else:
             self.set(key='crop',
-                        value=cropImg(self.imgs['raw'], pts))
+                     value=cropImg(self.imgs['raw'], pts))
             self.set(key='mean',
-                        value=self.get('crop')[:, :, :3].mean(axis=2))
+                     value=self.get('crop')[:, :, :3].mean(axis=2))
             self.setShape(shape=self.get(key='crop').shape)
 
+        self.resetParam()
 
     def doKMeans(self, k=3, features=[0, 1, 2]):
         """
@@ -124,6 +160,9 @@ class GImage():
             self.paramKMs['center'] = center
             self.paramKMs['k'] = k
             self.paramKMs['features'] = features
+        else:
+            # skip
+            print("skip kmean")
 
     def binarize(self, k=3, features=[0, 1, 2], lsSelect=[0]):
         """
@@ -135,7 +174,8 @@ class GImage():
         if (k != self.paramKMs['k']) or (features != self.paramKMs['features']) or (lsSelect != self.paramKMs['lsSelect']):
             ratioK = [(self.paramKMs['center'][i, 0]-self.paramKMs['center'][i, 1])/self.paramKMs['center'][i, :].sum()
                       for i in range(self.paramKMs['center'].shape[0])]
-            rankK = np.flip(np.argsort(ratioK), 0) 
+            # rankK = np.flip(np.argsort(ratioK), 0) 
+            rankK = np.argsort(ratioK)
             try:
                 clusterSelected = rankK[lsSelect]
             except:
@@ -149,19 +189,10 @@ class GImage():
             self.paramKMs['features'] = features
             self.paramKMs['lsSelect'] = lsSelect
             self.paramKMs['lsKToBin'] = clusterSelected
-        
-    def deShadow(self, value):
-        """
-        ----------
-        Parameters
-        ----------
-        """
-
-        if value != self.paramKMs['valShad']:
-            self.set(key='binSd', value=(self.get(key='mean')>=value)*1)
-            # update parameter
-            self.paramKMs['valShad'] = value
-
+        else:
+            # skip
+            print("skip binarize")
+       
     def smooth(self, value):
         """
         ----------
@@ -180,6 +211,24 @@ class GImage():
             self.set(key='binSm',   value=binarizeSmImg(self.get(key='binTemp')))
             # update parameters
             self.paramKMs['valSmth'] = value
+        else:
+            # skip
+            print("skip smoothing")
+
+    def deShadow(self, value):
+        """
+        ----------
+        Parameters
+        ----------
+        """
+
+        if value != self.paramKMs['valShad']:
+            self.set(key='binSd', value=(self.get(key='mean')>=value)*1)
+            # update parameter
+            self.paramKMs['valShad'] = value
+        else:
+            # skip
+            print("skip shadow")
 
     def finalized(self):
         """
@@ -189,15 +238,19 @@ class GImage():
         """
 
         self.set(key='bin', value=np.multiply(
-            self.get(key='binSm'), self.get(key='binSd')))
-        imgSmth = smoothImg(image=self.get(key='bin'), n=30)
-        imgBinSeg = binarizeSmImg(imgSmth)
-        self.set(key='binSeg', value=imgBinSeg)
-        self.set(key='binSegSm', value=blurImg(imgBinSeg, n=30))
-        
+            self.get('binSm'), self.get('binSd')))
+
+    def readyForSeg(self):
+        """
+        ----------
+        Parameters
+        ----------
+        """
+        self.set(key='binSeg', value=blurImg(self.get('bin'),
+                                             n=int(min(self.height, self.width)/100)))
         # compute the vis/seg image
-        imgTemp = imgBinSeg.reshape(self.heightRs, self.widthRs, 1)
-        imgSeg = np.multiply(self.get(key='crop')[:, :, :3], imgTemp).copy()
+        imgTemp = self.get("bin").reshape(self.heightRs, self.widthRs, 1)
+        imgSeg = np.multiply(self.get('crop')[:, :, :3], imgTemp).copy()
         imgSeg[(imgSeg.mean(axis=2) == 0), :] = 255
         self.set(key='visSeg', value=imgSeg)
 
@@ -209,9 +262,10 @@ class GImage():
         """
 
         for key in self.imgs.keys():
+            if key == 'raw' or key == 'rawRs': continue
             try:
                 self.set(key=key, value=np.rot90(self.get(key=key), nRot))
-            except:
+            except Exception as e:
                 None
 
     def setShape(self, shape, isRaw=False):

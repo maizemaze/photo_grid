@@ -1,17 +1,21 @@
 # basic imports
 import numpy as np
+import sys
 import math
-import warnings
-warnings.filterwarnings("ignore")
+import os
+import pickle
+import statistics
 
 # 3rd party imports
 import cv2
 from scipy.signal import convolve2d
 from scipy.signal import find_peaks
-
 import matplotlib.pyplot as plt
 from matplotlib import patches
 from matplotlib.lines import Line2D
+
+# self imports
+from .gui.customQt import *
 
 def doKMeans(img, k=3, features=[0]):
     """
@@ -145,7 +149,91 @@ def rotatePts(pts, angle):
     qpts = [[qx[i], qy[i]] for i in range(len(pts))]
     return np.array(qpts)
 
-def findPeaks(img, nPeaks=0, axis=0, nSmooth=100):
+# === === === === === GRID pickle === === === === ===
+
+def pickleGRID(obj, path):
+    with open(path, "wb") as file:
+        pickle.dump(obj, file, pickle.HIGHEST_PROTOCOL)
+
+def getPickledGRID(path):
+    with open(path, "rb") as file:
+        obj = pickle.load(file)
+    
+    return obj
+
+# === === === === === peak searching === === === === ===
+
+def rotateBinNdArray(img, angel):
+    # create border for the image
+    img[:, 0:2] = 1
+    img[0:2, :] = 1
+    img[:, -2:] = 1
+    img[-2:, :] = 1
+
+    # padding
+    sizePad = max(img.shape)
+    imgP = np.pad(img, [sizePad, sizePad], 'constant')
+
+    # rotate
+    pivot = tuple((np.array(imgP.shape[:2])/2).astype(np.int))
+    matRot = cv2.getRotationMatrix2D(pivot, -angel, 1.0)
+    imgR = cv2.warpAffine(
+        imgP.astype(np.float32), matRot, imgP.shape, flags=cv2.INTER_LINEAR).astype(np.int8)
+
+    # crop
+    sigX = np.where(imgR.sum(axis=0) != 0)[0]
+    sigY = np.where(imgR.sum(axis=1) != 0)[0]
+    imgC = imgR[sigY[0]:sigY[-1], sigX[0]:sigX[-1]]
+
+    # return
+    return imgC
+
+def rotateVec(vec, angel):
+    deg = np.pi/180
+    x, y = vec[0], vec[1]
+    xp = np.cos(deg*angel)*x - np.sin(deg*angel)*y
+    yp = np.sin(deg*angel)*x + np.cos(deg*angel)*y
+    return (xp, yp)
+
+def getFourierTransform(sig):
+    sigf = abs(np.fft.fft(sig)/len(sig))
+    return sigf[2:int(len(sigf)/2)]
+    # return sigf[2:25]
+
+def getCardIntercept(lsValues, angel, imgH=0):
+    if angel == 0:
+        return lsValues*1
+    else:
+        coef = 1/np.sin(np.pi/180*abs(angel))
+        if angel < 0:
+            return lsValues*coef
+        else:
+            return imgH-lsValues*coef
+
+def getLineABC(slope, intercept):
+    if np.isinf(slope):
+        A = 1
+        B = 0
+        C = intercept
+    else:
+        A = slope
+        B = -1
+        C = -intercept
+    return A, B, C
+
+def solveLines(slope1, intercept1, slope2, intercept2):
+    A1, B1, C1 = getLineABC(slope1, intercept1)
+    A2, B2, C2 = getLineABC(slope2, intercept2)
+    D = A1*B2-A2*B1
+    Dx = C1*B2-B1*C2
+    Dy = A1*C2-C1*A2
+    if D != 0:
+        x, y = Dx/D, Dy/D
+        return int(x), int(y)
+    else:
+        return False, False
+
+def findPeaks(img, nPeaks=0, axis=1, nSmooth=100):
     """
     ----------
     Parameters
@@ -154,28 +242,45 @@ def findPeaks(img, nPeaks=0, axis=0, nSmooth=100):
     
     # compute 1-D signal
     signal = img.mean(axis=(not axis)*1) # 0:nrow
+    
+    # ignore signals from iamge frame
+    signal[0] = 0
+    signal[-1] = 0
+
     # gaussian smooth 
-    for i in range(nSmooth):
+    for _ in range(int(len(signal)/30)):
         signal = np.convolve(
             np.array([1, 2, 4, 2, 1])/10, signal, mode='same')
+
+    # find primary peaks
     peaks, _ = find_peaks(signal)
+    lsDiff = np.diff(peaks)
+    medSig = statistics.median(signal[peaks])
+    stdSig = np.array(signal[peaks]).std()
+    medDiff = statistics.median(lsDiff)
+    stdDiff = np.array(lsDiff).std()
+
+    # get finalized peaks with distance constrain
+    peaks, _ = find_peaks(signal, distance=medDiff-stdDiff/2, prominence=(0.01, None))
     if nPeaks != 0:
         if len(peaks) > nPeaks:
             while len(peaks) > nPeaks:
-                ls_diff = [peaks[i+1]-peaks[i] for i in range(len(peaks)-1)]
+                ls_diff = np.diff(peaks)
                 idx_diff = np.argmin(ls_diff)
                 idx_kick = idx_diff if (
                     signal[peaks[idx_diff]] < signal[peaks[idx_diff+1]]) else (idx_diff+1)
                 peaks = np.delete(peaks, idx_kick)
         elif len(peaks) < nPeaks:
             while len(peaks) < nPeaks:
-                ls_diff = [peaks[i+1]-peaks[i] for i in range(len(peaks)-1)]
+                ls_diff = np.diff(peaks)
                 idx_diff = np.argmax(ls_diff)
                 peak_insert = (peaks[idx_diff]+peaks[idx_diff+1])/2
                 peaks = np.sort(np.append(peaks, int(peak_insert)))
 
     return peaks, signal
 
+
+# === === === === === Plotting === === === === ===
 
 def pltCross(x, y, size=3, width=1, color="red"):
     pt1X = [x-size, x+size]
@@ -186,10 +291,62 @@ def pltCross(x, y, size=3, width=1, color="red"):
     line2 = Line2D(pt2X, pt2Y, linewidth=width, color=color)    
     return line1, line2
 
-def pltImShow(img):
-    plt.imshow(img)
-    plt.show()
 
+def pltImShow(img, path=None, prefix="GRID", filename=".png"):
+    if path is None:
+        ax = plt.subplot(111)
+        ax.imshow(img)
+        plt.show()
+    else:
+        file = os.path.join(path, prefix+filename)
+        if img.max()==1:
+            qimg = getBinQImg(img)
+        elif img.max() < 100:
+            qimg = getIdx8QImg(img, img.max()+1)
+        else:
+            qimg = getRGBQImg(img)
+
+        qimg.save(file, "PNG")
+
+
+def pltSegPlot(agents, plotBase, isRect=False, path=None, prefix="GRID", filename=".png"):
+    if path is None:
+        ax = plt.subplot(111)
+        ax.imshow(plotBase)
+        for row in range(agents.nRow):
+            for col in range(agents.nCol):
+                agent = agents.get(row=row, col=col)
+                if not agent:
+                    continue
+                recAg = agent.getQRect()
+                line1, line2 = pltCross(agent.x, agent.y, width=1)
+                ax.add_line(line1)
+                ax.add_line(line2)
+                if isRect:
+                    rect = patches.Rectangle(
+                        (recAg.x(), recAg.y()), recAg.width(), recAg.height(),
+                        linewidth=1, edgecolor='r', facecolor='none')
+                    ax.add_patch(rect)
+        plt.show()
+    else:
+        file = os.path.join(path, prefix+filename)
+        qimg = getBinQImg(plotBase) if plotBase.max(
+        ) == 1 else getRGBQImg(plotBase)
+
+        pen = QPen()
+        pen.setWidth(3)
+        pen.setColor(Qt.red)
+        painter = QPainter(qimg)
+        painter.setPen(pen)
+        painter.setBrush(Qt.transparent)
+        for row in range(agents.nRow):
+            for col in range(agents.nCol):
+                agent = agents.get(row, col)
+                rect = agent.getQRect()
+                painter.drawRect(rect)
+        painter.end()
+
+        qimg.save(file, "PNG")
 
 def pltImShowMulti(imgs, titles=None, vertical=False):
     nImgs = len(imgs)
@@ -208,20 +365,33 @@ def pltImShowMulti(imgs, titles=None, vertical=False):
 
     plt.show()
 
-def pltSegPlot(agents, plotBase, isRect=False):
-    fig, ax = plt.subplots()
-    ax.imshow(plotBase)
-    for row in range(agents.nRow):
-        for col in range(agents.nCol):
-            agent = agents.get(row=row, col=col)
-            recAg = agent.getQRect()
-            line1, line2 = pltCross(agent.x, agent.y, width=1)
+def pltLinesPlot(gmap, agents, img):
+    itcs = gmap.itcs
+    slps = gmap.slps
+    # plotting
+    _, ax = plt.subplots()
+    ax.imshow(img)
+    for i in range(2):
+        for intercept in itcs[i]:
+            plotLine(ax, slps[i], intercept)
+    for cAgents in agents:
+        for agent in cAgents:
+            line1, line2 = pltCross(agent.x, agent.y, width=2)
             ax.add_line(line1)
             ax.add_line(line2)
-            if isRect:
-                rect = patches.Rectangle(
-                    (recAg.x(), recAg.y()), recAg.width(), recAg.height(),
-                    linewidth=1, edgecolor='r', facecolor='none')
-                ax.add_patch(rect)
 
     plt.show()
+
+def plotLine(axes, slope, intercept):
+    if abs(slope) > 1e+9:
+        # vertical line
+        y_vals = np.array(axes.get_ylim())
+        x_vals = np.repeat(intercept, len(y_vals))
+    else:
+        # usual line
+        x_vals = np.array(axes.get_xlim())
+        y_vals = intercept + slope * x_vals
+    axes.plot(x_vals, y_vals, '--', color="red")
+
+
+

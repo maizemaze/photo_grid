@@ -1,4 +1,5 @@
 cd ~/Dropbox/photo_grid
+
 # Compile
 sudo rm -rf dist build
 # sudo pip3 install bleach --upgrade

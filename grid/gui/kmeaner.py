@@ -7,6 +7,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 # self imports
+from ..grid import *
 from .customQt import *
 
 class PnKmeaner(QWidget):
@@ -20,12 +21,17 @@ class PnKmeaner(QWidget):
         self.update()
         '''attr'''
         self.grid = grid
+        # # grid params.
+        self.nFeatures = min(self.grid.imgs.depth, 5)
+        self.features = []
+        self.lsSelect = None
+
         # main/img
         self.layout = QGridLayout()
         # img preview (left)
         self.gr_left = QGroupBox("Corrected Image")
         self.lo_left = QGridLayout()
-        self.wg_img = Widget_Kmeans(grid.imgs)
+        self.wg_img = Widget_Kmeans(grid)
         self.bt_ccw = QPushButton("rotate ccw (Q)")
         self.bt_cw = QPushButton("rorate cw (E)")
         # K mean (right)
@@ -36,8 +42,10 @@ class PnKmeaner(QWidget):
         self.gr_ft = QGroupBox("Features")
         self.lo_ft = QHBoxLayout()
         self.ck_ft = []
-        for i in range(1, self.nFeatures+1):
-            checkbox = QCheckBox(str(i))
+        for i in range(self.nFeatures):
+            checkbox = QCheckBox(str(i+1))
+            if i < 3:
+                checkbox.setChecked(True)
             checkbox.stateChanged.connect(self.change_k)
             self.ck_ft.extend([checkbox])
             self.lo_ft.addWidget(self.ck_ft[i])
@@ -71,34 +79,21 @@ class PnKmeaner(QWidget):
         # refine (right)
         self.gr_pro = QGroupBox("Clusters Refine")
         self.lo_pro = QVBoxLayout()
-        self.gr_shad = QGroupBox("De-Shadow = 0")
+        self.gr_shad = QGroupBox("De-Shade = 0")
         self.lo_shad = QVBoxLayout()
         self.sl_shad = QSlider(Qt.Horizontal)
         self.gr_gb = QGroupBox("De-Noise = 0")
         self.lo_gb = QVBoxLayout()
         self.sl_gb = QSlider(Qt.Horizontal)
-
-        # # grid params.
-        self.nFeatures = min(self.grid.imgs.depth, 5)
-        self.features = []
-        self.lsSelect = None
         
         '''initialize UI'''
         self.initUI()
 
-    def rotate_CCW(self):
-        self.grid.rotateImg(nRot=1)
-        self.refresh()
-
-    def rotate_CW(self):
-        self.grid.rotateImg(nRot=3)
-        self.refresh()
-
     def initUI(self):
         '''img preview (left)'''
         # components
-        self.bt_ccw.clicked.connect(self.rotate_CCW)
-        self.bt_cw.clicked.connect(self.rotate_CW)
+        self.bt_ccw.clicked.connect(self.rotateCCW)
+        self.bt_cw.clicked.connect(self.rotateCW)
         # layout
         self.lo_left.addWidget(self.wg_img, 0, 0, 1, 2)
         self.lo_left.addWidget(self.bt_ccw, 1, 0)
@@ -196,7 +191,16 @@ class PnKmeaner(QWidget):
         self.layout.addWidget(self.gr_pro, 2, 1)
         self.layout.addWidget(self.gr_dis, 3, 1)
         self.setLayout(self.layout)
+        self.change_k() #initialize kmeans
         self.show()
+
+    def rotateCCW(self):
+        self.grid.rotateImg(nRot=1)
+        self.refresh()
+
+    def rotateCW(self):
+        self.grid.rotateImg(nRot=3)
+        self.refresh()
 
     def binarizeImgGUI(self):
         self.grid.binarizeImg(
@@ -253,7 +257,7 @@ class PnKmeaner(QWidget):
 
     def change_shad(self):
         value = self.sl_shad.value()
-        self.gr_shad.setTitle("De-Shadow = %d" % value)
+        self.gr_shad.setTitle("De-Shade = %d" % value)
         self.binarizeImgGUI()
 
     def change_gb(self):
@@ -269,9 +273,9 @@ class PnKmeaner(QWidget):
         elif event.key() == Qt.Key_D:
             self.rb_k.setChecked(True)
         elif event.key() == Qt.Key_Q:
-            self.wg_img.rotate_CCW()
+            self.rotateCCW()
         elif event.key() == Qt.Key_E:
-            self.wg_img.rotate_CW()
+            self.rotateCW()
     # def keyReleaseEvent(self, event):
         # self.rb_bin.setChecked(True)
   
@@ -288,9 +292,10 @@ class PnKmeaner(QWidget):
         return 0
 
 class Widget_Kmeans(Widget_Img):
-    def __init__(self, gimg):
-        super().__init__(gimg.get("crop"))
+    def __init__(self, grid):
+        super().__init__()
         self.setMouseTracking(True)
+        self.grid = grid
         self.pos = None
         self.zoom = 1
         #
@@ -305,18 +310,17 @@ class Widget_Kmeans(Widget_Img):
         painter.end()
 
     def switch_imgVis(self):
-        super().make_rgb_img(self.img_vis)
+        super().make_rgb_img(self.grid.imgs.get("crop"))
         self.repaint()
         self.updateMag()
 
     def switch_imgK(self):
-        super().make_idx8_img(self.img_k, self.nK)
+        super().make_idx8_img(self.grid.imgs.get("kmean"), self.grid.imgs.getParam('k'))
         self.repaint()
         self.updateMag()
 
     def switch_imgB(self):
-        img_b = np.multiply(self.img_bin_sm, self.img_deshad)
-        super().make_bin_img(img_b)
+        super().make_bin_img(self.grid.imgs.get("bin"))
         self.repaint()
         self.updateMag()
 

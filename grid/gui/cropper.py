@@ -1,9 +1,10 @@
-# 3-rd party imports
+# 3rd party imports
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-# local imports
+# self imports
+from ..grid import *
 from .customQt import * 
 
 class PnCropper(QGroupBox):
@@ -39,23 +40,19 @@ class PnCropper(QGroupBox):
     def run(self):
         """
         """
-
-        self.grid.cropImage(pts=self.wgImg.getPinnedPoints())
-
+        self.grid.cropImg(pts=self.wgImg.getPinnedPoints())
 
 class Widget_ViewCrop(Widget_Img):
 
     def __init__(self, img):
-        super().__init__(img)
+        super().__init__()
         self.setMouseTracking(True)
+        self.img_vis = img
         self.pos = None
         self.zoom = 1
         self.ratio = 1
         self.marks = []
         self.n_marks = 0
-        self.is_fit_width = True
-        self.pt_st_img = 0
-        self.size_img = 0
         self.imgH, self.imgW = img.shape[0], img.shape[1]
         self.initUI()
 
@@ -72,7 +69,7 @@ class Widget_ViewCrop(Widget_Img):
         painter.setPen(pen)
         painter.setBrush(Qt.white)
         for pos in self.marks:
-            draw_cross(pos.x(), pos.y(), painter, 5)
+            drawCross(pos.x(), pos.y(), painter, 5)
         # coordinate
         if self.pos is not None:
             painter.setFont(QFont("Trebuchet MS",14))
@@ -95,14 +92,15 @@ class Widget_ViewCrop(Widget_Img):
     def mouseReleaseEvent(self, event):
         pt_mouse = event.pos()
         # determine the image boundary
-        bd_neg = self.pt_st_img
         if event.button() == Qt.LeftButton:
-            if self.is_fit_width:
+            if self.isFitWidth:
                 pt_1d = pt_mouse.y()
-                bd_pos = self.pt_st_img + self.size_img.height()
+                bd_pos = self.rgY[0] + self.sizeImg.height()
+                bd_neg = self.rgY[0]
             else:
                 pt_1d = pt_mouse.x()
-                bd_pos = self.pt_st_img + self.size_img.width()
+                bd_pos = self.rgX[0] + self.sizeImg.width()
+                bd_neg = self.rgX[0]
             # if the click is in the image
             if (pt_1d >= bd_neg) & (pt_1d <= bd_pos):
                 if self.n_marks<4:
@@ -118,12 +116,9 @@ class Widget_ViewCrop(Widget_Img):
         self.pos = None
 
     def getPinnedPoints(self):
-        if self.is_fit_width:
-            self.ratio = (self.imgW)/(self.width())
-            pts = [[pt.x()*(self.ratio), (pt.y()-self.pt_st_img)*(self.ratio)] for pt in self.marks]
-        else:
-            self.ratio = (self.imgH)/(self.height())
-            pts = [[(pt.x()-self.pt_st_img)*(self.ratio), pt.y()*(self.ratio)] for pt in self.marks]
+        self.ratio = (self.imgW)/(self.width()) if self.isFitWidth else (self.imgH)/(self.height())
+        pts = [[(pt.x()-self.rgX[0])*(self.ratio),
+                (pt.y()-self.rgY[0])*(self.ratio)] for pt in self.marks]
         if len(pts)<4:
             pts = [[0, 0], [0, self.imgH], [self.imgW, 0], [self.imgW, self.imgH]]
         return pts

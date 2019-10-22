@@ -6,61 +6,75 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-
 class Widget_Img(QWidget):
     '''
     Will keep imgRaw, imgVis and imgQmap
     '''
 
-    def __init__(self, img):
+    def __init__(self):
         super().__init__()
         '''attr'''
-        self.img_raw = img
-        self.img_vis = img[:, :, :3].copy()
+        # self.img_raw = img
+        # self.img_vis = img[:, :, :3].copy()
         self.qimg = None
+        self.isFitWidth = None
+        self.rgX, self.rgY = (0, 0), (0, 0)
+        self.sizeImg = (0, 0)
 
     def make_rgb_img(self, img):
-        self.qimg = getRGBQImg(img)
-        
+        self.qimg = getRGBQImg(img[:,:,:3])
+        self.updateDim()
+
     def make_bin_img(self, img):
         self.qimg = getBinQImg(img)
+        self.updateDim()
 
     def make_idx8_img(self, img, k):
         self.qimg = getIdx8QImg(img, k)
+        self.updateDim()
 
     def make_gray_img(self, img):
         self.qimg = getGrayQImg(img)
+        self.updateDim()
+
+    def updateDim(self):
+        self.sizeImg = self.qimg.size().scaled(self.rect().size(), Qt.KeepAspectRatio)
+        if self.sizeImg.width() == self.width():
+            self.isFitWidth = True
+            marginY = int((self.height()-self.sizeImg.height())/2)
+            self.rgX = (0, self.sizeImg.width())
+            self.rgY = (marginY, marginY+self.sizeImg.height())
+        elif self.sizeImg.height() == self.height():
+            self.isFitWidth = False
+            marginX = int((self.width()-self.sizeImg.width())/2)
+            self.rgX = (marginX, marginX+self.sizeImg.width())
+            self.rgY = (0, self.sizeImg.height())
+
+    def getImgRange(self):
+        return self.rgX, self.rgY
 
     def paintImage(self, painter):
         painter.setRenderHint(QPainter.Antialiasing, True)
-        self.size_img = self.qimg.size().scaled(self.rect().size(), Qt.KeepAspectRatio)
-        if self.size_img.width() == self.width():
-            self.is_fit_width = True
-            self.pt_st_img = int((self.height()-self.size_img.height())/2)
-            painter.drawPixmap(
-                0, self.pt_st_img, self.size_img.width(), self.size_img.height(), self.qimg)
-        elif self.size_img.height() == self.height():
-            self.is_fit_width = False
-            self.pt_st_img = int((self.width()-self.size_img.width())/2)
-            painter.drawPixmap(
-                self.pt_st_img, 0, self.size_img.width(), self.size_img.height(), self.qimg)
+        self.updateDim()
+        painter.drawPixmap(self.rgX[0], self.rgY[0], self.sizeImg.width(),
+                           self.sizeImg.height(), self.qimg)
 
 
-def getRGBQImg(self, img):
+def getRGBQImg(img):
     h, w = img.shape[0], img.shape[1]
-    qImg = QImage(img.astype(np.uint8), w, h, w*3, QImage.Format_RGB888)
+    qImg = QImage(img.astype(np.uint8).copy(), w, h, w*3, QImage.Format_RGB888)
     return QPixmap(qImg)
     
 
-def getBinQImg(self, img):
+def getBinQImg(img):
      h, w = img.shape[0], img.shape[1]
-     qImg = QImage(img.astype(np.uint8), w, h, w*1, QImage.Format_Indexed8)
+     qImg = QImage(img.astype(np.uint8).copy(), w, h, w*1, QImage.Format_Indexed8)
      qImg.setColor(0, qRgb(0, 0, 0))
      qImg.setColor(1, qRgb(241, 225, 29))
      return QPixmap(qImg)
 
 
-def getIdx8QImg(self, img, k):
+def getIdx8QImg(img, k):
     colormap = [qRgb(228, 26, 28),
                 qRgb(55, 126, 184),
                 qRgb(77, 175, 74),
@@ -71,15 +85,15 @@ def getIdx8QImg(self, img, k):
                 qRgb(247, 129, 191),
                 qRgb(153, 153, 153)]
     h, w = img.shape[0], img.shape[1]
-    qImg = QImage(img.astype(np.uint8), w, h, w*1, QImage.Format_Indexed8)
+    qImg = QImage(img.astype(np.uint8).copy(), w, h, w*1, QImage.Format_Indexed8)
     for i in range(k):
         qImg.setColor(i, colormap[i])
     return QPixmap(qImg)
 
 
-def getGrayQImg(self, img):
+def getGrayQImg(img):
     h, w = img.shape[0], img.shape[1]
-    qImg = QImage(img.astype(np.uint8), w, h, w*1, QImage.Format_Grayscale8)
+    qImg = QImage(img.astype(np.uint8).copy(), w, h, w*1, QImage.Format_Grayscale8)
     return QPixmap(qImg)
 
 
@@ -121,16 +135,16 @@ def magnifying_glass(widget, pos, area=200, zoom=4):
         '''not in a valid region'''
 
 
-def draw_cross(x, y, painter, size_mark=2):
-    l1_st_x, l1_st_y = x-size_mark, y-size_mark
-    l1_ed_x, l1_ed_y = x+size_mark, y+size_mark
-    l2_st_x, l2_st_y = x-size_mark, y+size_mark
-    l2_ed_x, l2_ed_y = x+size_mark, y-size_mark
+def drawCross(x, y, painter, size=2):
+    l1_st_x, l1_st_y = x-size, y-size
+    l1_ed_x, l1_ed_y = x+size, y+size
+    l2_st_x, l2_st_y = x-size, y+size
+    l2_ed_x, l2_ed_y = x+size, y-size
     painter.drawLine(l1_st_x, l1_st_y, l1_ed_x, l1_ed_y)
     painter.drawLine(l2_st_x, l2_st_y, l2_ed_x, l2_ed_y)
 
 
-def draw_triangle(x, y, dir, painter, range=7, peak=30):
+def drawTriangle(x, y, dir, painter, range=7, peak=30):
     path = QPainterPath()
     path.moveTo(x, y)
     if dir == 'North':
