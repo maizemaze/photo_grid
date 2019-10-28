@@ -39,7 +39,7 @@ class PnKmeaner(QWidget):
         self.gr_pre = QGroupBox("K-means Algo.")
         self.lo_pre = QGridLayout()
         
-        self.gr_ft = QGroupBox("Features")
+        self.gr_ft = QGroupBox("Features for clustering (Channels)")
         self.lo_ft = QHBoxLayout()
         self.ck_ft = []
         for i in range(self.nFeatures):
@@ -76,6 +76,14 @@ class PnKmeaner(QWidget):
         self.rb_bin = QRadioButton("Binary (A)")
         self.rb_rgb = QRadioButton("RGB (S)")
         self.rb_k = QRadioButton("K-Means (D)")
+        # zoom
+        self.gr_zm = QGroupBox(
+            "Magnification Levels (Right-click to switch)")
+        self.lo_zm = QHBoxLayout()
+        self.rb_1x = QRadioButton("1X")
+        self.rb_15x = QRadioButton("1.5X")
+        self.rb_3x = QRadioButton("3X")
+
         # refine (right)
         self.gr_pro = QGroupBox("Clusters Refine")
         self.lo_pro = QVBoxLayout()
@@ -162,7 +170,16 @@ class PnKmeaner(QWidget):
         self.lo_pro.addWidget(self.gr_shad)
         self.lo_pro.addWidget(self.gr_gb)
         self.gr_pro.setLayout(self.lo_pro)
-      
+
+        "Zoom"
+        self.rb_1x.toggled.connect(lambda: self.changeZoom(0))
+        self.rb_15x.toggled.connect(lambda: self.changeZoom(1))
+        self.rb_3x.toggled.connect(lambda: self.changeZoom(2))
+        self.lo_zm.addWidget(self.rb_1x)
+        self.lo_zm.addWidget(self.rb_15x)
+        self.lo_zm.addWidget(self.rb_3x)
+        self.gr_zm.setLayout(self.lo_zm)        
+
         '''display'''
         # components
         self.rb_bin.setChecked(True)
@@ -185,14 +202,18 @@ class PnKmeaner(QWidget):
         policy_left = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         policy_left.setHorizontalStretch(3)
         self.gr_left.setSizePolicy(policy_left)
-        self.layout.addWidget(self.gr_left, 0, 0, 4, 1)
+        self.layout.addWidget(self.gr_left, 0, 0, 5, 1)
         self.layout.addWidget(self.gr_pre, 0, 1)
         self.layout.addWidget(self.gr_bin, 1, 1)
         self.layout.addWidget(self.gr_pro, 2, 1)
         self.layout.addWidget(self.gr_dis, 3, 1)
+        self.layout.addWidget(self.gr_zm, 4, 1)
         self.setLayout(self.layout)
         self.change_k() #initialize kmeans
         self.show()
+
+    def changeZoom(self, index):
+        self.wg_img.zoom = index
 
     def rotateCCW(self):
         self.grid.rotateImg(nRot=1)
@@ -280,16 +301,25 @@ class PnKmeaner(QWidget):
         # self.rb_bin.setChecked(True)
   
     def refresh(self):
-        if self.rb_bin.isChecked():
-            self.wg_img.switch_imgB()
-        elif self.rb_rgb.isChecked():
-            self.wg_img.switch_imgVis()
-        elif self.rb_k.isChecked():
-            self.wg_img.switch_imgK()
+        self.rb_bin.setChecked(True)
+        self.wg_img.switch_imgB()
+        # elif self.rb_rgb.isChecked():
+        #     self.wg_img.switch_imgVis()
+        # elif self.rb_k.isChecked():
+        #     self.wg_img.switch_imgK()
   
     def run(self):
         # GRID got everything done
         return 0
+
+    def paintEvent(self, paint_event):
+        if self.wg_img.zoom==0:
+            self.rb_1x.setChecked(True)
+        elif self.wg_img.zoom==1:
+            self.rb_15x.setChecked(True)
+        else:
+            self.rb_3x.setChecked(True)
+
 
 class Widget_Kmeans(Widget_Img):
     def __init__(self, grid):
@@ -336,6 +366,6 @@ class Widget_Kmeans(Widget_Img):
     def updateMag(self):
         pos = self.mapFromGlobal(QCursor().pos())
         if self.zoom!=0:
-            magnifying_glass(self, pos, area=200, zoom=self.zoom*2)
+            magnifying_glass(self, pos, area=int(self.width()/7), zoom=self.zoom*1.5)
         else:
             self.setCursor(QCursor(Qt.ArrowCursor))

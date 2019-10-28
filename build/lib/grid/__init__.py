@@ -1,13 +1,8 @@
 __author__ = "Chunpeng James Chen"
 __version__ = "0.1.3"
-__update__ = "Oct 19, 2019"
+__update__ = "Oct 22, 2019"
 
 from sys import platform
-# for Mac OS users
-if platform == 'darwin':
-    print("use TkAgg")
-    import matplotlib
-    matplotlib.use('TkAgg')
 
 # self imports
 from .grid import *

@@ -7,6 +7,10 @@ import pickle
 import statistics
 
 # 3rd party imports
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+import tqdm
 import cv2
 from scipy.signal import convolve2d
 from scipy.signal import find_peaks
@@ -14,8 +18,6 @@ import matplotlib.pyplot as plt
 from matplotlib import patches
 from matplotlib.lines import Line2D
 
-# self imports
-from .gui.customQt import *
 
 def doKMeans(img, k=3, features=[0]):
     """
@@ -34,12 +36,12 @@ def doKMeans(img, k=3, features=[0]):
     img_z = img.reshape((-1, img.shape[2])).astype(np.float32)
     
     # define criteria, number of clusters(K) and apply kmeans()
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 50, 1.0)
+    criteria = (cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
     param_k = dict(data=img_z,
                    K=k,
                    bestLabels=None,
                    criteria=criteria,
-                   attempts=30,
+                   attempts=10,
                    flags=cv2.KMEANS_PP_CENTERS)
     
     # KMEANS_RANDOM_CENTERS
@@ -161,9 +163,23 @@ def getPickledGRID(path):
     
     return obj
 
+# === === === === === rank === === === === ===
+
+
+def getRank(array):
+    """
+    ----------
+    Results
+    ----------
+    [1,3,6,2,4] -> [4,2,0,3,1]
+    """
+    sort = np.array(array).argsort()
+    rank = np.zeros(len(sort), dtype=np.int)
+    rank[sort] = np.flip(np.arange(len(array)), axis=0)
+    return rank
 # === === === === === peak searching === === === === ===
 
-def rotateBinNdArray(img, angel):
+def rotateBinNdArray(img, angle):
     # create border for the image
     img[:, 0:2] = 1
     img[0:2, :] = 1
@@ -176,7 +192,7 @@ def rotateBinNdArray(img, angel):
 
     # rotate
     pivot = tuple((np.array(imgP.shape[:2])/2).astype(np.int))
-    matRot = cv2.getRotationMatrix2D(pivot, -angel, 1.0)
+    matRot = cv2.getRotationMatrix2D(pivot, -angle, 1.0)
     imgR = cv2.warpAffine(
         imgP.astype(np.float32), matRot, imgP.shape, flags=cv2.INTER_LINEAR).astype(np.int8)
 
@@ -188,11 +204,11 @@ def rotateBinNdArray(img, angel):
     # return
     return imgC
 
-def rotateVec(vec, angel):
+def rotateVec(vec, angle):
     deg = np.pi/180
     x, y = vec[0], vec[1]
-    xp = np.cos(deg*angel)*x - np.sin(deg*angel)*y
-    yp = np.sin(deg*angel)*x + np.cos(deg*angel)*y
+    xp = np.cos(deg*angle)*x - np.sin(deg*angle)*y
+    yp = np.sin(deg*angle)*x + np.cos(deg*angle)*y
     return (xp, yp)
 
 def getFourierTransform(sig):
@@ -200,12 +216,12 @@ def getFourierTransform(sig):
     return sigf[2:int(len(sigf)/2)]
     # return sigf[2:25]
 
-def getCardIntercept(lsValues, angel, imgH=0):
-    if angel == 0:
+def getCardIntercept(lsValues, angle, imgH=0):
+    if angle == 0:
         return lsValues*1
     else:
-        coef = 1/np.sin(np.pi/180*abs(angel))
-        if angel < 0:
+        coef = 1/np.sin(np.pi/180*abs(angle))
+        if angle < 0:
             return lsValues*coef
         else:
             return imgH-lsValues*coef
@@ -330,8 +346,7 @@ def pltSegPlot(agents, plotBase, isRect=False, path=None, prefix="GRID", filenam
         plt.show()
     else:
         file = os.path.join(path, prefix+filename)
-        qimg = getBinQImg(plotBase) if plotBase.max(
-        ) == 1 else getRGBQImg(plotBase)
+        qimg = getBinQImg(plotBase) if plotBase.max() == 1 else getRGBQImg(plotBase)
 
         pen = QPen()
         pen.setWidth(3)
@@ -345,7 +360,6 @@ def pltSegPlot(agents, plotBase, isRect=False, path=None, prefix="GRID", filenam
                 rect = agent.getQRect()
                 painter.drawRect(rect)
         painter.end()
-
         qimg.save(file, "PNG")
 
 def pltImShowMulti(imgs, titles=None, vertical=False):
@@ -393,5 +407,47 @@ def plotLine(axes, slope, intercept):
         y_vals = intercept + slope * x_vals
     axes.plot(x_vals, y_vals, '--', color="red")
 
+def bugmsg(msg, title="DEBUG"):
+    if "--test" in sys.argv:
+        print("======%s=====" % title)
+        print(msg)
+
+# for GUI
+
+def getRGBQImg(img):
+    h, w = img.shape[0], img.shape[1]
+    qImg = QImage(img.astype(np.uint8).copy(), w, h, w*3, QImage.Format_RGB888)
+    return QPixmap(qImg)
+    
+
+def getBinQImg(img):
+     h, w = img.shape[0], img.shape[1]
+     qImg = QImage(img.astype(np.uint8).copy(), w, h, w*1, QImage.Format_Indexed8)
+     qImg.setColor(0, qRgb(0, 0, 0))
+     qImg.setColor(1, qRgb(241, 225, 29))
+     return QPixmap(qImg)
 
 
+def getIdx8QImg(img, k):
+    colormap = [qRgb(228, 26, 28),
+                qRgb(55, 126, 184),
+                qRgb(77, 175, 74),
+                qRgb(152, 78, 163),
+                qRgb(255, 127, 0),
+                qRgb(255, 255, 51),
+                qRgb(166, 86, 40),
+                qRgb(247, 129, 191),
+                qRgb(153, 153, 153)]
+    h, w = img.shape[0], img.shape[1]
+    qImg = QImage(img.astype(np.uint8).copy(), w, h, w*1, QImage.Format_Indexed8)
+    for i in range(k):
+        qImg.setColor(i, colormap[i])
+    return QPixmap(qImg)
+
+
+def getGrayQImg(img):
+    h, w = img.shape[0], img.shape[1]
+    qImg = QImage(img.astype(np.uint8).copy(), w, h, w*1, QImage.Format_Grayscale8)
+    return QPixmap(qImg)
+
+# progress bar 

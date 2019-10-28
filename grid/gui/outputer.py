@@ -58,6 +58,13 @@ class PnOutputer(QWidget):
         self.ck_evenH = QCheckBox("Evenly Distribute Columns (beta)")
         self.ck_evenV = QCheckBox("Evenly Distribute Rows (beta)")
         self.bt_reset = QPushButton("Reset")
+        # Tool
+        self.gr_tol = QGroupBox("Tools (Right-click to switch)")
+        self.lo_tol = QGridLayout()
+        self.rb_none = QRadioButton("None")
+        self.rb_adj = QRadioButton("Border Adjustment")
+        self.rb_vp = QRadioButton("Pan Tool (Vertical)")
+        self.rb_hp = QRadioButton("Pan Tool (Horizontal)")
         # Display
         self.gr_dis = QGroupBox("Display")
         self.lo_dis = QHBoxLayout()
@@ -142,6 +149,17 @@ class PnOutputer(QWidget):
         self.lo_seg.addWidget(self.gr_auto)
         self.lo_seg.addWidget(self.gr_fix)
         self.gr_seg.setLayout(self.lo_seg)
+        '''tool'''
+        self.rb_adj.setChecked(True)
+        self.rb_none.toggled.connect(lambda: self.changeTool(index=0))
+        self.rb_adj.toggled.connect(lambda: self.changeTool(index=1))
+        self.rb_vp.toggled.connect(lambda: self.changeTool(index=2))
+        self.rb_hp.toggled.connect(lambda: self.changeTool(index=3))
+        self.lo_tol.addWidget(self.rb_none, 0, 0)
+        self.lo_tol.addWidget(self.rb_adj, 0, 1)
+        self.lo_tol.addWidget(self.rb_vp, 1, 0)
+        self.lo_tol.addWidget(self.rb_hp, 1, 1)
+        self.gr_tol.setLayout(self.lo_tol)
         '''display (right)'''
         # components
         self.rb_srgb.setChecked(True)
@@ -171,6 +189,7 @@ class PnOutputer(QWidget):
         # NONE
         # right
         self.lo_right.addWidget(self.gr_seg)
+        self.lo_right.addWidget(self.gr_tol)
         self.lo_right.addWidget(self.gr_dis)
         self.lo_right.addWidget(self.gr_out)
         self.pn_right.setLayout(self.lo_right)
@@ -221,7 +240,10 @@ class PnOutputer(QWidget):
         value_width = self.sl_width.value()
         value_length = self.sl_length.value()
         self.wg_img.fix_seg(value_width, value_length)
-
+    
+    def changeTool(self, index):
+        self.wg_img.task = index
+        
     def change_grid(self):
         '''
         '''
@@ -284,6 +306,16 @@ class PnOutputer(QWidget):
         path = QFileDialog().getExistingDirectory(self, "", "", QFileDialog.ShowDirsOnly)
         self.fd_output.setText(path)
 
+    def paintEvent(self, paint_event):
+        if self.wg_img.task == 0:
+            self.rb_none.setChecked(True)
+        elif self.wg_img.task == 1:
+            self.rb_adj.setChecked(True)
+        elif self.wg_img.task == 2:
+            self.rb_vp.setChecked(True)
+        else:
+            self.rb_hp.setChecked(True)
+
 
 class Widget_Seg(Widget_Img):
     def __init__(self, grid):
@@ -323,6 +355,8 @@ class Widget_Seg(Widget_Img):
             for col in range(self.grid.map.nCol):
                 # compute rect of agent
                 agent = self.grid.agents.get(row, col)
+                if not agent or agent.isFake():
+                    continue
                 rect = agent.getQRect()
                 self.ratio = self.width()/self.qimg.width() if self.isFitWidth else self.height() / self.qimg.height()
                 rec_agent = QRect(rect.x()*self.ratio+self.rgX[0], 
@@ -342,7 +376,7 @@ class Widget_Seg(Widget_Img):
                         dis_N = abs(pos.y()-bd_N)
                         dis_E = abs(pos.x()-bd_E)
                         dis_S = abs(pos.y()-bd_S)
-                        # print("W:%.2f, N:%.2f, E:%.2f, S:%.2f" %(dis_W, dis_N, dis_E, dis_S))
+                        # bugmsg("W:%.2f, N:%.2f, E:%.2f, S:%.2f" %(dis_W, dis_N, dis_E, dis_S))
                         dir_idx = np.argmin(np.array([dis_N, dis_W, dis_S, dis_E]))
                         if dir_idx==0:
                             self.dir = Dir.NORTH
@@ -357,7 +391,7 @@ class Widget_Seg(Widget_Img):
         # mag module
         if event.button() == Qt.RightButton:
             self.task = (self.task+1)%4
-            print(self.task)
+            bugmsg(self.task)
             self.mouseMoveEvent(event)
 
     def mouseMoveEvent(self, event):
@@ -366,7 +400,7 @@ class Widget_Seg(Widget_Img):
         if self.task==0:
             self.setCursor(QCursor(Qt.ArrowCursor))
         elif self.task==1:
-            magnifying_glass(self, pos, area=200, zoom=1.5)
+            magnifying_glass(self, pos, area=int(self.width()/7), zoom=1.5)
         elif self.task==2:
             self.setCursor(QCursor(Qt.SizeVerCursor))
         elif self.task==3:
@@ -405,6 +439,8 @@ class Widget_Seg(Widget_Img):
         for row in range(self.grid.map.nRow):
             for col in range(self.grid.map.nCol):
                 agent = self.grid.agents.get(row, col)
+                if not agent or agent.isFake():
+                    continue
                 rect = agent.getQRect()
                 pt_x, pt_y = agent.getCoordinate()
                 self.ratio = self.width()/self.qimg.width() if self.isFitWidth else self.height()/self.qimg.height()
@@ -416,6 +452,7 @@ class Widget_Seg(Widget_Img):
                           pt_y*self.ratio + self.rgY[0], painter)
                 painter.drawRect(rec_agent)
         painter.end()
+
         
     def switch_imgVis(self):
         super().make_rgb_img(self.grid.imgs.get('crop'))
@@ -434,9 +471,9 @@ class Widget_Seg(Widget_Img):
         self.repaint()
 
     def align(self, method, axis=0):
-        self.grid.align(method=method, axis=axis)
+        self.grid.agents.align(method=method, axis=axis)
         self.repaint()
 
     def distributed(self, axis=0, isEven=False):
-        self.grid.distributed(axis=axis, isEven=isEven)
+        self.grid.agents.distributed(axis=axis, isEven=isEven)
         self.repaint()

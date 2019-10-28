@@ -5,6 +5,7 @@ import numpy as np
 from PyQt5.QtCore import QRect
 
 # self imports
+from .lib import *
 from .dir import Dir
 
 
@@ -59,9 +60,9 @@ class GAgent():
             self.agents.append(lsAgentsRow)
 
         # determine fake plots
-        if np.array(fr).var()==0 and len(fr)!=1:
+        if len(fr) > 1 and np.array(fr).var() == 0:
             self.rowFake = fr[0]
-        elif np.array(fc).var()==0 and len(fc)!=1:
+        elif len(fc) > 1 and np.array(fc).var()==0:
             self.colFake = fc[0]
 
     def get(self, row, col):
@@ -137,10 +138,11 @@ class GAgent():
         Parameters
         ----------
         """
-
+        
         for row in range(self.nRow):
             for col in range(self.nCol):
                 agentSelf = self.get(row, col)
+                agentSelf.resetBorderHard()
                 if not agentSelf or agentSelf.isFake():
                     continue
                 rgTemp = dict()
@@ -216,7 +218,7 @@ class GAgent():
         
         # reset the border first
         self.resetBorder()
-
+        bugmsg(self.get(1, 3).getBorder(Dir.EAST), "row 1 col 3 DIR EAST")
         # loop over rows and cols
         for row in range(self.nRow):
             for col in range(self.nCol):
@@ -360,10 +362,14 @@ class GAgent():
                     val = 1e10
                     for col in range(self.nCol):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         val_temp = agent.y
                         val = val_temp if val_temp < val else val
                     for col in range(self.nCol):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         dist = val - agent.y
                         self.updateCoordinate(agent, dist, axis=axis)
             elif axis == 1:
@@ -371,10 +377,14 @@ class GAgent():
                     val = 1e10
                     for row in range(self.nRow):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         val_temp = agent.x
                         val = val_temp if val_temp < val else val
                     for row in range(self.nRow):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         dist = val - agent.x
                         self.updateCoordinate(agent, dist, axis=axis)
         elif method == 3:
@@ -384,10 +394,14 @@ class GAgent():
                     val = -1
                     for col in range(self.nCol):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         val_temp = agent.y
                         val = val_temp if val_temp > val else val
                     for col in range(self.nCol):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         dist = val - agent.y
                         self.updateCoordinate(agent, dist, axis=axis)
             elif axis == 1:
@@ -395,10 +409,14 @@ class GAgent():
                     val = -1
                     for row in range(self.nRow):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         val_temp = agent.x
                         val = val_temp if val_temp > val else val
                     for row in range(self.nRow):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         dist = val - agent.x
                         self.updateCoordinate(agent, dist, axis=axis)
         elif method == 2:
@@ -408,10 +426,14 @@ class GAgent():
                     val = 0
                     for col in range(self.nCol):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         val += agent.y
                     val = int(val/(self.nCol))
                     for col in range(self.nCol):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         dist = val - agent.y
                         self.updateCoordinate(agent, dist, axis=axis)
             elif axis == 1:
@@ -419,10 +441,14 @@ class GAgent():
                     val = 0
                     for row in range(self.nRow):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         val += agent.x
                     val = int(val/(self.nRow))
                     for row in range(self.nRow):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         dist = val - agent.x
                         self.updateCoordinate(agent, dist, axis=axis)
 
@@ -440,7 +466,7 @@ class GAgent():
 
     def distributed(self, axis, isEven):
         if isEven:
-            if axis == 0:
+            if axis == 0: # row
                 y_North = self.get(row=0, col=0).y
                 y_South = self.get(row=self.nRow-1, col=0).y
                 dist = y_South-y_North
@@ -449,9 +475,11 @@ class GAgent():
                 for row in range(self.nRow):
                     for col in range(self.nCol):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         dist = pos_new[row] - agent.y
                         self.updateCoordinate(agent=agent, value=dist, axis=0)
-            else:
+            else:       # col
                 x_West = self.get(row=0, col=0).x
                 x_East = self.get(row=0, col=self.nCol-1).x
                 dist = x_East-x_West
@@ -460,12 +488,16 @@ class GAgent():
                 for col in range(self.nCol):
                     for row in range(self.nRow):
                         agent = self.get(row=row, col=col)
+                        if not agent or agent.isFake():
+                            continue
                         dist = pos_new[col] - agent.x
                         self.updateCoordinate(agent=agent, value=dist, axis=1)
         else:
             for row in range(self.nRow):
                 for col in range(self.nCol):
                     agent = self.get(row=row, col=col)
+                    if not agent or agent.isFake():
+                        continue
                     if axis == 0:
                         dist = agent.y_reset - agent.y
                     elif axis == 1:
@@ -579,6 +611,12 @@ class Agent():
     def resetBorder(self):
         for dir in list([Dir.NORTH, Dir.WEST, Dir.SOUTH, Dir.EAST]):
             self.border[dir.name] = self.border_reset[dir.name]
+
+    def resetBorderHard(self):
+        self.setBorder(Dir.WEST, self.x)
+        self.setBorder(Dir.EAST, self.x)
+        self.setBorder(Dir.NORTH, self.y)
+        self.setBorder(Dir.SOUTH, self.y)
 
     def isFake(self):
         return self.name=="_FAKE"

@@ -4,6 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 # self imports
+from ..lib import *
 from ..grid import *
 from .customQt import * 
 
@@ -71,16 +72,17 @@ class Widget_ViewCrop(Widget_Img):
         for pos in self.marks:
             drawCross(pos.x(), pos.y(), painter, 5)
         # coordinate
-        if self.pos is not None:
-            painter.setFont(QFont("Trebuchet MS",14))
-            painter.drawText(self.pos.x()-20, self.pos.y()+20, "(%d, %d)" %(self.pos.x(), self.pos.y()))
+        # if self.pos is not None:
+        #     painter.setFont(QFont("Trebuchet MS",14))
+        #     painter.drawText(self.pos.x()-20, self.pos.y()+20, "(%d, %d)" %(self.pos.x(), self.pos.y()))
         painter.end()
         
     def mouseMoveEvent(self, event):
         pos = event.pos()
         self.pos = pos
+        magArea = int(min(self.rgX[1]-self.rgX[0], self.rgY[1]-self.rgY[0])/5)
         if self.zoom!=0:
-            magnifying_glass(self, pos, area=200, zoom=self.zoom*2)
+            magnifying_glass(self, pos, area=magArea, zoom=self.zoom*1.5)
         else:
             self.setCursor(QCursor(Qt.ArrowCursor))
 
@@ -109,8 +111,8 @@ class Widget_ViewCrop(Widget_Img):
                 else:
                     self.marks = []
                     self.n_marks = 0
-            # print('(x:%d, y:%d)' % (pt_mouse.x()*(self.ratio), pt_mouse.y()*(self.ratio)))
-            # print("ratio: %.2f" % (self.ratio))
+            # bugmsg('(x:%d, y:%d)' % (pt_mouse.x()*(self.ratio), pt_mouse.y()*(self.ratio)))
+            # bugmsg("ratio: %.2f" % (self.ratio))
             self.update()
         self.mouseMoveEvent(event)
         self.pos = None

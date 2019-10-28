@@ -66,7 +66,6 @@ class GRID():
         Parameters
         ----------
         """
-        print("path: %s, prefix: %s" % (path, prefix))
 
         self.savePlotAndDT(path=path, prefix=prefix)
     
@@ -98,9 +97,9 @@ class GRID():
         """
         if pathImg is None:
             self.imgs.load(
-                pathImg="http://www.zzlab.net/James_Demo/seg_img.jpg")
+                pathImg=os.path.join(self.user.dirGrid, "demo/seg_img.jpg"))
             self.map.load(
-                pathMap="http://www.zzlab.net/James_Demo/seg_map.csv")
+                pathMap=os.path.join(self.user.dirGrid, "demo/seg_map.csv"))
         else:
             self.imgs.load(pathImg=pathImg)
             self.map.load(pathMap=pathMap)
@@ -171,7 +170,7 @@ class GRID():
         Parameters
         ----------
         """
-
+        #  self.agents.setup(self.map, self.imgs.get("bin"))
         self.agents.cpuPreDim(tol=tol)
         self.agents.autoSeg(coefGrid=coefGrid)
 
@@ -196,7 +195,8 @@ class GRID():
         if nPeaks != 0:
             self.map.nAxs[idx] = nPeaks
         self.map.locateCenters(img=self.imgs.get("binSeg"))
-        
+        self.map.nAxs[idx] = 0
+
     #=== === === === === === AGENTS === === === === === ===
 
 

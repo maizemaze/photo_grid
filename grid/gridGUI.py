@@ -11,6 +11,7 @@ from PyQt5.QtGui import *
 # self imports
 from .grid import *
 from .gui import * 
+from .lib import *
 
 class GRID_GUI(QMainWindow):
     """
@@ -46,6 +47,7 @@ class GRID_GUI(QMainWindow):
         self.nPanel = -1
         self.pnContent = QWidget()
         self.pnMain = QStackedWidget()
+
         self.pnNavi = QWidget()
         self.btNext = QPushButton()
         self.btPrev = QPushButton()
@@ -59,13 +61,14 @@ class GRID_GUI(QMainWindow):
         self.initUI()    
 
     def startover(self):
-        print("start over")
-        for i in range(self.pnMain.count()):
-            widget = self.pnMain.widget(i)
+        while self.pnMain.count()!=0:
+            widget = self.pnMain.widget(self.pnMain.count()-1)
             self.pnMain.removeWidget(widget)
 
         self.nPanel = -1
         self.gridInput = None
+        self.idxPn = None
+        del self.grid
         self.grid = GRID()
         self.initUI()
 
@@ -97,21 +100,19 @@ class GRID_GUI(QMainWindow):
                 self.showAnchor()
             elif self.idxPn==4:
                 self.showOutputer()
-
-        # self.updateMainPn(Panels.INPUTER)
         
         # show
         self.show()
 
     def showInputer(self, isNew=True):
-        print("input")
+        bugmsg("show input")
         self.assembleNavigation(nameNext="Load Files ->", oneSide=True)
         self.btNext.clicked.connect(
             lambda: self.showCropper())
         self.updateMainPn(panel=Panels.INPUTER, isNew=isNew)
 
     def showCropper(self, isNew=True):
-        print("crop")
+        bugmsg("crop")
         self.assembleNavigation()
         self.btPrev.clicked.connect(
             lambda: self.showInputer(isNew=False))
@@ -120,7 +121,7 @@ class GRID_GUI(QMainWindow):
         self.updateMainPn(panel=Panels.CROPPER, isNew=isNew)     
 
     def showKMeaner(self, isNew=True):
-        print("kmean")
+        bugmsg("kmean")
         self.assembleNavigation()
         self.btPrev.clicked.connect(
             lambda: self.showCropper(isNew=False))
@@ -129,7 +130,7 @@ class GRID_GUI(QMainWindow):
         self.updateMainPn(panel=Panels.KMEANER, isNew=isNew)
 
     def showAnchor(self, isNew=True):
-        print("anchor")
+        bugmsg("anchor")
         self.assembleNavigation()
         self.btPrev.clicked.connect(
             lambda: self.showKMeaner(isNew=False))
@@ -138,7 +139,7 @@ class GRID_GUI(QMainWindow):
         self.updateMainPn(panel=Panels.ANCHOR, isNew=isNew)
 
     def showOutputer(self, isNew=True):
-        print("show output")
+        bugmsg("show output")
         self.assembleNavigation(nameNext="Finish")
         self.btPrev.clicked.connect(
             lambda: self.showAnchor(isNew=False))
@@ -150,10 +151,10 @@ class GRID_GUI(QMainWindow):
         if isNew:
             try:
                 # run computation from the previous panel
-                print("run")
+                bugmsg("run")
                 self.pnMain.currentWidget().run()
             except Exception as e:
-                print(e)
+                bugmsg(e)
                 # except the initial one
                 None
 
@@ -237,7 +238,6 @@ class GRID_GUI(QMainWindow):
         self.setCentralWidget(self.pnContent)
         self.show()
 
-
 class Panels(Enum):
     INPUTER = 0, PnInputer
     CROPPER = 1, PnCropper
@@ -257,8 +257,8 @@ class Panels(Enum):
 #     np.save("map", self.params['map'])
 #     np.save("img_k", self.params['k'])
 #     np.save("ls_bin", self.params['ls_bin'])
-#     print("nc:%d" % (self.params['nc']))
-#     print("nr:%d" % (self.params['nr']))
+#     bugmsg("nc:%d" % (self.params['nc']))
+#     bugmsg("nr:%d" % (self.params['nr']))
 
 
 # def updateMainPn(self, panel, isNew=True):
@@ -266,7 +266,7 @@ class Panels(Enum):
 #     if isNew:
 #         try:
 #             # run computation from the previous panel
-#             print("run")
+#             bugmsg("run")
 #             self.pnMain.currentWidget().run()
 #         except:
 #             # except the initial one
@@ -281,7 +281,7 @@ class Panels(Enum):
 
 #     # show
 #     self.assembleAndShow()
-
+# 
 # def updateMainPn(self, panel, isNew=True):
 #     """
 #     ----------
@@ -290,19 +290,19 @@ class Panels(Enum):
 #     """
 #     # define events
 #     if panel == Panels.INPUTER:
-#         print("panel Input")
+#         bugmsg("panel Input")
 #         self.assembleNavigation(nameNext="Load Files ->", oneSide=True)
 #         self.btNext.clicked.connect(
 #             lambda: self.updateMainPn(Panels.CROPPER))
 #     elif panel == Panels.CROPPER:
-#         print("panel cropper")
+#         bugmsg("panel cropper")
 #         self.assembleNavigation()
 #         self.btPrev.clicked.connect(
 #             lambda: self.updateMainPn(Panels.INPUTER, isNew=False))
 #         self.btNext.clicked.connect(
 #             lambda: self.updateMainPn(Panels.KMEANER))
 #     elif panel == Panels.KMEANER:
-#         print("panel kmeaner")
+#         bugmsg("panel kmeaner")
 #         self.assembleNavigation()
 #         self.btPrev.clicked.connect(
 #             lambda: self.updateMainPn(Panels.CROPPER, isNew=False))
@@ -324,7 +324,7 @@ class Panels(Enum):
 #     if isNew:
 #         try:
 #             # run computation from the previous panel
-#             print("run")
+#             bugmsg("run")
 #             self.pnMain.currentWidget().run()
 #         except:
 #             # except the initial one
@@ -339,3 +339,4 @@ class Panels(Enum):
 
 #     # show
 #     self.assembleAndShow()
+# 

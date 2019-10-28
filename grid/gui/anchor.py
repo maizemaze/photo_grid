@@ -7,7 +7,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 # self imports
-from ..lib import *
 from .customQt import *
 
 class PnAnchor(QWidget):
@@ -17,7 +16,6 @@ class PnAnchor(QWidget):
     def __init__(self, grid):
         super().__init__()
         self.grid = grid
-
         # compute
         self.grid.findPlots()
 
@@ -57,6 +55,7 @@ class PnAnchor(QWidget):
         self.ptX = -1
 
         # UI
+        self.switch = True
         self.initUI()
 
         # show
@@ -133,7 +132,7 @@ class PnAnchor(QWidget):
         try:
             self.updatePlots()
         except Exception as e:
-            print(e)
+            bugmsg(e)
         # '''rect'''
         # pen.setWidth(1)
         # pen.setColor(Qt.black)
@@ -143,14 +142,14 @@ class PnAnchor(QWidget):
         # painter.drawRect(self.rec_acr_r)
  
     def updatePlots(self):
-        print("update anchor")
+        bugmsg("update anchor")
         self.updateAnchor()
-        print("update agent")
+        bugmsg("update agent")
         self.updateAgents()
-        print("done")
+        bugmsg("done")
 
     def changeAngle(self, idx):
-        print("ch angle %d" % idx)
+        bugmsg("ch angle %d" % idx)
         angle = self.dlAg[idx].value()*self.mtp
         angleOp = self.dlAg[1-idx].value()*self.mtp
         angleDiff = abs(angle-angleOp)
@@ -158,20 +157,28 @@ class PnAnchor(QWidget):
             if angleDiff > 90:
                 value = min(angle+90, 90)/self.mtp if idx == 0 else max(-90, angle-90)/self.mtp
                 self.dlAg[1-idx].setValue(int(value))
+            elif angle*angleOp>0:
+                angle = 0
+                self.dlAg[idx].setValue(0)
             self.grAg[idx].setTitle("Angle: %d degrees" % (angle))
             self.grid.updateCenters(idx, angle=angle)
+            self.switch = False
+            self.spbNum[idx].setValue(len(self.grid.map.itcs[idx]))
+            self.spbNum[1-idx].setValue(len(self.grid.map.itcs[1-idx]))
+            self.switch = True
             self.wgImg.make_bin_img(self.grid.map.imgs[idx])
             self.repaint()
     
     def changePeaks(self, idx):
-        print("ch peak")
-        nPeaks = self.spbNum[idx].value()
-        self.grid.updateCenters(idx, nPeaks=nPeaks)
-        self.wgImg.make_bin_img(self.grid.map.imgs[idx])
-        self.repaint()
+        if self.switch:
+            bugmsg("ch peak")
+            nPeaks = self.spbNum[idx].value()
+            self.grid.updateCenters(idx, nPeaks=nPeaks)
+            self.wgImg.make_bin_img(self.grid.map.imgs[idx])
+            self.repaint()
 
     def toggle(self, idx):
-        print("ch toggle")
+        bugmsg("ch toggle")
         self.idxAx = idx
         self.wgImg.make_bin_img(self.grid.map.imgs[idx])
         self.grAxis[idx].setChecked(True)
@@ -187,33 +194,62 @@ class PnAnchor(QWidget):
 
     def updateAgents(self):
         # fetch info
+        gmap = self.grid.map
         idxCr = self.idxAx
-        idxOp = int(not self.idxAx)
-        agCr = self.grid.map.angles[idxCr]
-        agOp = self.grid.map.angles[idxOp]
-        agDiff = abs(agOp-agCr)
-
-        imgH, imgW = self.grid.map.imgs[idxCr].shape
+        idxOp = 1 - idxCr
+        agCr = gmap.angles[idxCr]
+        agOp = gmap.angles[idxOp]
+        agDiff = agOp-agCr
+        agAbs = abs(agDiff)
+        
+        imgH, imgW = gmap.imgs[idxCr].shape
         qimgH, qimgW = self.wgImg.sizeImg.height(), self.wgImg.sizeImg.width()
         ratio = sum([qimgW/imgW, qimgH/imgH])/2
-        print(ratio)
+        bugmsg(ratio)
 
         # current axis
         self.wgImg.ptVLine = self.wgAxs.pts
 
         # another axis
-        slp = 1/np.tan(np.pi/180*agDiff)
-        sigs = self.grid.map.sigs[idxOp]
-        if idxOp==1:
-            self.wgImg.slp = slp
-            X = (sigs/np.sin(np.pi/180*agDiff)) + \
-                np.cos(np.pi/180*agDiff)*self.grid.map.imgHr[idxOp]
-            self.wgImg.itcs = (qimgH - X*ratio)
+        self.wgImg.slp = 1 / np.tan(np.pi/180*agDiff)
+        sigs = gmap.sigs[idxOp]
+
+        if agCr % 90 == 0:
+            bugmsg("case 1")
+            itc = getCardIntercept(sigs, agDiff, imgH)
+        elif agOp % 90 == 0:
+            itc = np.cos(np.pi/180*agAbs)*gmap.imgHr[idxOp] + \
+                    sigs/np.sin(np.pi/180*agAbs)
+            if agDiff < 0:
+                bugmsg("case 2")     
+            else:
+                bugmsg("case 3")
+                itc = gmap.imgHr[idxCr] - itc
         else:
-            self.wgImg.slp = -slp
-            segA = sigs/np.sin(np.pi/180*agDiff)
-            segB = np.sin(np.pi/180*agDiff)*self.grid.map.imgWr[idxOp]
-            self.wgImg.itcs = segA*ratio + (qimgW - segB*ratio)
+            seg1 = gmap.imgH*np.cos(np.pi/180*abs(agCr))
+            seg2 = (sigs - gmap.imgH * np.sin(np.pi/180*abs(agOp))) / \
+                np.sin(np.pi/180*(abs(agOp)+abs(agCr)))
+            itc = seg1 + seg2
+            if agCr > 0:
+                bugmsg("case 4")
+            else:
+                bugmsg("case 5")
+                itc = gmap.imgHr[idxCr] - itc
+
+        self.wgImg.itcs = itc*ratio
+
+        # slp = -1/np.tan(np.pi/180*agAbs) if agAbs < 0 else 1/np.tan(np.pi/180*agAbs)
+        # sigs = self.grid.map.sigs[idxOp]
+        # if idxOp==1:
+        #     self.wgImg.slp = slp
+        #     X = (sigs/np.sin(np.pi/180*agAbs)) + \
+        #         np.cos(np.pi/180*agAbs)*self.grid.map.imgHr[idxOp]
+        #     self.wgImg.itcs = (qimgH - X*ratio)
+        # else:
+        #     self.wgImg.slp = -slp
+        #     segA = sigs/np.sin(np.pi/180*agAbs)
+        #     segB = np.sin(np.pi/180*agAbs)*self.grid.map.imgWr[idxOp]
+        #     self.wgImg.itcs = segA*ratio + (qimgW - segB*ratio)
         
     def updateDim(self):
         self.recImg = self.wgImg.geometry()
@@ -228,38 +264,52 @@ class PnAnchor(QWidget):
     def mousePressEvent(self, event):
         pos = event.pos()
         self.updateDim()
-        print(pos)
-        print(self.recAxs)
+        bugmsg(pos)
+        bugmsg(self.recAxs)
         if self.recImg.contains(pos):
-            print("img")
+            bugmsg("img")
         if self.recAxs.contains(pos):
             self.ptX = self.getPtGui2Map(pos.x())
             self.idxAnc = np.abs(
                 self.ptX-self.grid.map.sigs[self.idxAx]).argmin()
         if self.recRight.contains(pos):
-            print("right")
+            bugmsg("right")
     
     def mouseMoveEvent(self, event):
         pos = event.pos()
         if self.idxAnc != -1:
-            self.ptX = self.getPtGui2Map(pos.x())
-            print(self.recAxs)
-            print("pos %d; ptX %d" % (pos.x(), self.ptX))
+            if pos.x() > self.wgImg.rgX[0] and pos.x() < self.wgImg.rgX[1]:
+                self.ptX = self.getPtGui2Map(pos.x())
+            elif pos.x() <= self.wgImg.rgX[0]:
+                self.ptX = 0
+            elif pos.x() >= self.wgImg.rgX[1]:
+                self.ptX = self.grid.map.imgW - 1
             self.grid.map.modAnchor(self.idxAx, self.idxAnc, self.ptX)
             self.update()
 
     def mouseReleaseEvent(self, event):
         pos = event.pos()
         ptX = self.getPtGui2Map(pos.x())
-
-        if self.idxAnc!= 1 and event.button()==Qt.RightButton:
+        sig = np.array(self.grid.map.sigs[self.idxAx])
+        if self.idxAnc != -1 and event.button() == Qt.RightButton and self.spbNum[self.idxAx].value() > 1:
             self.grid.map.delAnchor(self.idxAx, self.idxAnc)
-        elif self.ptX==ptX and event.button()==Qt.LeftButton: 
+            value = self.spbNum[self.idxAx].value() - 1
+            self.switch = False
+            self.spbNum[self.idxAx].setValue(value)
+            self.switch = True
+        elif self.ptX == ptX and event.button() == Qt.LeftButton and abs(sig-ptX).min() > sig.std()/20:
             self.grid.map.addAnchor(self.idxAx, ptX)
+            value = self.spbNum[self.idxAx].value() + 1
+            self.switch = False
+            self.spbNum[self.idxAx].setValue(value)
+            self.switch = True
 
         self.update()            
         self.ptX = -1
         self.idxAnc = -1
+    
+    def run(self):
+        self.grid.agents.setup(gmap=self.grid.map, img=self.grid.imgs.get('binSeg'))
 
 class WidgetAnchor(Widget_Img):
     def __init__(self, grid):
@@ -287,6 +337,7 @@ class WidgetAnchor(Widget_Img):
             y1 = self.rgY[0] + itc
             y2 = y1 + (x2-x1)*self.slp
             pen.setWidth(1)
+            pen.setStyle(Qt.DotLine) 
             painter.setPen(pen)
             painter.drawLine(x1, y1, x2, y2)
             pen.setWidth(5)
@@ -294,7 +345,7 @@ class WidgetAnchor(Widget_Img):
             for x in self.ptVLine:
                 drawCross(x, y1+(x-x1)*self.slp, painter, size=5)
 
-        print(self.itcs)
+        bugmsg(self.itcs)
         painter.end()
 
 class WidgetAxis(QWidget):
@@ -324,203 +375,3 @@ class WidgetAxis(QWidget):
 def rescale(values, scaleSrc=(0, 1), scaleDst=(0, 256)):
     values = np.array(values)
     return (values-scaleSrc[0])*(scaleDst[1]-scaleDst[0])/(scaleSrc[1]-scaleSrc[0])+scaleDst[0]
-
-class ARCHIVE():
-    def __init(self):
-        # attribute
-        # self.grid = grid
-
-        # mouse
-        self.idx_click = -1
-        self.pos_temp = QPoint(0, 0)
-        self.state_hand = False
-        self.cursor = QCursor(Qt.ArrowCursor)
-
-        # size/rec
-        self.size_self = QSize(0, 0)
-        self.size_imgPan = QSize(0, 0)
-        self.size_img = QSize(0, 0)
-
-        # anchor
-        self.rec_acr_c = QRect(0, 0, 0, 0)
-        self.rec_acr_r = QRect(0, 0, 0, 0)
-
-        # image
-        self.margin = 70
-        self.space = 5
-        self.rec_img = QRect(QPoint(0, 0), QSize(0, 0))
-
-        # button
-        self.gr_button = QGroupBox("Options")
-        self.lo_button = QGridLayout()
-        self.bt_evenH = QCheckBox("Evenly Distributed (X)")
-        self.bt_evenV = QCheckBox("Evenly Distributed (Y)")
-        self.bt_reset = QPushButton("Reset")
-
-        # get plots from GRID
-        self.grid.findPlots()
-
-        # initialize UI
-        self.initUI()
-
-    def initUI(self):
-        '''image'''
-        self.qimg = getBinQImg(self.grid.imgs.get("bin"))
-        '''button'''
-        self.bt_reset.clicked.connect(self.reset_Anchors)
-        vbox = QVBoxLayout()
-        vbox.addStretch(1)
-        vbox.addWidget(self.bt_reset)
-        box_bt = QHBoxLayout()
-        box_bt.addStretch(1)
-        box_bt.addLayout(vbox)
-        self.setLayout(box_bt)
-        self.show()
-
-    def mousePressEvent(self, event):
-        pos = event.pos()
-        self.pos_temp = QPoint(pos.x(), pos.y())
-        if self.rec_acr_c.contains(pos):
-            self.idx_click = (np.abs(self.x_acr_c-pos.x())).argmin()
-            if event.button() == Qt.RightButton:
-                self.grid.map.delRatio(dim=1, index=self.idx_click)
-        elif self.rec_acr_r.contains(pos):
-            self.idx_click = (np.abs(self.y_acr_r-pos.y())).argmin()
-            if event.button() == Qt.RightButton:
-                self.grid.map.delRatio(dim=0, index=self.idx_click)
-        elif event.button() == Qt.RightButton:
-            # mag module
-            self.zoom = (self.zoom+1)%3
-            self.mouseMoveEvent(event)
-
-    def mouseReleaseEvent(self, event):
-        pos = event.pos()
-        # add new anchors
-        if (pos.x()==self.pos_temp.x())&(pos.y()==self.pos_temp.y())&(event.button()==Qt.LeftButton):
-            if self.rec_acr_c.contains(pos):
-                print("add")
-                correct = 0 if self.is_fit_width else self.pt_st_img
-                new_acr_c = (pos.x()-correct)/(self.size_img.width())
-                self.grid.map.addRatio(dim=1, value=new_acr_c)
-            elif self.rec_acr_r.contains(pos):
-                print("add")
-                correct = self.pt_st_img if self.is_fit_width else 0
-                new_acr_r = (pos.y()-correct)/(self.size_img.height())
-                self.grid.map.addRatio(dim=0, value=new_acr_r)
-        self.update()
-
-    def mouseMoveEvent(self, event):
-        pos = event.pos()
-        correctX = 0 if self.is_fit_width else self.pt_st_img
-        correctY = self.pt_st_img if self.is_fit_width else 0
-        if event.buttons() == Qt.LeftButton:
-            if self.rec_acr_c.contains(pos):
-                self.grid.map.modRatio(dim=1, index=self.idx_click, value=(
-                    pos.x()-correctX)/self.size_img.width())
-            elif self.rec_acr_r.contains(pos):
-                self.grid.map.modRatio(dim=0, index=self.idx_click, value=(
-                    pos.y()-correctY)/self.size_img.height())
-            self.update()
-        if (self.rec_acr_c.contains(pos)) or (self.rec_acr_r.contains(pos)):
-            self.cursor = QCursor(Qt.PointingHandCursor)
-            self.setCursor(self.cursor)
-        elif self.rec_img.contains(pos):
-            # mag module
-            if self.zoom!=0:
-                magnifying_glass(self, pos, area=200, zoom=self.zoom*1.5)
-            else:
-                self.setCursor(QCursor(Qt.ArrowCursor))
-        else:
-            self.setCursor(QCursor(Qt.ArrowCursor))
-
-    def evenH(self):
-        if self.bt_evenH.isChecked():
-            size = len(self.acr_c)
-            space = 0.02
-            length = 1-(space*2)
-            self.acr_c = np.arange(space, 1-space, length/size)
-        else:
-            self.acr_c = self.acr_c_raw
-        self.update()
-
-    def evenV(self):
-        if self.bt_evenV.isChecked():
-            size = len(self.acr_r)
-            space = 0.02
-            length = 1-(space*2)
-            self.acr_r = np.arange(space, 1-space, length/size)
-        else:
-            self.acr_r = self.acr_r_raw
-        self.update()
-
-    def reset_Anchors(self):
-        self.grid.map.resetRatio()
-        self.update()
-
-    def paintEvent(self, paint_event):
-        '''painter'''
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing, True)
-        pen = QPen()
-        pen.setWidth(3)
-        pen.setColor(Qt.red)
-        painter.setPen(pen)
-        painter.setBrush(Qt.red)
-        '''sort array'''
-        self.acr_c, self.acr_r = self.grid.map.getRatio()
-        '''size info'''
-        self.size_self = self.rect().size()
-        self.size_imgPan = QSize(self.size_self.width()-self.margin, self.size_self.height()-self.margin)
-        self.size_img = self.qimg.size().scaled(self.size_imgPan, Qt.KeepAspectRatio)
-        '''Check the image side'''
-        if self.size_img.width()==self.size_imgPan.width():
-            '''image'''
-            self.is_fit_width = True
-            self.pt_st_img = int((self.size_imgPan.height()-self.size_img.height())/2)
-            painter.drawPixmap(0, self.pt_st_img, self.size_img.width(), self.size_img.height(), self.qimg)
-            '''anchor X'''
-            self.x_acr_c = (self.acr_c*self.size_img.width()).astype(np.int)
-            self.y_acr_c = self.pt_st_img+self.size_img.height()+(self.margin/5)
-            '''anchor Y'''
-            self.x_acr_r = self.size_self.width()-(self.margin*4/5)
-            self.y_acr_r = (self.acr_r*self.size_img.height()+self.pt_st_img).astype(np.int)
-            '''rect'''
-            self.rec_acr_c = QRect(0, self.pt_st_img+self.size_img.height()+self.space, self.size_img.width(), self.margin)
-            self.rec_acr_r = QRect(self.size_img.width()+self.space, self.pt_st_img, self.margin, self.size_img.height())
-            self.rec_img = QRect(QPoint(0, self.pt_st_img), self.size_img)
-        elif self.size_img.height()==self.size_imgPan.height():
-            '''image'''
-            self.is_fit_width = False
-            self.pt_st_img = int((self.size_imgPan.width()-self.size_img.width())/2)
-            painter.drawPixmap(self.pt_st_img, 0, self.size_img.width(), self.size_img.height(), self.qimg)
-            '''anchor X'''
-            self.x_acr_c = (self.acr_c*self.size_img.width()+self.pt_st_img).astype(np.int)
-            self.y_acr_c = self.size_self.height()-(self.margin*4/5)
-            '''anchor Y'''
-            self.x_acr_r = self.pt_st_img+self.size_img.width()+(self.margin/5)
-            self.y_acr_r = (self.acr_r*self.size_img.height()).astype(np.int)
-            '''rect'''
-            self.rec_acr_c = QRect(self.pt_st_img, self.size_img.height()+self.space, self.size_img.width(), self.margin-5)
-            self.rec_acr_r = QRect(self.pt_st_img+self.size_img.width()+self.space, 0, self.margin-5, self.size_img.height())
-            self.rec_img = QRect(QPoint(self.pt_st_img, 0), self.size_img)
-        '''anchor'''
-        # side
-        for posX in self.x_acr_c:
-            draw_triangle(posX, self.y_acr_c+self.space, "North", painter)
-        for posY in self.y_acr_r:
-            draw_triangle(self.x_acr_r+self.space, posY, "West", painter)
-        # image
-        pen.setWidth(3)
-        pen.setColor(Qt.red)
-        painter.setPen(pen)
-        painter.setBrush(Qt.white)
-        for posX in self.x_acr_c:
-            for posY in self.y_acr_r:
-                draw_cross(posX, posY, painter)
-        '''rect'''
-        pen.setWidth(1)
-        pen.setColor(Qt.black)
-        painter.setPen(pen)
-        painter.setBrush(Qt.transparent)
-        painter.drawRect(self.rec_acr_c)
-        painter.drawRect(self.rec_acr_r)

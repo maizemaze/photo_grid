@@ -28,6 +28,7 @@ class GMap():
         self.nAxs = [0, 0]
         self.nRow = 0
         self.nCol = 0
+        self.img = None
         self.imgH = 0
         self.imgW = 0
 
@@ -68,6 +69,7 @@ class GMap():
         """
 
         # get image info
+        self.img = img
         self.imgH, self.imgW = img.shape[:2]
         isDimAssigned = (nRow != 0 and nCol != 0)
         
@@ -100,18 +102,11 @@ class GMap():
         return angles
 
     def locateCenters(self, img, nSmooth=100):
-        self.slps = [-1/np.tan(np.pi/180*abs(angle)) if angle < 0 else 1 /
-                     np.tan(np.pi/180*abs(angle)) for angle in self.angles]
+        self.slps = [1/np.tan(np.pi/180*angle) for angle in self.angles]
         # find intercepts given 2 angles
         self.itcs = self.getIntercepts(img, self.angles, self.nAxs, nSmooth)
         # get pandas data table
         self.dt = self.getDfCoordinate(img, self.angles, self.slps, self.itcs)
-        print("angles")
-        print(self.angles)
-        print("slopes")
-        print(self.slps)
-        print("intercepts")
-        print(self.itcs)
 
     def getIntercepts(self, img, angles, nSigs, nSmooth):   
         intercepts = []
@@ -158,11 +153,8 @@ class GMap():
         idxMaj = 0 if getClosedTo0or90(angles[0]) <= getClosedTo0or90(angles[1]) else 1
         idxMin = 1-idxMaj
 
-        intercepts[0].sort()
-        intercepts[1].sort()
-
-        if angles[idxMin]>0:
-            intercepts[idxMin] = np.flip(intercepts[idxMin], 0)
+        for i in range(2):
+            intercepts[i].sort()
 
         plotsMaj = []
         plotsMin = []
@@ -234,21 +226,38 @@ class GMap():
         return dt[(dt.row == row) & (dt.col == col)]['name'].values[0]
 
     def delAnchor(self, axis, index):
-        self.sigs[axis] = np.delete(self.sigs[axis], index)
-        self.itcs[axis] = getCardIntercept(
+        # since numpy array required elements in same length if they were
+        temp = self.sigs.tolist()
+        try:
+            temp[axis].remove(temp[axis][index])
+        except:
+            temp[axis] = np.delete(temp[axis], index)
+        self.sigs = np.array(temp)
+        temp = self.itcs.tolist()
+        temp[axis] = getCardIntercept(
             self.sigs[axis], self.angles[axis], self.imgH)
+        self.itcs = np.array(temp)
+        self.dt = self.getDfCoordinate(self.img, self.angles, self.slps, self.itcs)
 
-    def addAnchor(self, axis, value):
-        if abs(self.sigs[axis]-value).min() > self.sigs[axis].std()/20:
-            print("add")
-            self.sigs[axis] = np.append(self.sigs[axis], value)
-            self.itcs[axis] = getCardIntercept(
-                self.sigs[axis], self.angles[axis], self.imgH)
+    def addAnchor(self, axis, value):        
+        temp = self.sigs.tolist()
+        try:
+            temp[axis].append(value)
+        except:
+            temp[axis] = np.append(temp[axis], value)
+        self.sigs = np.array(temp)
+        temp = self.itcs.tolist()
+        temp[axis] = getCardIntercept(
+            self.sigs[axis], self.angles[axis], self.imgH)
+        self.itcs = np.array(temp)
+        self.dt = self.getDfCoordinate(self.img, self.angles, self.slps, self.itcs)
 
     def modAnchor(self, axis, index, value):
         self.sigs[axis][index] = value
         self.itcs[axis] = getCardIntercept(
             self.sigs[axis], self.angles[axis], self.imgH)
+        self.dt = self.getDfCoordinate(
+            self.img, self.angles, self.slps, self.itcs)
 
 def getClosedTo0or90(x):
     s1 = abs(abs(x)-90)

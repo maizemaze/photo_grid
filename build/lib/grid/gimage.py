@@ -42,6 +42,7 @@ class GImage():
         self.paramKMs = {
             'k' : -1,
             'center': None,
+            'rank' : None,
             'features': [],
             'lsSelect' : [],
             'lsKTobin' : [],
@@ -158,11 +159,13 @@ class GImage():
             self.set(key='kmean', value=imgK)
             # update parameters
             self.paramKMs['center'] = center
-            self.paramKMs['k'] = k
-            self.paramKMs['features'] = features
+            self.paramKMs['rank'] = self.rankCenters(k, center)
+            # can't update yet as binarize needs it
+            # self.paramKMs['k'] = k 
+            # self.paramKMs['features'] = features
         else:
             # skip
-            print("skip kmean")
+            bugmsg("skip kmean")
 
     def binarize(self, k=3, features=[0, 1, 2], lsSelect=[0]):
         """
@@ -172,12 +175,12 @@ class GImage():
         """
 
         if (k != self.paramKMs['k']) or (features != self.paramKMs['features']) or (lsSelect != self.paramKMs['lsSelect']):
-            ratioK = [(self.paramKMs['center'][i, 0]-self.paramKMs['center'][i, 1])/self.paramKMs['center'][i, :].sum()
-                      for i in range(self.paramKMs['center'].shape[0])]
-            # rankK = np.flip(np.argsort(ratioK), 0) 
-            rankK = np.argsort(ratioK)
+            # ratioK = [(self.paramKMs['center'][i, 0]-self.paramKMs['center'][i, 1])/self.paramKMs['center'][i, :].sum()
+            #           for i in range(self.paramKMs['center'].shape[0])]
+            # # rankK = np.flip(np.argsort(ratioK), 0) 
+            # rankK = np.argsort(ratioK)
             try:
-                clusterSelected = rankK[lsSelect]
+                clusterSelected = self.paramKMs['rank'][lsSelect]
             except:
                 clusterSelected = []
             self.set(key='binOrg', value=(
@@ -191,8 +194,10 @@ class GImage():
             self.paramKMs['lsKToBin'] = clusterSelected
         else:
             # skip
-            print("skip binarize")
-       
+            bugmsg("skip binarize")
+    
+
+
     def smooth(self, value):
         """
         ----------
@@ -213,7 +218,7 @@ class GImage():
             self.paramKMs['valSmth'] = value
         else:
             # skip
-            print("skip smoothing")
+            bugmsg("skip smoothing")
 
     def deShadow(self, value):
         """
@@ -228,7 +233,7 @@ class GImage():
             self.paramKMs['valShad'] = value
         else:
             # skip
-            print("skip shadow")
+            bugmsg("skip shadow")
 
     def finalized(self):
         """
@@ -246,13 +251,39 @@ class GImage():
         Parameters
         ----------
         """
+        nSmt = int(min(self.get('bin').shape[0], self.get('bin').shape[1])/300)
         self.set(key='binSeg', value=blurImg(self.get('bin'),
-                                             n=int(min(self.height, self.width)/100)))
+                                             n=nSmt))
         # compute the vis/seg image
-        imgTemp = self.get("bin").reshape(self.heightRs, self.widthRs, 1)
+        imgTemp = np.expand_dims(self.get("bin"), axis=2)
         imgSeg = np.multiply(self.get('crop')[:, :, :3], imgTemp).copy()
         imgSeg[(imgSeg.mean(axis=2) == 0), :] = 255
         self.set(key='visSeg', value=imgSeg)
+
+    def rankCenters(self, k, center):
+        scores = []
+        # ratioK = [(self.paramKMs['center'][i, 0]-self.paramKMs['center'][i, 1])/self.paramKMs['center'][i, :].sum()
+        #           for i in range(self.paramKMs['center'].shape[0])]
+        # # rankK = np.flip(np.argsort(ratioK), 0) 
+        # rankK = np.argsort(ratioK)
+        for i in range(k):
+            imgB = (np.isin(self.get('kmean'), i)*1).astype(np.int)
+            sigs = imgB.mean(axis=0)
+            sigsF = getFourierTransform(sigs)
+            scMaxF = round((max(sigsF)/sigsF.mean())/100, 4)  # [0, 1]
+            scMean = round(1-(sigs.mean()), 4)  # [0, 1]
+            try:
+                scPeaks = round(len(find_peaks(sigs, height=(sigs.mean()))
+                                    [0])/len(find_peaks(sigs)[0]), 4)
+            except:
+                scPeaks = 0
+                
+            score = scMaxF*.25 + scMean*.25 + scPeaks*.5
+            scores.append(score)
+
+        rank = np.flip(np.array(scores).argsort(), axis=0)
+
+        return rank
 
     def rotate(self, nRot):
         """
@@ -262,11 +293,14 @@ class GImage():
         """
 
         for key in self.imgs.keys():
+            bugmsg(key)
             if key == 'raw' or key == 'rawRs': continue
             try:
                 self.set(key=key, value=np.rot90(self.get(key=key), nRot))
             except Exception as e:
+                bugmsg(e)
                 None
+        self.setShape(self.get("crop").shape)
 
     def setShape(self, shape, isRaw=False):
         """

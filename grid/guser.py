@@ -12,7 +12,8 @@ class GUser():
         self.release = platform.release()
         self.machine = platform.machine()
         self.dirHome = os.path.expanduser("~")
-    
+        self.dirGrid = os.path.split(__file__)[0]
+
     def printInfo(self):
         print("GRID User's Info")
         print("----------------")
@@ -21,3 +22,4 @@ class GUser():
         print("Release:       ",  self.release)
         print("Machine:       ",  self.machine)
         print("Home Dir:      ",  self.dirHome)
+        print("GRID Dir:      ",  self.dirGrid)

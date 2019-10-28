@@ -1,10 +1,14 @@
 # basic imports
 import numpy as np
+import sys
 
 # 3-rd party imports
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+
+# self import
+from ..lib import *
 
 class Widget_Img(QWidget):
     '''
@@ -161,3 +165,4 @@ def drawTriangle(x, y, dir, painter, range=7, peak=30):
         path.lineTo(x-peak, y+range)
     path.lineTo(x, y)
     painter.drawPath(path)
+
