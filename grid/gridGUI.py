@@ -26,12 +26,12 @@ class GRID_GUI(QMainWindow):
         super().__init__()
         self.setStyleSheet("""
         QWidget {
-            font: 20pt Trebuchet MS
+            font: 16pt Trebuchet MS
         }
         QGroupBox::title{
             subcontrol-origin: margin;
             left: 10px;
-            padding: 0 3px 0 3px;ㄊ
+            padding: 0 3px 0 3px;
         }
         QGroupBox {
             border: 1px solid gray;
@@ -51,6 +51,7 @@ class GRID_GUI(QMainWindow):
         self.pnNavi = QWidget()
         self.btNext = QPushButton()
         self.btPrev = QPushButton()
+        self.prog = GProg(size=5, name="Specify an image to proceed", widget=self.pnContent)
         self.layout = None
 
         # Shortcut
@@ -81,7 +82,7 @@ class GRID_GUI(QMainWindow):
         
         # window setup
         self.setWindowTitle("GRID")
-        self.setMinimumSize(QSize(1440, 900))
+        self.resize(1080, 700)
         self.centerWindow()
        
         # initialize with first panel
@@ -106,6 +107,7 @@ class GRID_GUI(QMainWindow):
 
     def showInputer(self, isNew=True):
         bugmsg("show input")
+        self.prog.set(n=0, name="Specify an image to proceed")
         self.assembleNavigation(nameNext="Load Files ->", oneSide=True)
         self.btNext.clicked.connect(
             lambda: self.showCropper())
@@ -113,6 +115,7 @@ class GRID_GUI(QMainWindow):
 
     def showCropper(self, isNew=True):
         bugmsg("crop")
+        self.prog.set(n=1, name="Click on the image to specify FOUR cornors of the area of interest (AOI)")
         self.assembleNavigation()
         self.btPrev.clicked.connect(
             lambda: self.showInputer(isNew=False))
@@ -122,6 +125,8 @@ class GRID_GUI(QMainWindow):
 
     def showKMeaner(self, isNew=True):
         bugmsg("kmean")
+        self.prog.set(
+            n=2, name="Define the pixels of interest (POI)")
         self.assembleNavigation()
         self.btPrev.clicked.connect(
             lambda: self.showCropper(isNew=False))
@@ -131,6 +136,8 @@ class GRID_GUI(QMainWindow):
 
     def showAnchor(self, isNew=True):
         bugmsg("anchor")
+        self.prog.set(
+            n=3, name="Define the plot centers")
         self.assembleNavigation()
         self.btPrev.clicked.connect(
             lambda: self.showKMeaner(isNew=False))
@@ -140,6 +147,8 @@ class GRID_GUI(QMainWindow):
 
     def showOutputer(self, isNew=True):
         bugmsg("show output")
+        self.prog.set(
+            n=4, name="Finalize the segmentation and export results")
         self.assembleNavigation(nameNext="Finish")
         self.btPrev.clicked.connect(
             lambda: self.showAnchor(isNew=False))
@@ -154,7 +163,7 @@ class GRID_GUI(QMainWindow):
                 bugmsg("run")
                 self.pnMain.currentWidget().run()
             except Exception as e:
-                bugmsg(e)
+                print(e)
                 # except the initial one
                 None
 
@@ -231,11 +240,13 @@ class GRID_GUI(QMainWindow):
         """
 
         self.layout = QVBoxLayout()
+        self.layout.addWidget(self.prog)
         self.layout.addWidget(self.pnMain, Qt.AlignCenter)
         self.layout.addWidget(self.pnNavi)
         self.pnContent = QWidget()
         self.pnContent.setLayout(self.layout)
         self.setCentralWidget(self.pnContent)
+        self.setMinimumHeight(30)
         self.show()
 
 class Panels(Enum):

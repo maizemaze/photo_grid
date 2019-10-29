@@ -1,5 +1,8 @@
 # basic imports
 import os
+import sys
+import warnings
+warnings.filterwarnings("ignore")
 
 # self imports
 from .guser import *
@@ -24,6 +27,11 @@ class GRID():
         self.imgs = GImage()
         self.map = GMap()
         self.agents = GAgent()
+
+        # for progressbar
+        self.flag = True
+        self.subflag = True
+        self.window = 1000
 
     def __user__(self):
         """
@@ -51,14 +59,21 @@ class GRID():
             self.run(pathImg=pathImg, pathMap=pathMap, pts=pts, nSmooth=nSmooth, tol=tol,
                      **params, outplot=outplot)
         else:
+            prog = initProgress(6, "loading data")
             self.loadData(pathImg=pathImg, pathMap=pathMap, outplot=outplot)
+            prog = updateProgress(prog, 1, "cropping")
             self.cropImg(pts=pts, outplot=outplot)
+            prog = updateProgress(prog, 1, "binarizing")
             self.binarizeImg(k=k, features=features,
                              lsSelect=lsSelect, valShad=valShad, valSmth=valSmth, outplot=outplot)
+            prog = updateProgress(prog, 1, "locating plots")
             self.findPlots(nRow=nRow, nCol=nCol,
                            nSmooth=nSmooth, outplot=outplot)
+            prog = updateProgress(prog, 1, "segmenting")
             self.cpuSeg(tol=tol, coefGrid=coefGrid, outplot=outplot)
+            prog = updateProgress(prog, 1, "exporting")
             self.save(path=path, prefix=prefix)
+            prog = updateProgress(prog, 1, "done!")
 
     def save(self, path=None, prefix="GRID"):
         """
@@ -66,9 +81,14 @@ class GRID():
         Parameters
         ----------
         """
+        if len(sys.argv)<=0:
+            app = QApplication(sys.argv)
 
         self.savePlotAndDT(path=path, prefix=prefix)
-    
+
+        if len(sys.argv) <= 0:
+            app.quit()
+
         params = {
             "k" : self.imgs.paramKMs["k"],
             "features": self.imgs.paramKMs["features"],
@@ -125,20 +145,36 @@ class GRID():
         Parameters
         ----------
         """
+        # from QtCore import QTimer
 
         if self.imgs.get("crop") is None:
             self.cropImg()
 
         # KMEAN
+        prog = None
+        if self.flag:
+            self.flag = False
+            prog = initProgress(5, name="K-Means Clustering")
         self.imgs.doKMeans(k=k, features=features)
         # BINARIZE
+        updateProgress(prog, name="Binarizing", flag=self.subflag)
         self.imgs.binarize(k=k, features=features, lsSelect=lsSelect)
         # SMOOTH
+        updateProgress(prog, name="Smoothing", flag=self.subflag)
         self.imgs.smooth(value=valSmth)
         # DESHADOW
+        updateProgress(prog, name="DeShade-ing", flag=self.subflag)
         self.imgs.deShadow(value=valShad)
         # FINALIZE
+        updateProgress(prog, name="Finalizing", flag=self.subflag)
         self.imgs.finalized()
+        updateProgress(prog, name="Done", flag=self.subflag)
+        # set progress bar inactive for 300ms
+        if self.subflag:     
+            self.subflag = False
+            QTimer.singleShot(self.window, lambda: setattr(self, "flag", True))
+            QTimer.singleShot(self.window, lambda: setattr(self, "subflag", True))
+
         # Plot
         if outplot:
             pltImShowMulti(
@@ -170,7 +206,7 @@ class GRID():
         Parameters
         ----------
         """
-        #  self.agents.setup(self.map, self.imgs.get("bin"))
+
         self.agents.cpuPreDim(tol=tol)
         self.agents.autoSeg(coefGrid=coefGrid)
 
@@ -219,34 +255,44 @@ class GRID():
         if path is None or not os.path.exists(path):
             path = self.user.dirHome
 
+        # progress bar
+        prog = initProgress(6+self.imgs.depth+5, "Exporting")
+
         # DF
         df = self.getDF()
         # NDVI
         idx = self.getDfIndex(ch_1=3, ch_2=0, isContrast=True, name_index="NDVI")
         df = pd.merge(df, idx, on='var', how='left')
+        updateProgress(prog)
         # GNDVI
         idx = self.getDfIndex(
             ch_1=3, ch_2=1, isContrast=True, name_index="GNDVI")
         df = pd.merge(df, idx, on='var', how='left')
+        updateProgress(prog)
         # NDGI
         idx = self.getDfIndex(
             ch_1=1, ch_2=0, isContrast=True, name_index="NDGI")
         df = pd.merge(df, idx, on='var', how='left')
+        updateProgress(prog)
         # CNDVI
         idx = self.getDfIndex(ch_1=3, ch_2=0, ch_3=1,
                                 isThree=True, name_index="CNDVI")
         df = pd.merge(df, idx, on='var', how='left')
+        updateProgress(prog)
         # RVI
         idx = self.getDfIndex(ch_1=3, ch_2=0, isRatio=True, name_index="RVI")
         df = pd.merge(df, idx, on='var', how='left')
+        updateProgress(prog)
         # GRVI
         idx = self.getDfIndex(ch_1=3, ch_2=1, isRatio=True, name_index="GRVI")
         df = pd.merge(df, idx, on='var', how='left')
+        updateProgress(prog)
         # channels
         for i in range(self.imgs.depth):
             idx = self.getDfIndex(ch_1=i, isSingle=True,
                                   name_index="ch_%d" % i)
             df = pd.merge(df, idx, on='var', how='left')
+            updateProgress(prog)
         # cluster
         idx = self.getDfCluster()
         df = pd.merge(df, idx, on='var', how='left')
@@ -254,15 +300,22 @@ class GRID():
         df.to_csv(os.path.join(path, prefix+"_data.csv"), index=False)
 
         # Figures
-        pltImShow(self.imgs.get("crop"), path=path, prefix=prefix, filename="_raw.png")
+        pltImShow(self.imgs.get("crop"), path=path,
+                  prefix=prefix, filename="_raw.png")
+        updateProgress(prog)
         pltSegPlot(self.agents, self.imgs.get("crop")[:, :, :3],
                    isRect=True, path=path, prefix=prefix, filename="_rgb.png")
-        pltImShow(self.imgs.get("kmean"), path=path, prefix=prefix, filename="_kmeans.png")
+        updateProgress(prog)
+        pltImShow(self.imgs.get("kmean"), path=path,
+                  prefix=prefix, filename="_kmeans.png")
+        updateProgress(prog)
         pltSegPlot(self.agents, self.imgs.get("visSeg"),
-                isRect=True, path=path, prefix=prefix, filename="_seg.png")
+                   isRect=True, path=path, prefix=prefix, filename="_seg.png")
+        updateProgress(prog)
         pltSegPlot(self.agents, self.imgs.get("bin"),
                 isRect=True, path=path, prefix=prefix, filename="_bin.png")
-    
+        updateProgress(prog)
+
     def getDF(self):
         df = pd.DataFrame(columns=['var', 'row', 'col',\
                                 'area_all', 'area_veg'])

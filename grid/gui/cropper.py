@@ -16,7 +16,7 @@ class PnCropper(QGroupBox):
         """
         """
 
-        super().__init__("Image Correction: Please click on the image to assign four anchors")
+        super().__init__()
         self.setStyleSheet("""
         QGroupBox::title{
             subcontrol-origin: margin;

@@ -126,7 +126,6 @@ class PnAnchor(QWidget):
         self.layout.addWidget(self.grRight, 0, 1, sizeAxis+1, 1)
 
         self.setLayout(self.layout)
-        # self.resize(1440, 1080)
 
     def paintEvent(self, event):
         try:

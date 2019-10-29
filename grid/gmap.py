@@ -48,6 +48,11 @@ class GMap():
         # output
         self.dt = None
 
+        # progress bar
+        self.flag = True
+        self.subflag = True
+        self.window = 1000
+
     def load(self, pathMap):
         """
         ----------
@@ -86,7 +91,9 @@ class GMap():
     def detectAngles(self, img, rangeAngle):
         # evaluate each angle
         sc = []
+        prog = initProgress(len(rangeAngle), "Searching plots")
         for angle in rangeAngle:
+            updateProgress(prog)
             imgR = rotateBinNdArray(img, angle)
             sig = imgR.mean(axis=0)
             sigFour = getFourierTransform(sig)
@@ -103,10 +110,25 @@ class GMap():
 
     def locateCenters(self, img, nSmooth=100):
         self.slps = [1/np.tan(np.pi/180*angle) for angle in self.angles]
+
+        # progress bar
+        prog = None
+        if self.flag:
+            self.flag = False
+            prog = initProgress(2, "Calculate slopes and intercepts")
+    
         # find intercepts given 2 angles
         self.itcs = self.getIntercepts(img, self.angles, self.nAxs, nSmooth)
         # get pandas data table
+        updateProgress(prog, flag=self.subflag)
         self.dt = self.getDfCoordinate(img, self.angles, self.slps, self.itcs)
+
+        # end progress bar
+        if self.subflag:
+            self.subflag = False
+            QTimer.singleShot(self.window, lambda: setattr(self, "flag", True))
+            QTimer.singleShot(
+                self.window, lambda: setattr(self, "subflag", True))
 
     def getIntercepts(self, img, angles, nSigs, nSmooth):   
         intercepts = []

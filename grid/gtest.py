@@ -1,22 +1,29 @@
 from PyQt5.QtWidgets import QApplication
 # from .lib import *
 from .gridGUI import *
+from .lib import *
 import matplotlib.pyplot as plt
 import grid as gd
 # import statistics
 # import numpy as np
+import sys, time
 from tqdm import tqdm
-import time
+app = QApplication(sys.argv)
 
 #=== === === === === === Progress bar === === === === === ===
+progressWidget = QProgressBar()
+progressWidget.setRange(0, 5)
+progressWidget.move(300, 300)
+progressWidget.setValue(3)
+progressWidget.show()
 
-for i in tqdm(range(10), postfix="test"):
-    time.sleep(1)
-    # print(i)
 
+sys.exit(app.exec_())
 #=== === === === === === DEBUG === === === === === ===
 
 # grid = gd.GRID()
+# grid.run("/Users/jameschen/Dropbox/James_Git/FN/data/demo.png")
+
 # grid.loadData()
 # grid.loadData("/Users/jameschen/Dropbox/James Chen/GRID/Modeling/Rhombus.jpg")
 # grid.loadData("/Users/jameschen/Dropbox/James_Git/FN/data/demo.png")
@@ -25,7 +32,7 @@ for i in tqdm(range(10), postfix="test"):
 
 
 # app = QApplication(sys.argv)
-# g = GRID_GUI(grid, 2) # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
+# g = GRID_GUI(grid, 1)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
 # app.exec_()
 
 
