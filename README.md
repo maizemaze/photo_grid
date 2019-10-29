@@ -6,6 +6,11 @@ https://poissonfish.github.io/GRID/
 
 ## Update Log
 
+### Oct 29, 2019 (0.2.0)
+    * Add progress bars
+    * Enhance the support for low resolution monitors
+    * Improve UI
+  
 ### Oct 22, 2019 (0.1.3)
     * Optimize default setting of refining parameters
     * Fix wrong angle detection
