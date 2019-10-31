@@ -1,9 +1,16 @@
 import setuptools
 setuptools.setup(name='photo_grid',
-      version='0.2.4',
+      version='0.2.41',
       description='A GUI for field segmentation',
       url='https://github.com/Poissonfish/photo_grid',
       python_requires='>=3.6',
+      classifiers=[
+            "Programming Language :: Python :: 3.6",
+            "Programming Language :: Python :: 3.7",
+            "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+            "Operating System :: MacOS :: MacOS X",
+            "Operating System :: Microsoft :: Windows :: Windows 10"
+      ],
       author='James Chen',
       author_email='chun-peng.chen@wsu.edu',
       license='GPLv3',
@@ -20,3 +27,6 @@ setuptools.setup(name='photo_grid',
                         'rasterio',
                         'PyQt5==5.12',
                         'tqdm'])
+
+# Programming Language: : Python : : 3.4
+# Programming Language: : Python : : 3.5
