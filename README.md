@@ -1,7 +1,7 @@
 <img src = "res/GRID_logo.png" width = 100>
 
 # GRID
-[![Python 3.7](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
+[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-360/)
 ![](https://img.shields.io/pypi/v/photo_grid)
 ![](https://img.shields.io/pypi/dm/photo_grid)
 ![](https://img.shields.io/pypi/implementation/photo_grid)
