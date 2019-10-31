@@ -63,8 +63,8 @@ class PnOutputer(QWidget):
         self.lo_tol = QGridLayout()
         self.rb_none = QRadioButton("None")
         self.rb_adj = QRadioButton("Border Adjustment")
-        self.rb_vp = QRadioButton("Pan Tool (Vertical)")
-        self.rb_hp = QRadioButton("Pan Tool (Horizontal)")
+        self.rb_vp = QRadioButton("Pan (Vertical)")
+        self.rb_hp = QRadioButton("Pan (Horizontal)")
         # Display
         self.gr_dis = QGroupBox("Display")
         self.lo_dis = QHBoxLayout()

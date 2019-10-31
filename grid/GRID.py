@@ -81,12 +81,12 @@ class GRID():
         Parameters
         ----------
         """
-        if len(sys.argv)<=0:
+        if "__main__.py" not in sys.argv[0]:
             app = QApplication(sys.argv)
 
         self.savePlotAndDT(path=path, prefix=prefix)
 
-        if len(sys.argv) <= 0:
+        if "__main__.py" not in sys.argv[0]:
             app.quit()
 
         params = {
@@ -293,6 +293,7 @@ class GRID():
                                   name_index="ch_%d" % i)
             df = pd.merge(df, idx, on='var', how='left')
             updateProgress(prog)
+
         # cluster
         idx = self.getDfCluster()
         df = pd.merge(df, idx, on='var', how='left')
@@ -353,7 +354,7 @@ class GRID():
         for row in range(self.agents.nRow):
             for col in range(self.agents.nCol):
                 agent = self.agents.get(row, col)
-                if agent.isFake():
+                if not agent or agent.isFake():
                     continue
                 entry = dict(var=agent.name, index=0)
                 rg_row = range(agent.getBorder(Dir.NORTH), agent.getBorder(Dir.SOUTH))
@@ -365,6 +366,7 @@ class GRID():
                 entry['index'] = sum_index/(n_veg+1e-8)
                 df.loc[len(df)] = entry
         df.columns = ['var', name_index]
+        df = df[~df['var'].isnull()]
         return df
 
     def getDfCluster(self):
@@ -397,5 +399,7 @@ class GRID():
             df.columns = ['var', "cluster_%d"%cluster]
             df_final = pd.merge(df_final, df, on='var', how='left')
             cluster += 1
+
+        df_final = df_final[~df_final['var'].isnull()]
         return df_final
 

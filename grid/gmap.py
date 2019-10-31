@@ -80,7 +80,9 @@ class GMap():
         
         # if dim is assigned regardless have map or not, force changning nR and nC 
         if isDimAssigned:
-            self.nAxs = [nRow, nCol]
+            self.nAxs = [nCol, nRow]
+        elif self.pdMap is not None:
+            self.nAxs = [self.pdMap.shape[1], self.pdMap.shape[0]]
 
         # find angles and slopes
         self.angles = self.detectAngles(img=img, rangeAngle=self._degRot)
@@ -91,9 +93,7 @@ class GMap():
     def detectAngles(self, img, rangeAngle):
         # evaluate each angle
         sc = []
-        prog = initProgress(len(rangeAngle), "Searching plots")
         for angle in rangeAngle:
-            updateProgress(prog)
             imgR = rotateBinNdArray(img, angle)
             sig = imgR.mean(axis=0)
             sigFour = getFourierTransform(sig)
@@ -220,11 +220,11 @@ class GMap():
             row = entry.row
             col = entry.col
             try:
-                names.append(self.pdMap[row, col])
-            except:
-                names.append("NA_%d" % (ctNA))
+                names.append(self.pdMap.iloc[row, col])
+            except Exception as e:
+                names.append("unnamed_%d" % (ctNA))
                 ctNA += 1
-        dataframe['name'] = names
+        dataframe['var'] = names
 
         # return
         return dataframe
@@ -245,7 +245,7 @@ class GMap():
         ----------
         """
         dt = self.dt
-        return dt[(dt.row == row) & (dt.col == col)]['name'].values[0]
+        return dt[(dt.row == row) & (dt.col == col)]['var'].values[0]
 
     def delAnchor(self, axis, index):
         # since numpy array required elements in same length if they were

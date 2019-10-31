@@ -13,6 +13,28 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 from grid.gridGUI import *
+
+
+grid = gd.GRID()
+# grid.loadData("/Users/jameschen/Dropbox/James_Git/FN/data/demo.png")
+# grid.loadData("/Users/jameschen/Dropbox/James Chen/GRID/Modeling/Rhombus.jpg")
+grid.loadData("/Users/jameschen/demo.png", pathMap="/Users/jameschen/demo.csv")
+grid.binarizeImg(k=3, lsSelect=[0])
+grid.findPlots()
+grid.cpuSeg(outplot=False)
+
+grid.save()
+
+dt_TE = grid.getDfIndex(ch_1=3, ch_2=0, isContrast=True, name_index="ttt")
+dt_org = grid.map.dt
+
+dt_TE[:10]
+dt_org[:10]
+dt_TE['var']
+dt_org['var']
+pd.merge(dt_org, dt_TE, on='var', how='left')
+
+
 # find best angle
 # plot
 grid = gd.GRID()

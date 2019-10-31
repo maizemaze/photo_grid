@@ -261,8 +261,8 @@ def findPeaks(img, nPeaks=0, axis=1, nSmooth=100):
     signal = img.mean(axis=(not axis)*1) # 0:nrow
     
     # ignore signals from iamge frame
-    signal[0] = 0
-    signal[-1] = 0
+    signal[:2] = [0, 0]
+    signal[-2:] = [0, 0]
 
     # gaussian smooth 
     for _ in range(int(len(signal)/30)):
@@ -278,7 +278,9 @@ def findPeaks(img, nPeaks=0, axis=1, nSmooth=100):
     stdDiff = np.array(lsDiff).std()
 
     # get finalized peaks with distance constrain
-    peaks, _ = find_peaks(signal, distance=medDiff-stdDiff/2, prominence=(0.01, None))
+    coef = 0.18/(stdDiff/medDiff) # empirical 
+    peaks, _ = find_peaks(signal, distance=medDiff-stdDiff*coef)
+    # , prominence=(0.01, None))
     if nPeaks != 0:
         if len(peaks) > nPeaks:
             while len(peaks) > nPeaks:
@@ -456,9 +458,16 @@ def getGrayQImg(img):
 class GProg(QWidget):
     def __init__(self, size, name, widget):
         super().__init__()
-        self._width = widget.width()/5
-        self._height = self._width/16*5
-        self._pos = widget.pos()
+        try:
+            self._width = widget.width()/5
+            self._height = self._width/16*5
+            wgW, wgH = widget.width(), widget.height()
+            self._pos = widget.pos()
+        except:
+            self._width, self._height = 1, 1
+            wgW, wgH = 1, 1
+            self._pos = QPoint(1, 1)
+
         self.label = QLabel(name)
         font = QFont("Trebuchet MS", 20)
         self.label.setFont(font)
@@ -469,8 +478,8 @@ class GProg(QWidget):
         self.layout.addWidget(self.label)
         self.layout.addWidget(self.bar)
         self.setLayout(self.layout)
-        self.move(self._pos.x()+(widget.width()-self._width)/2,
-                  self._pos.y()+(widget.height()-self._height)/2)
+        self.move(self._pos.x()+(wgW-self._width)/2,
+                  self._pos.y()+(wgH-self._height)/2)
         self.resize(self._width, self._height)
         self.show()
         self.repaint()
@@ -491,9 +500,8 @@ class GProg(QWidget):
         QApplication.processEvents()
 
 
-
 def initProgress(size, name=None):
-    if len(sys.argv)>0:
+    if "__main__.py" in sys.argv[0]:
         # GUI
         widget = QApplication.activeWindow()
         obj = GProg(size, name, widget)
@@ -505,7 +513,7 @@ def initProgress(size, name=None):
 
 def updateProgress(obj, n=1, name=None, flag=True):
     if not flag or obj is None: return 0
-    if len(sys.argv)>0:
+    if "__main__.py" in sys.argv[0]:
         # GUI
         obj.inc(n, name)
     else:

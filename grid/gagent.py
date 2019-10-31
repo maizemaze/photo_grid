@@ -49,7 +49,7 @@ class GAgent():
                 try:
                     entry = dt[(dt.row == row) & (dt.col == col)].iloc[0]                
                     ptX, ptY = entry["pt"]
-                    name = entry["name"]
+                    name = entry["var"]
                 except:
                     # handle inconsistant # of rows/cols
                     fr.append(row)

@@ -10,30 +10,73 @@ import sys, time
 from tqdm import tqdm
 app = QApplication(sys.argv)
 
-#=== === === === === === Progress bar === === === === === ===
-progressWidget = QProgressBar()
-progressWidget.setRange(0, 5)
-progressWidget.move(300, 300)
-progressWidget.setValue(3)
-progressWidget.show()
 
-
-sys.exit(app.exec_())
 #=== === === === === === DEBUG === === === === === ===
 
-# grid = gd.GRID()
-# grid.run("/Users/jameschen/Dropbox/James_Git/FN/data/demo.png")
-
-# grid.loadData()
+grid = gd.GRID()
+grid.loadData("/Users/jameschen/demo.png")
 # grid.loadData("/Users/jameschen/Dropbox/James Chen/GRID/Modeling/Rhombus.jpg")
 # grid.loadData("/Users/jameschen/Dropbox/James_Git/FN/data/demo.png")
-# grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=0, outplot=False)
+grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=0, outplot=False)
 # grid.findPlots(outplot=False)
 
+g = GRID_GUI(grid, 3)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
+app.exec_()
 
-# app = QApplication(sys.argv)
-# g = GRID_GUI(grid, 1)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
-# app.exec_()
+
+# ========== peak searching ==========
+# , prominence = (0.01, None)
+
+# def findPeaks(img, nPeaks=0, axis=1, nSmooth=100):
+#     """
+#     ----------
+#     Parameters
+#     ----------
+#     """
+#     # compute 1-D signal
+#     signal = img.mean(axis=(not axis)*1) # 0:nrow
+#     # ignore signals from iamge frame
+#     signal[:2] = 0
+#     signal[-2:] = 0
+#     # gaussian smooth
+#     for _ in range(int(len(signal)/30)):
+#         signal = np.convolve(
+#             np.array([1, 2, 4, 2, 1])/10, signal, mode='same')
+#     # find primary peaks
+#     peaks, _ = find_peaks(signal)
+#     lsDiff = np.diff(peaks)
+#     medSig = statistics.median(signal[peaks])
+#     stdSig = np.array(signal[peaks]).std()
+#     medDiff = statistics.median(lsDiff)
+#     stdDiff = np.array(lsDiff).std()
+#     print(lsDiff)
+#     print(medDiff)
+#     print(stdDiff)
+#     # get finalized peaks with distance constrain
+#     peaks, _ = find_peaks(signal, distance=medDiff-stdDiff*4)
+#     if nPeaks != 0:
+#         if len(peaks) > nPeaks:
+#             while len(peaks) > nPeaks:
+#                 ls_diff = np.diff(peaks)
+#                 idx_diff = np.argmin(ls_diff)
+#                 idx_kick = idx_diff if (
+#                     signal[peaks[idx_diff]] < signal[peaks[idx_diff+1]]) else (idx_diff+1)
+#                 peaks = np.delete(peaks, idx_kick)
+#         elif len(peaks) < nPeaks:
+#             while len(peaks) < nPeaks:
+#                 ls_diff = np.diff(peaks)
+#                 idx_diff = np.argmax(ls_diff)
+#                 peak_insert = (peaks[idx_diff]+peaks[idx_diff+1])/2
+#                 peaks = np.sort(np.append(peaks, int(peak_insert)))
+#     return peaks, signal
+
+
+# pks, sig = findPeaks(grid.map.imgs[1])
+# plt.plot(sig)
+# plt.plot(pks, sig[pks], "x")
+# plt.show()
+
+# ========== peak searching ==========
 
 
 # === === === detect default rank of K === === === ===

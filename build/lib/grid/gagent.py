@@ -1,9 +1,6 @@
 # basic imports
 import numpy as np
 
-# 3rd party imports
-from PyQt5.QtCore import QRect
-
 # self imports
 from .lib import *
 from .dir import Dir
@@ -26,6 +23,11 @@ class GAgent():
         self.rowFake, self.colFake = -1, -1
         self.coef = 0
 
+        # progress bar
+        self.flag = True
+        self.subflag = True
+        self.window = 1000
+
     def setup(self, gmap, img):
         """
         ----------
@@ -47,7 +49,7 @@ class GAgent():
                 try:
                     entry = dt[(dt.row == row) & (dt.col == col)].iloc[0]                
                     ptX, ptY = entry["pt"]
-                    name = entry["name"]
+                    name = entry["var"]
                 except:
                     # handle inconsistant # of rows/cols
                     fr.append(row)
@@ -138,8 +140,10 @@ class GAgent():
         Parameters
         ----------
         """
-        
+
+        # prog = initProgress(self.nRow, name="Estimating dimentions")
         for row in range(self.nRow):
+            # updateProgress(prog)
             for col in range(self.nCol):
                 agentSelf = self.get(row, col)
                 agentSelf.resetBorderHard()
@@ -218,9 +222,16 @@ class GAgent():
         
         # reset the border first
         self.resetBorder()
-        bugmsg(self.get(1, 3).getBorder(Dir.EAST), "row 1 col 3 DIR EAST")
+
+        # progress bar
+        prog = None
+        if self.flag:
+            self.flag = False
+            prog = initProgress(self.nRow, name="Segmenting")
+
         # loop over rows and cols
         for row in range(self.nRow):
+            updateProgress(prog, flag=self.subflag)
             for col in range(self.nCol):
                 agentSelf = self.get(row, col)
                 for dir in list([Dir.EAST, Dir.SOUTH]):
@@ -255,6 +266,11 @@ class GAgent():
                             self.updateBorder(agentSelf, dir, 1)
                             self.updateBorder(agentNeib, dirNeib, -1)
         
+        if self.subflag:     
+            self.subflag = False
+            QTimer.singleShot(self.window, lambda: setattr(self, "flag", True))
+            QTimer.singleShot(self.window, lambda: setattr(self, "subflag", True))
+
         # rescue plots on fake line
         if self.rowFake!=-1:
             for col in range(1, self.nCol):

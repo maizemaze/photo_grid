@@ -27,9 +27,9 @@ class PnKmeaner(QWidget):
         self.lsSelect = None
 
         # main/img
-        self.layout = QGridLayout()
+        self.layout = QHBoxLayout()
         # img preview (left)
-        self.gr_left = QGroupBox("Corrected Image")
+        self.gr_left = QGroupBox()
         self.lo_left = QGridLayout()
         self.wg_img = Widget_Kmeans(grid)
         self.bt_ccw = QPushButton("rotate ccw (Q)")
@@ -49,6 +49,7 @@ class PnKmeaner(QWidget):
             checkbox.stateChanged.connect(self.change_k)
             self.ck_ft.extend([checkbox])
             self.lo_ft.addWidget(self.ck_ft[i])
+
         self.lsSelect = [0]
         self.gr_k = QGroupBox("K = 3")
         self.lo_k = QVBoxLayout()
@@ -94,6 +95,13 @@ class PnKmeaner(QWidget):
         self.lo_gb = QVBoxLayout()
         self.sl_gb = QSlider(Qt.Horizontal)
         
+        # panel right
+        self.pn_right = QWidget()
+        self.lo_right = QVBoxLayout()
+        self.sc_right = QScrollArea()
+        self.sc_right.setStyleSheet("QScrollBar {width:0px;}")
+        self.sc_right.setWidgetResizable(True)
+
         '''initialize UI'''
         self.initUI()
 
@@ -191,26 +199,78 @@ class PnKmeaner(QWidget):
         self.lo_dis.addWidget(self.rb_rgb)
         self.lo_dis.addWidget(self.rb_k)
         self.gr_dis.setLayout(self.lo_dis)
-    
+
+        '''right'''
+        self.lo_right.addWidget(self.gr_pre)
+        self.lo_right.addWidget(self.gr_bin)
+        self.lo_right.addWidget(self.gr_pro)
+        self.lo_right.addWidget(self.gr_dis)
+        self.lo_right.addWidget(self.gr_zm)
+        self.pn_right.setLayout(self.lo_right)
+        self.sc_right.setWidget(self.pn_right)
+
         '''assemble'''
         policy_right = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        policy_right.setHorizontalStretch(1)
-        self.gr_pre.setSizePolicy(policy_right)
-        self.gr_bin.setSizePolicy(policy_right)
-        self.gr_dis.setSizePolicy(policy_right)
-        self.gr_pro.setSizePolicy(policy_right)
-        policy_left = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        policy_right.setHorizontalStretch(2)
+        self.sc_right.setSizePolicy(policy_right)
+        policy_left = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         policy_left.setHorizontalStretch(3)
         self.gr_left.setSizePolicy(policy_left)
-        self.layout.addWidget(self.gr_left, 0, 0, 5, 1)
-        self.layout.addWidget(self.gr_pre, 0, 1)
-        self.layout.addWidget(self.gr_bin, 1, 1)
-        self.layout.addWidget(self.gr_pro, 2, 1)
-        self.layout.addWidget(self.gr_dis, 3, 1)
-        self.layout.addWidget(self.gr_zm, 4, 1)
+        self.layout.addWidget(self.gr_left)
+        self.layout.addWidget(self.sc_right)
         self.setLayout(self.layout)
         self.change_k() #initialize kmeans
         self.show()
+
+        '''collapse'''
+    #     self.gr_pre.setCheckable(True)
+    #     self.gr_pre.setChecked(True)
+    #     self.gr_pre.toggled.connect(self.collapsePre)
+    #     # self.collapsePre()
+
+    #     self.gr_bin.setCheckable(True)
+    #     self.gr_bin.setChecked(False)
+    #     self.gr_bin.toggled.connect(self.collapseBin)
+    #     self.collapseBin()
+
+    #     self.gr_pro.setCheckable(True)
+    #     self.gr_pro.setChecked(False)
+    #     self.gr_pro.toggled.connect(self.collapsePro)
+    #     self.collapsePro()
+
+    #     self.gr_dis.setCheckable(True)
+    #     self.gr_dis.setChecked(True)
+    #     self.gr_dis.toggled.connect(self.collapseDis)
+    #     # self.collapseDis()
+
+    #     self.gr_zm.setCheckable(True)
+    #     self.gr_zm.setChecked(False)
+    #     self.gr_zm.toggled.connect(self.collapseZm)
+    #     self.collapseZm()
+
+
+    # def collapsePre(self):
+    #     self.gr_ft.setVisible(not self.gr_ft.isVisible())
+    #     self.gr_k.setVisible(not self.gr_k.isVisible())
+    
+    # def collapseBin(self):
+    #     self.gr_cut.setVisible(not self.gr_cut.isVisible())
+    #     self.gr_cusb.setVisible(not self.gr_cusb.isVisible())
+
+    # def collapsePro(self):
+    #     self.gr_shad.setVisible(not self.gr_shad.isVisible())
+    #     self.gr_gb.setVisible(not self.gr_gb.isVisible())
+
+    # def collapseDis(self):
+    #     self.rb_bin.setVisible(not self.rb_bin.isVisible())
+    #     self.rb_rgb.setVisible(not self.rb_rgb.isVisible())
+    #     self.rb_k.setVisible(not self.rb_k.isVisible())
+
+    # def collapseZm(self):
+    #     self.rb_1x.setVisible(not self.rb_1x.isVisible())
+    #     self.rb_15x.setVisible(not self.rb_15x.isVisible())
+    #     self.rb_3x.setVisible(not self.rb_3x.isVisible())
+
 
     def changeZoom(self, index):
         self.wg_img.zoom = index
@@ -236,9 +296,14 @@ class PnKmeaner(QWidget):
     def change_k(self):
         value = self.sl_k.value()
         ls_ft = []
-        for i in range(self.nFeatures):
-            if self.ck_ft[i].isChecked():
+        for i in range(len(self.ck_ft)):
+            # if i < self.nFeatures:
+            #     self.ck_ft[i].setVisible(True)
+            # else:
+            #     self.ck_ft[i].setVisible(False)
+            if i in range(self.nFeatures) and self.ck_ft[i].isChecked():
                 ls_ft.extend([i])
+
         self.features = ls_ft
         self.sl_cut.setMaximum(value)
         self.gr_k.setTitle("K = %d" % value)

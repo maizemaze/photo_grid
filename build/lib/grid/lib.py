@@ -1,6 +1,7 @@
 # basic imports
 import numpy as np
 import sys
+import time
 import math
 import os
 import pickle
@@ -10,6 +11,7 @@ import statistics
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from tqdm import tqdm, tqdm_gui
 import cv2
 from scipy.signal import convolve2d
 from scipy.signal import find_peaks
@@ -259,8 +261,8 @@ def findPeaks(img, nPeaks=0, axis=1, nSmooth=100):
     signal = img.mean(axis=(not axis)*1) # 0:nrow
     
     # ignore signals from iamge frame
-    signal[0] = 0
-    signal[-1] = 0
+    signal[:2] = [0, 0]
+    signal[-2:] = [0, 0]
 
     # gaussian smooth 
     for _ in range(int(len(signal)/30)):
@@ -276,7 +278,9 @@ def findPeaks(img, nPeaks=0, axis=1, nSmooth=100):
     stdDiff = np.array(lsDiff).std()
 
     # get finalized peaks with distance constrain
-    peaks, _ = find_peaks(signal, distance=medDiff-stdDiff/2, prominence=(0.01, None))
+    coef = 0.18/(stdDiff/medDiff) # empirical 
+    peaks, _ = find_peaks(signal, distance=medDiff-stdDiff*coef)
+    # , prominence=(0.01, None))
     if nPeaks != 0:
         if len(peaks) > nPeaks:
             while len(peaks) > nPeaks:
@@ -411,7 +415,6 @@ def bugmsg(msg, title="DEBUG"):
         print("======%s=====" % title)
         print(msg)
 
-
 # for GUI
 
 def getRGBQImg(img):
@@ -449,3 +452,73 @@ def getGrayQImg(img):
     h, w = img.shape[0], img.shape[1]
     qImg = QImage(img.astype(np.uint8).copy(), w, h, w*1, QImage.Format_Grayscale8)
     return QPixmap(qImg)
+
+
+# progress bar
+class GProg(QWidget):
+    def __init__(self, size, name, widget):
+        super().__init__()
+        try:
+            self._width = widget.width()/5
+            self._height = self._width/16*5
+            wgW, wgH = widget.width(), widget.height()
+            self._pos = widget.pos()
+        except:
+            self._width, self._height = 1, 1
+            wgW, wgH = 1, 1
+            self._pos = QPoint(1, 1)
+
+        self.label = QLabel(name)
+        font = QFont("Trebuchet MS", 20)
+        self.label.setFont(font)
+        self.bar = QProgressBar()
+        self.bar.setRange(0, size)
+        self.bar.setValue(0)
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.label)
+        self.layout.addWidget(self.bar)
+        self.setLayout(self.layout)
+        self.move(self._pos.x()+(wgW-self._width)/2,
+                  self._pos.y()+(wgH-self._height)/2)
+        self.resize(self._width, self._height)
+        self.show()
+        self.repaint()
+        QApplication.processEvents()
+
+    def inc(self, n, name=None):
+        self.bar.setValue(self.bar.value()+n)
+        if name is not None:
+            self.label.setText(name)
+        self.repaint()
+        QApplication.processEvents()
+
+    def set(self, n, name=None):
+        self.bar.setValue(n)
+        if name is not None:
+            self.label.setText(name)
+        self.repaint()
+        QApplication.processEvents()
+
+
+def initProgress(size, name=None):
+    if "__main__.py" in sys.argv[0]:
+        # GUI
+        widget = QApplication.activeWindow()
+        obj = GProg(size, name, widget)
+    else:
+        # CLT
+        obj = tqdm(total=size, postfix=name)
+
+    return obj
+
+def updateProgress(obj, n=1, name=None, flag=True):
+    if not flag or obj is None: return 0
+    if "__main__.py" in sys.argv[0]:
+        # GUI
+        obj.inc(n, name)
+    else:
+        # CLT
+        obj.set_postfix_str(name)
+        obj.update(n)
+
+ 

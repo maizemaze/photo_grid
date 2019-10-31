@@ -48,6 +48,11 @@ class GMap():
         # output
         self.dt = None
 
+        # progress bar
+        self.flag = True
+        self.subflag = True
+        self.window = 1000
+
     def load(self, pathMap):
         """
         ----------
@@ -75,7 +80,9 @@ class GMap():
         
         # if dim is assigned regardless have map or not, force changning nR and nC 
         if isDimAssigned:
-            self.nAxs = [nRow, nCol]
+            self.nAxs = [nCol, nRow]
+        elif self.pdMap is not None:
+            self.nAxs = [self.pdMap.shape[1], self.pdMap.shape[0]]
 
         # find angles and slopes
         self.angles = self.detectAngles(img=img, rangeAngle=self._degRot)
@@ -103,10 +110,25 @@ class GMap():
 
     def locateCenters(self, img, nSmooth=100):
         self.slps = [1/np.tan(np.pi/180*angle) for angle in self.angles]
+
+        # progress bar
+        prog = None
+        if self.flag:
+            self.flag = False
+            prog = initProgress(2, "Calculate slopes and intercepts")
+    
         # find intercepts given 2 angles
         self.itcs = self.getIntercepts(img, self.angles, self.nAxs, nSmooth)
         # get pandas data table
+        updateProgress(prog, flag=self.subflag)
         self.dt = self.getDfCoordinate(img, self.angles, self.slps, self.itcs)
+
+        # end progress bar
+        if self.subflag:
+            self.subflag = False
+            QTimer.singleShot(self.window, lambda: setattr(self, "flag", True))
+            QTimer.singleShot(
+                self.window, lambda: setattr(self, "subflag", True))
 
     def getIntercepts(self, img, angles, nSigs, nSmooth):   
         intercepts = []
@@ -198,11 +220,11 @@ class GMap():
             row = entry.row
             col = entry.col
             try:
-                names.append(self.pdMap[row, col])
-            except:
-                names.append("NA_%d" % (ctNA))
+                names.append(self.pdMap.iloc[row, col])
+            except Exception as e:
+                names.append("unnamed_%d" % (ctNA))
                 ctNA += 1
-        dataframe['name'] = names
+        dataframe['var'] = names
 
         # return
         return dataframe
@@ -223,7 +245,7 @@ class GMap():
         ----------
         """
         dt = self.dt
-        return dt[(dt.row == row) & (dt.col == col)]['name'].values[0]
+        return dt[(dt.row == row) & (dt.col == col)]['var'].values[0]
 
     def delAnchor(self, axis, index):
         # since numpy array required elements in same length if they were

@@ -1,6 +1,7 @@
 # Basic imports
 import io
 import numpy as np
+import pandas as pd
 from urllib.request import urlopen
 from PIL import Image
 
@@ -104,7 +105,7 @@ def loadMap(path):
 
     try:
         pdMap = pd.read_csv(path, header=None)
-    except:
+    except Exception as e:
         pdMap = None
 
     return pdMap

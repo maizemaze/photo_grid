@@ -223,54 +223,53 @@ class PnKmeaner(QWidget):
         self.show()
 
         '''collapse'''
+    #     self.gr_pre.setCheckable(True)
+    #     self.gr_pre.setChecked(True)
+    #     self.gr_pre.toggled.connect(self.collapsePre)
+    #     # self.collapsePre()
 
-        self.gr_pre.setCheckable(True)
-        self.gr_pre.setChecked(True)
-        self.gr_pre.toggled.connect(self.collapsePre)
-        # self.collapsePre()
+    #     self.gr_bin.setCheckable(True)
+    #     self.gr_bin.setChecked(False)
+    #     self.gr_bin.toggled.connect(self.collapseBin)
+    #     self.collapseBin()
 
-        self.gr_bin.setCheckable(True)
-        self.gr_bin.setChecked(False)
-        self.gr_bin.toggled.connect(self.collapseBin)
-        self.collapseBin()
+    #     self.gr_pro.setCheckable(True)
+    #     self.gr_pro.setChecked(False)
+    #     self.gr_pro.toggled.connect(self.collapsePro)
+    #     self.collapsePro()
 
-        self.gr_pro.setCheckable(True)
-        self.gr_pro.setChecked(False)
-        self.gr_pro.toggled.connect(self.collapsePro)
-        self.collapsePro()
+    #     self.gr_dis.setCheckable(True)
+    #     self.gr_dis.setChecked(True)
+    #     self.gr_dis.toggled.connect(self.collapseDis)
+    #     # self.collapseDis()
 
-        self.gr_dis.setCheckable(True)
-        self.gr_dis.setChecked(True)
-        self.gr_dis.toggled.connect(self.collapseDis)
-        # self.collapseDis()
-
-        self.gr_zm.setCheckable(True)
-        self.gr_zm.setChecked(False)
-        self.gr_zm.toggled.connect(self.collapseZm)
-        self.collapseZm()
+    #     self.gr_zm.setCheckable(True)
+    #     self.gr_zm.setChecked(False)
+    #     self.gr_zm.toggled.connect(self.collapseZm)
+    #     self.collapseZm()
 
 
-    def collapsePre(self):
-        self.gr_ft.setVisible(not self.gr_ft.isVisible())
-        self.gr_k.setVisible(not self.gr_k.isVisible())
+    # def collapsePre(self):
+    #     self.gr_ft.setVisible(not self.gr_ft.isVisible())
+    #     self.gr_k.setVisible(not self.gr_k.isVisible())
     
-    def collapseBin(self):
-        self.gr_cut.setVisible(not self.gr_cut.isVisible())
-        self.gr_cusb.setVisible(not self.gr_cusb.isVisible())
+    # def collapseBin(self):
+    #     self.gr_cut.setVisible(not self.gr_cut.isVisible())
+    #     self.gr_cusb.setVisible(not self.gr_cusb.isVisible())
 
-    def collapsePro(self):
-        self.gr_shad.setVisible(not self.gr_shad.isVisible())
-        self.gr_gb.setVisible(not self.gr_gb.isVisible())
+    # def collapsePro(self):
+    #     self.gr_shad.setVisible(not self.gr_shad.isVisible())
+    #     self.gr_gb.setVisible(not self.gr_gb.isVisible())
 
-    def collapseDis(self):
-        self.rb_bin.setVisible(not self.rb_bin.isVisible())
-        self.rb_rgb.setVisible(not self.rb_rgb.isVisible())
-        self.rb_k.setVisible(not self.rb_k.isVisible())
+    # def collapseDis(self):
+    #     self.rb_bin.setVisible(not self.rb_bin.isVisible())
+    #     self.rb_rgb.setVisible(not self.rb_rgb.isVisible())
+    #     self.rb_k.setVisible(not self.rb_k.isVisible())
 
-    def collapseZm(self):
-        self.rb_1x.setVisible(not self.rb_1x.isVisible())
-        self.rb_15x.setVisible(not self.rb_15x.isVisible())
-        self.rb_3x.setVisible(not self.rb_3x.isVisible())
+    # def collapseZm(self):
+    #     self.rb_1x.setVisible(not self.rb_1x.isVisible())
+    #     self.rb_15x.setVisible(not self.rb_15x.isVisible())
+    #     self.rb_3x.setVisible(not self.rb_3x.isVisible())
 
 
     def changeZoom(self, index):

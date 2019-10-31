@@ -72,7 +72,7 @@ class PnInputer(QWidget):
         self.gr_demo.setLayout(self.lo_demo)
         
         # LAYOUT
-        self.layout.setContentsMargins(400, 50, 400, 50)
+        self.layout.setContentsMargins(200, 50, 200, 50)
         self.layout.addWidget(self.gr_user)
         self.layout.addWidget(self.gr_demo)
         

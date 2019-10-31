@@ -1,6 +1,6 @@
 __author__ = "Chunpeng James Chen"
-__version__ = "0.1.3"
-__update__ = "Oct 22, 2019"
+__version__ = "0.2.0"
+__update__ = "Oct 29, 2019"
 
 from sys import platform
 
@@ -10,6 +10,11 @@ from .grid import *
 """
 Update Log
 
+- Oct 29, 2019 (0.2.0)
+    * Add progress bars
+    * Enhance the support for low resolution monitors
+    * Improve UI
+ 
 - Oct 22, 2019 (0.1.3)
     * Optimize default setting of refining parameters
     * Fix wrong angle detection

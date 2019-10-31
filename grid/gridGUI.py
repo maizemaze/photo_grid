@@ -24,6 +24,9 @@ class GRID_GUI(QMainWindow):
         ----------
         """
         super().__init__()
+        #         QWidget {
+        #     font: 16pt Trebuchet MS
+        # }
         self.setStyleSheet("""
         QWidget {
             font: 16pt Trebuchet MS
@@ -82,7 +85,7 @@ class GRID_GUI(QMainWindow):
         
         # window setup
         self.setWindowTitle("GRID")
-        self.resize(1080, 700)
+        self.resize(1280, 700)
         self.centerWindow()
        
         # initialize with first panel
@@ -240,6 +243,7 @@ class GRID_GUI(QMainWindow):
         """
 
         self.layout = QVBoxLayout()
+        self.layout.setSpacing(0)
         self.layout.addWidget(self.prog)
         self.layout.addWidget(self.pnMain, Qt.AlignCenter)
         self.layout.addWidget(self.pnNavi)
