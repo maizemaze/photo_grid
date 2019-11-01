@@ -3,7 +3,7 @@
 # GRID
 ![](https://img.shields.io/pypi/pyversions/photo_grid.svg?logo=python&logoColor=white)
 ![](https://img.shields.io/pypi/dm/photo_grid.svg?label=pypi%20downloads&logo=python&logoColor=white)
-![](https://img.shields.io/pypi/v/photo_grid.svg?label=pypi%20downloads&logo=python&logoColor=white)
+![](https://img.shields.io/pypi/v/photo_grid.svg?label=pypi%20version&logo=python&logoColor=white)
 ![](https://api.codacy.com/project/badge/Grade/626008b19df543ecb33a78e8f82f5e91)
 ![](https://img.shields.io/github/license/poissonfish/photo_grid)
 ![](https://img.shields.io/github/languages/code-size/poissonfish/photo_grid)
@@ -11,7 +11,7 @@
 
 ## Github page
 
-https://poissonfish.github.io/GRID/ls
+https://poissonfish.github.io/GRID
 
 ## Update Log
 

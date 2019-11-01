@@ -39,7 +39,7 @@ class PnKmeaner(QWidget):
         self.gr_pre = QGroupBox("K-means Algo.")
         self.lo_pre = QGridLayout()
         
-        self.gr_ft = QGroupBox("Features for clustering (Channels)")
+        self.gr_ft = QGroupBox("Channels used for clustering")
         self.lo_ft = QHBoxLayout()
         self.ck_ft = []
         for i in range(self.nFeatures):

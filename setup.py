@@ -27,6 +27,3 @@ setuptools.setup(name='photo_grid',
                         'rasterio',
                         'PyQt5==5.12',
                         'tqdm'])
-
-# Programming Language: : Python : : 3.4
-# Programming Language: : Python : : 3.5
