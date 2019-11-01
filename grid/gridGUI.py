@@ -140,7 +140,7 @@ class GRID_GUI(QMainWindow):
     def showAnchor(self, isNew=True):
         bugmsg("anchor")
         self.prog.set(
-            n=3, name="Define the plot centers")
+            n=3, name="Define the plot centers: LEFT-CLICK to add, RIGHT-CLICK to remove, DRAG to adjust")
         self.assembleNavigation()
         self.btPrev.clicked.connect(
             lambda: self.showKMeaner(isNew=False))
@@ -151,7 +151,7 @@ class GRID_GUI(QMainWindow):
     def showOutputer(self, isNew=True):
         bugmsg("show output")
         self.prog.set(
-            n=4, name="Finalize the segmentation and export results")
+            n=4, name="Finalize the segmentation and export results: Drag to adjust borders")
         self.assembleNavigation(nameNext="Finish")
         self.btPrev.clicked.connect(
             lambda: self.showAnchor(isNew=False))

@@ -8,10 +8,9 @@
 ![](https://img.shields.io/github/license/poissonfish/photo_grid)
 ![](https://img.shields.io/github/languages/code-size/poissonfish/photo_grid)
 
+### [Software page](https://zzlab.net/GRID)
 
-## Github page
-
-https://poissonfish.github.io/GRID
+### [User Manual](https://poissonfish.github.io/GRID)
 
 ## Update Log
 

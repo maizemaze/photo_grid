@@ -16,7 +16,12 @@ from grid.gridGUI import *
 
 
 grid = gd.GRID()
-# grid.loadData("/Users/jameschen/Dropbox/James_Git/FN/data/demo.png")
+grid.loadData("/Users/jameschen/Dropbox/UAV/James/Alfalfa/20190505RGB_RDNIR_H.tif")
+grid.cropImg()
+
+grid.binarizeImg(k=3, lsSelect=[0])
+grid.imgs.get("crop")
+
 # grid.loadData("/Users/jameschen/Dropbox/James Chen/GRID/Modeling/Rhombus.jpg")
 grid.loadData("/Users/jameschen/demo.png", pathMap="/Users/jameschen/demo.csv")
 grid.binarizeImg(k=3, lsSelect=[0])
