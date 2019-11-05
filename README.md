@@ -13,6 +13,12 @@
 
 ### [User Manual](https://poissonfish.github.io/GRID)
 
+## Get Started
+### Installation
+```pip install photo_grid```
+### Launch GRID
+```python -m grid```
+
 ## Update Log
 
 ### Oct 29, 2019 (0.2.0)
