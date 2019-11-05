@@ -123,7 +123,7 @@ def cropImg(img, pts):
     # estimate output dimension
     img_W = (sum((pt_NE-pt_NW)**2)**(1/2)+sum((pt_SE-pt_SW)**2)**(1/2))/2
     img_H = (sum((pt_SE-pt_NE)**2)**(1/2)+sum((pt_SW-pt_NW)**2)**(1/2))/2
-    while (img_W > 1500):
+    while (img_W > 1600):
         img_W /= 2
         img_H /= 2
     shape = (int(img_W), int(img_H))
@@ -501,7 +501,8 @@ class GProg(QWidget):
 
 
 def initProgress(size, name=None):
-    if "__main__.py" in sys.argv[0]:
+    # if "__main__.py" in sys.argv[0]:
+    if False:
         # GUI
         widget = QApplication.activeWindow()
         obj = GProg(size, name, widget)
@@ -513,7 +514,8 @@ def initProgress(size, name=None):
 
 def updateProgress(obj, n=1, name=None, flag=True):
     if not flag or obj is None: return 0
-    if "__main__.py" in sys.argv[0]:
+    # if "__main__.py" in sys.argv[0]:
+    if False:
         # GUI
         obj.inc(n, name)
     else:

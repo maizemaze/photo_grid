@@ -7,6 +7,12 @@ from sys import platform
 # self imports
 from .grid import *
 
+print("=========*=========*=========*=========*=========*=========")
+print("                     Welcome to GRID!")
+print("    Try 'python -m grid' in Terminel to launch GRID GUI,")
+print("             since CLT version is not ready yet.")
+print("=========*=========*=========*=========*=========*=========")
+
 """
 Update Log
 
