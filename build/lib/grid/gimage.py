@@ -144,7 +144,7 @@ class GImage():
 
         self.resetParam()
 
-    def doKMeans(self, k=3, features=[0, 1, 2]):
+    def doKMeans(self, k=3, features=[0, 1, 2], colorOnly=False):
         """
         ----------
         Parameters
@@ -159,7 +159,8 @@ class GImage():
             self.set(key='kmean', value=imgK)
             # update parameters
             self.paramKMs['center'] = center
-            self.paramKMs['rank'] = self.rankCenters(k, center)
+            self.paramKMs['rank'] = self.rankCenters(
+                k=k, center=center, colorOnly=colorOnly)
             # can't update yet as binarize needs it
             # self.paramKMs['k'] = k 
             # self.paramKMs['features'] = features
@@ -260,28 +261,29 @@ class GImage():
         imgSeg[(imgSeg.mean(axis=2) == 0), :] = 255
         self.set(key='visSeg', value=imgSeg)
 
-    def rankCenters(self, k, center):
+    def rankCenters(self, k, center, colorOnly=False):
         scores = []
-        # ratioK = [(self.paramKMs['center'][i, 0]-self.paramKMs['center'][i, 1])/self.paramKMs['center'][i, :].sum()
-        #           for i in range(self.paramKMs['center'].shape[0])]
-        # # rankK = np.flip(np.argsort(ratioK), 0) 
-        # rankK = np.argsort(ratioK)
-        for i in range(k):
-            imgB = (np.isin(self.get('kmean'), i)*1).astype(np.int)
-            sigs = imgB.mean(axis=0)
-            sigsF = getFourierTransform(sigs)
-            scMaxF = round((max(sigsF)/sigsF.mean())/100, 4)  # [0, 1]
-            scMean = round(1-(sigs.mean()), 4)  # [0, 1]
-            try:
-                scPeaks = round(len(find_peaks(sigs, height=(sigs.mean()))
-                                    [0])/len(find_peaks(sigs)[0]), 4)
-            except:
-                scPeaks = 0
-                
-            score = scMaxF*.25 + scMean*.25 + scPeaks*.5
-            scores.append(score)
-
-        rank = np.flip(np.array(scores).argsort(), axis=0)
+       
+        if colorOnly:
+            ratioK = [(center[i, 0]-center[i, 1])/center[i, :].sum()
+                    for i in range(center.shape[0])]
+            rank = np.flip(np.argsort(ratioK), axis=0)
+        else:
+            for i in range(k):
+                imgB = (np.isin(self.get('kmean'), i)*1).astype(np.int)
+                sigs = imgB.mean(axis=0)
+                sigsF = getFourierTransform(sigs)
+                scMaxF = round((max(sigsF)/sigsF.mean())/100, 4)  # [0, 1]
+                scMean = round(1-(sigs.mean()), 4)  # [0, 1]
+                try:
+                    scPeaks = round(len(find_peaks(sigs, height=(sigs.mean()))
+                                        [0])/len(find_peaks(sigs)[0]), 4)
+                except:
+                    scPeaks = 0
+                    
+                score = scMaxF*.25 + scMean*.25 + scPeaks*.5
+                scores.append(score)
+            rank = np.flip(np.array(scores).argsort(), axis=0)
 
         return rank
 

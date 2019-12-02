@@ -501,8 +501,8 @@ class GProg(QWidget):
 
 
 def initProgress(size, name=None):
-    # if "__main__.py" in sys.argv[0]:
-    if False:
+    if "__main__.py" in sys.argv[0]:
+    # if False:
         # GUI
         widget = QApplication.activeWindow()
         obj = GProg(size, name, widget)
@@ -512,10 +512,11 @@ def initProgress(size, name=None):
 
     return obj
 
+
 def updateProgress(obj, n=1, name=None, flag=True):
     if not flag or obj is None: return 0
-    # if "__main__.py" in sys.argv[0]:
-    if False:
+    if "__main__.py" in sys.argv[0]:
+    # if False:
         # GUI
         obj.inc(n, name)
     else:

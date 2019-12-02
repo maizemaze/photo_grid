@@ -139,7 +139,7 @@ class GRID():
         if outplot:
             pltImShow(self.imgs.get("crop")[:,:,:3])
 
-    def binarizeImg(self, k=3, features=[0, 1, 2], lsSelect=[0], valShad=0, valSmth=0, outplot=False):
+    def binarizeImg(self, k=3, features=[0, 1, 2], lsSelect=[0], valShad=0, valSmth=0, colorOnly=False, outplot=False):
         """
         ----------
         Parameters
@@ -155,7 +155,7 @@ class GRID():
         if self.flag:
             self.flag = False
             prog = initProgress(5, name="K-Means Clustering")
-        self.imgs.doKMeans(k=k, features=features)
+        self.imgs.doKMeans(k=k, features=features, colorOnly=colorOnly)
         # BINARIZE
         updateProgress(prog, name="Binarizing", flag=self.subflag)
         self.imgs.binarize(k=k, features=features, lsSelect=lsSelect)
@@ -170,7 +170,7 @@ class GRID():
         self.imgs.finalized()
         updateProgress(prog, name="Done", flag=self.subflag)
         # set progress bar inactive for 300ms
-        if self.subflag:     
+        if self.subflag and "__main__.py" not in sys.argv[0]:
             self.subflag = False
             QTimer.singleShot(self.window, lambda: setattr(self, "flag", True))
             QTimer.singleShot(self.window, lambda: setattr(self, "subflag", True))
