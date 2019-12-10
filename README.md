@@ -15,6 +15,7 @@
 
 ## Get Started
 ### Installation
+***Highly recommended install GRID in [Conda](https://poissonfish.github.io/GRID/installation.html) environment***
 ```pip install photo_grid```
 ### Launch GRID
 ```python -m grid```
