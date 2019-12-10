@@ -1,6 +1,4 @@
 # basic imports 
-import os
-import sys
 from enum import Enum
 
 # 3rd party imports
@@ -16,7 +14,7 @@ from .lib import *
 class GRID_GUI(QMainWindow):
     """
     """
-        
+
     def __init__(self, gridInput=None, idxPn=None):
         """
         ----------
@@ -43,7 +41,7 @@ class GRID_GUI(QMainWindow):
         }
         """)
 
-        # CLI 
+        # CLI
         self.grid = GRID()
 
         # GUI
@@ -82,17 +80,17 @@ class GRID_GUI(QMainWindow):
         Parameters
         ----------
         """
-        
+
         # window setup
         self.setWindowTitle("GRID")
         self.resize(1280, 700)
         self.centerWindow()
-       
-        # initialize with first panel
+
         if self.gridInput is None:
+            # initialize with first panel
             self.showInputer()
         else:
-        # or use shortcut
+            # or use shortcut
             self.grid = self.gridInput
             if self.idxPn==0:
                 self.showInputer()
@@ -104,7 +102,7 @@ class GRID_GUI(QMainWindow):
                 self.showAnchor()
             elif self.idxPn==4:
                 self.showOutputer()
-        
+
         # show
         self.show()
 
@@ -204,7 +202,7 @@ class GRID_GUI(QMainWindow):
             self.startover()
         elif returnValue == QMessageBox.Discard:
             self.startover()
-            
+           
     def centerWindow(self):
         """
         ----------

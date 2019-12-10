@@ -139,7 +139,7 @@ class PnAnchor(QWidget):
         # painter.setBrush(Qt.transparent)
         # painter.drawRect(self.rec_acr_c)
         # painter.drawRect(self.rec_acr_r)
- 
+
     def updatePlots(self):
         bugmsg("update anchor")
         self.updateAnchor()

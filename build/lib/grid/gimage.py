@@ -74,14 +74,18 @@ class GImage():
         Parameters
         ----------
         """
+        if isinstance(pathImg, str):
+            # a path to a file
+            isLocalImg = pathImg.find("http://") + pathImg.find("https://") == -2
 
-        isLocalImg = pathImg.find("http://") + pathImg.find("https://") == -2
-
-        # image
-        if isLocalImg:
-            imgInput = loadImg(pathImg)
-        else:
-            imgInput = loadImgWeb(pathImg)
+            # image
+            if isLocalImg:
+                imgInput = loadImg(pathImg)
+            else:
+                imgInput = loadImgWeb(pathImg)
+        elif isinstance(pathImg, np.ndarray):
+            # is a numpy
+            imgInput = pathImg
 
         # assign
         self.set(key='raw', value=imgInput)

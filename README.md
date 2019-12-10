@@ -21,6 +21,10 @@
 
 ## Update Log
 
+### Dec 9, 2019 (0.2.45)
+    * Bug fixes for image rotating issue
+    * Support map with duplicated names
+
 ### Oct 29, 2019 (0.2.0)
     * Add progress bars
     * Enhance the support for low resolution monitors

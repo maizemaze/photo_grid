@@ -44,19 +44,21 @@ def doKMeans(img, k=3, features=[0]):
                    criteria=criteria,
                    attempts=10,
                    flags=cv2.KMEANS_PP_CENTERS)
-    
+
     # KMEANS_RANDOM_CENTERS
     _, img_k_temp, center = cv2.kmeans(**param_k)
-    
+
     # Convert back
     img_k = img_k_temp.astype(np.uint8).reshape((img.shape[0], -1))
-    
+
     # return
     return img_k, center
+
 
 def blurImg(image, n, cutoff=0.5):
     image = smoothImg(image=image, n=n)
     return binarizeSmImg(image, cutoff=cutoff)
+
 
 def smoothImg(image, n):
     """
@@ -69,11 +71,12 @@ def smoothImg(image, n):
             [1, 4, 1],
             [4, 9, 4],
             [1, 4, 1]), dtype='int')/29
-   
+
     for _ in range(n):
         image = convolve2d(image, kernel, mode='same')
 
     return image
+
 
 def binarizeSmImg(image, cutoff=0.5):
     """
@@ -86,6 +89,7 @@ def binarizeSmImg(image, cutoff=0.5):
     imgOut[image <= cutoff] = 0
 
     return imgOut.astype(np.int)
+
 
 def cropImg(img, pts):
     """
@@ -137,6 +141,7 @@ def cropImg(img, pts):
 
     return dst
 
+
 def rotatePts(pts, angle):
     """
     ----------
@@ -154,14 +159,16 @@ def rotatePts(pts, angle):
 
 # === === === === === GRID pickle === === === === ===
 
+
 def pickleGRID(obj, path):
     with open(path, "wb") as file:
         pickle.dump(obj, file, pickle.HIGHEST_PROTOCOL)
 
+
 def getPickledGRID(path):
     with open(path, "rb") as file:
         obj = pickle.load(file)
-    
+
     return obj
 
 # === === === === === rank === === === === ===
@@ -178,7 +185,9 @@ def getRank(array):
     rank = np.zeros(len(sort), dtype=np.int)
     rank[sort] = np.flip(np.arange(len(array)), axis=0)
     return rank
+
 # === === === === === peak searching === === === === ===
+
 
 def rotateBinNdArray(img, angle):
     # create border for the image
@@ -205,6 +214,7 @@ def rotateBinNdArray(img, angle):
     # return
     return imgC
 
+
 def rotateVec(vec, angle):
     deg = np.pi/180
     x, y = vec[0], vec[1]
@@ -212,10 +222,12 @@ def rotateVec(vec, angle):
     yp = np.sin(deg*angle)*x + np.cos(deg*angle)*y
     return (xp, yp)
 
+
 def getFourierTransform(sig):
     sigf = abs(np.fft.fft(sig)/len(sig))
     return sigf[2:int(len(sigf)/2)]
     # return sigf[2:25]
+
 
 def getCardIntercept(lsValues, angle, imgH=0):
     if angle == 0:
@@ -227,6 +239,7 @@ def getCardIntercept(lsValues, angle, imgH=0):
         else:
             return imgH-lsValues*coef
 
+
 def getLineABC(slope, intercept):
     if np.isinf(slope):
         A = 1
@@ -237,6 +250,7 @@ def getLineABC(slope, intercept):
         B = -1
         C = -intercept
     return A, B, C
+
 
 def solveLines(slope1, intercept1, slope2, intercept2):
     A1, B1, C1 = getLineABC(slope1, intercept1)
@@ -250,16 +264,17 @@ def solveLines(slope1, intercept1, slope2, intercept2):
     else:
         return False, False
 
+
 def findPeaks(img, nPeaks=0, axis=1, nSmooth=100):
     """
     ----------
     Parameters
     ----------
     """
-    
+
     # compute 1-D signal
     signal = img.mean(axis=(not axis)*1) # 0:nrow
-    
+
     # ignore signals from iamge frame
     signal[:2] = [0, 0]
     signal[-2:] = [0, 0]
@@ -300,6 +315,7 @@ def findPeaks(img, nPeaks=0, axis=1, nSmooth=100):
 
 
 # === === === === === Plotting === === === === ===
+
 
 def pltCross(x, y, size=3, width=1, color="red"):
     pt1X = [x-size, x+size]
@@ -365,6 +381,7 @@ def pltSegPlot(agents, plotBase, isRect=False, path=None, prefix="GRID", filenam
         painter.end()
         qimg.save(file, "PNG")
 
+
 def pltImShowMulti(imgs, titles=None, vertical=False):
     nImgs = len(imgs)
     idxImg = 100 if vertical else 10
@@ -377,10 +394,11 @@ def pltImShowMulti(imgs, titles=None, vertical=False):
         plt.imshow(imgs[i])
         try:
             plt.title(titles[i])
-        except:
+        except Exception:
             None
 
     plt.show()
+
 
 def pltLinesPlot(gmap, agents, img):
     itcs = gmap.itcs
@@ -399,6 +417,7 @@ def pltLinesPlot(gmap, agents, img):
 
     plt.show()
 
+
 def plotLine(axes, slope, intercept):
     if abs(slope) > 1e+9:
         # vertical line
@@ -410,18 +429,19 @@ def plotLine(axes, slope, intercept):
         y_vals = intercept + slope * x_vals
     axes.plot(x_vals, y_vals, '--', color="red")
 
+
 def bugmsg(msg, title="DEBUG"):
     if "--test" in sys.argv:
         print("======%s=====" % title)
         print(msg)
 
-# for GUI
 
+# for GUI
 def getRGBQImg(img):
     h, w = img.shape[0], img.shape[1]
     qImg = QImage(img.astype(np.uint8).copy(), w, h, w*3, QImage.Format_RGB888)
     return QPixmap(qImg)
-    
+   
 
 def getBinQImg(img):
      h, w = img.shape[0], img.shape[1]
@@ -502,7 +522,6 @@ class GProg(QWidget):
 
 def initProgress(size, name=None):
     if "__main__.py" in sys.argv[0]:
-    # if False:
         # GUI
         widget = QApplication.activeWindow()
         obj = GProg(size, name, widget)
@@ -514,14 +533,13 @@ def initProgress(size, name=None):
 
 
 def updateProgress(obj, n=1, name=None, flag=True):
-    if not flag or obj is None: return 0
+    if (not flag) or (obj is None):
+        return 0
+
     if "__main__.py" in sys.argv[0]:
-    # if False:
         # GUI
         obj.inc(n, name)
     else:
         # CLT
         obj.set_postfix_str(name)
         obj.update(n)
-
- 

@@ -4,21 +4,18 @@ from .gridGUI import *
 from .lib import *
 import matplotlib.pyplot as plt
 import grid as gd
-# import statistics
-# import numpy as np
-import sys, time
+from grid import lib
+import statistics
+import numpy as np
+import pandas as pd
 from tqdm import tqdm
 app = QApplication(sys.argv)
-
-
-#=== === === === === === DEBUG === === === === === ===
+# === === === === === === DEBUG === === === === === ===
 
 grid = gd.GRID()
-grid.loadData("/Users/jameschen/demo.png")
-# grid.loadData("/Users/jameschen/Dropbox/James Chen/GRID/Modeling/Rhombus.jpg")
-# grid.loadData("/Users/jameschen/Dropbox/James_Git/FN/data/demo.png")
-grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=0, outplot=False)
-# grid.findPlots(outplot=False)
+grid.loadData(
+    pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Prototype/PineApple.jpg")
+grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=0)
 
 g = GRID_GUI(grid, 3)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
 app.exec_()

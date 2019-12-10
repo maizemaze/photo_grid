@@ -1,10 +1,12 @@
 # basic imports
 import numpy as np
 import pandas as pd
+import sys
 
 # self imports
 from .io import *
 from .lib import *
+
 
 class GMap():
     """
@@ -15,7 +17,7 @@ class GMap():
         Parameters
         ----------
         """
-        
+
         # constant var
         self._degRot = range(-75, 90+1, 15)
 
@@ -77,7 +79,7 @@ class GMap():
         self.img = img
         self.imgH, self.imgW = img.shape[:2]
         isDimAssigned = (nRow != 0 and nCol != 0)
-        
+
         # if dim is assigned regardless have map or not, force changning nR and nC 
         if isDimAssigned:
             self.nAxs = [nCol, nRow]
@@ -105,7 +107,7 @@ class GMap():
         idxMax = [i for i in range(len(sc)) if (sc[i] in scSort[-2:])]
         angles = [rangeAngle[idx] for idx in idxMax]
 
-        # return 
+        # return
         return angles
 
     def locateCenters(self, img, nSmooth=100):
@@ -116,7 +118,7 @@ class GMap():
         if self.flag:
             self.flag = False
             prog = initProgress(2, "Calculate slopes and intercepts")
-    
+
         # find intercepts given 2 angles
         self.itcs = self.getIntercepts(img, self.angles, self.nAxs, nSmooth)
         # get pandas data table
@@ -124,13 +126,13 @@ class GMap():
         self.dt = self.getDfCoordinate(img, self.angles, self.slps, self.itcs)
 
         # end progress bar
-        if self.subflag and "__main__.py" not in sys.argv[0]:
+        if self.subflag and "__main__.py" in sys.argv[0]:
             self.subflag = False
             QTimer.singleShot(self.window, lambda: setattr(self, "flag", True))
             QTimer.singleShot(
                 self.window, lambda: setattr(self, "subflag", True))
 
-    def getIntercepts(self, img, angles, nSigs, nSmooth):   
+    def getIntercepts(self, img, angles, nSigs, nSmooth):
         intercepts = []
         imgs = []
         sigs = []
@@ -140,12 +142,12 @@ class GMap():
             imgR, sig, intercept = self.cpuIntercept(
                 img, angles[i], nSigs[i], nSmooth)
             sigs.append(sig)
-            intercepts.append(intercept) 
+            intercepts.append(intercept)
             imgs.append(imgR)
             imghr.append(imgR.shape[0])
             imgwr.append(imgR.shape[1])
-        
-        self.imgs = np.array(imgs)
+
+        self.imgs = imgs
         self.sigs = np.array(sigs)
         self.imgHr = np.array(imghr)
         self.imgWr = np.array(imgwr)
@@ -157,7 +159,6 @@ class GMap():
         sig = findPeaks(img=imgR, nPeaks=nSig, nSmooth=nSmooth)[0]
         intercept = getCardIntercept(sig, angle, self.imgH)
         return imgR, sig, intercept
-
 
     def getDfCoordinate(self, img, angles, slopes, intercepts):
         """
@@ -203,7 +204,7 @@ class GMap():
                     pts.append((ptX, ptY))
                     pMin += 1
             pMaj += 1
-        
+
         if idxCol==idxMaj:
             dataframe = pd.DataFrame(
                 {"row": plotsMin, "col": plotsMaj, "pt": pts})
@@ -212,7 +213,7 @@ class GMap():
                 {"row": plotsMaj, "col": plotsMin, "pt": pts})
 
         self.nRow, self.nCol = dataframe['row'].max()+1, dataframe['col'].max()+1
-        
+
         # update map names
         ctNA = 0
         names = []
@@ -221,7 +222,7 @@ class GMap():
             col = entry.col
             try:
                 names.append(self.pdMap.iloc[row, col])
-            except Exception as e:
+            except Exception:
                 names.append("unnamed_%d" % (ctNA))
                 ctNA += 1
         dataframe['var'] = names
@@ -261,11 +262,11 @@ class GMap():
         self.itcs = np.array(temp)
         self.dt = self.getDfCoordinate(self.img, self.angles, self.slps, self.itcs)
 
-    def addAnchor(self, axis, value):        
+    def addAnchor(self, axis, value):
         temp = self.sigs.tolist()
         try:
             temp[axis].append(value)
-        except:
+        except Exception:
             temp[axis] = np.append(temp[axis], value)
         self.sigs = np.array(temp)
         temp = self.itcs.tolist()
@@ -281,10 +282,12 @@ class GMap():
         self.dt = self.getDfCoordinate(
             self.img, self.angles, self.slps, self.itcs)
 
+
 def getClosedTo0or90(x):
     s1 = abs(abs(x)-90)
     s2 = abs(abs(x))
     return min(s1, s2)
+
 
 def scaleTo0and1(array, length):
     array = np.array(array)
