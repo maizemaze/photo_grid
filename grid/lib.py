@@ -441,7 +441,7 @@ def getRGBQImg(img):
     h, w = img.shape[0], img.shape[1]
     qImg = QImage(img.astype(np.uint8).copy(), w, h, w*3, QImage.Format_RGB888)
     return QPixmap(qImg)
-   
+
 
 def getBinQImg(img):
      h, w = img.shape[0], img.shape[1]

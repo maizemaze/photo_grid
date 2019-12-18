@@ -1,6 +1,7 @@
 import platform
 import os
 
+
 class GUser():
     """
     """

@@ -160,19 +160,24 @@ class GRID():
             self.flag = False
             prog = initProgress(5, name="K-Means Clustering")
         self.imgs.doKMeans(k=k, features=features, colorOnly=colorOnly)
+
         # BINARIZE
         updateProgress(prog, name="Binarizing", flag=self.subflag)
         self.imgs.binarize(k=k, features=features, lsSelect=lsSelect)
+
         # SMOOTH
         updateProgress(prog, name="Smoothing", flag=self.subflag)
         self.imgs.smooth(value=valSmth)
+
         # DESHADOW
         updateProgress(prog, name="DeShade-ing", flag=self.subflag)
         self.imgs.deShadow(value=valShad)
+
         # FINALIZE
         updateProgress(prog, name="Finalizing", flag=self.subflag)
         self.imgs.finalized()
         updateProgress(prog, name="Done", flag=self.subflag)
+
         # set progress bar inactive for 300ms
         if self.subflag and "__main__.py" in sys.argv[0]:
             self.subflag = False
@@ -263,7 +268,7 @@ class GRID():
 
         proh5 = 1 if h5 else 0
         # progress bar
-        prog = initProgress(2+proh5, "Exporting Dataframe")
+        prog = initProgress(2 + proh5, "Exporting Dataframe")
 
         saveDT(self, path, prefix)
         updateProgress(prog, name="Exporting Figures")

@@ -181,6 +181,7 @@ def saveDT(grid, path, prefix="GRID"):
     # append columns based on the dict
     for key, _ in dicIdx.items():
         df[key] = None
+        df[key + "_std"] = None
 
     # index data frame
     for row in range(grid.agents.nRow):
@@ -207,8 +208,10 @@ def saveDT(grid, path, prefix="GRID"):
             # append temp entry
             for key, imgIdx in dicIdx.items():
                 imgIdxAgent = imgIdx[rg_row, :][:, rg_col]
-                sum_index = np.multiply(imgBinAgent, imgIdxAgent).sum()
-                entry[key] = sum_index/(n_veg+1e-8)
+                img_out = np.multiply(imgBinAgent, imgIdxAgent)
+                vec_out = img_out[img_out != 0].flatten()
+                entry[key] = vec_out.mean()
+                entry[key + "_std"] = vec_out.std()
 
             df.loc[len(df)] = entry
 
@@ -256,9 +259,9 @@ def saveH5(grid, path, prefix="GRID"):
             key = agent.name
 
             # get ROI region
-            rgX = range(agent.getBorder(Dir.NORTH),
+            rgY = range(agent.getBorder(Dir.NORTH),
                         agent.getBorder(Dir.SOUTH))
-            rgY = range(agent.getBorder(Dir.WEST),
+            rgX = range(agent.getBorder(Dir.WEST),
                         agent.getBorder(Dir.EAST))
 
             # compute kernel
@@ -267,5 +270,8 @@ def saveH5(grid, path, prefix="GRID"):
             imgFin = np.multiply(imgAll, np.expand_dims(imgBin, 2))
 
             # export image
-            with h5py.File(pathH5, "a") as f:
-                f.create_dataset(key, data=imgFin, compression="gzip")
+            try:
+                with h5py.File(pathH5, "a") as f:
+                    f.create_dataset(key, data=imgFin, compression="gzip")
+            except Exception:
+                print("Failed to save %s" % key)

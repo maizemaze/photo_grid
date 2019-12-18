@@ -155,8 +155,11 @@ class GImage():
         ----------
         """
 
-        # Will skip if no updates on the params         
-        if (k != self.paramKMs['k']) or (features != self.paramKMs['features']):            
+        if len(features) == 0:
+            print("no feature is selected")
+        elif (k != self.paramKMs['k']) or\
+             (features != self.paramKMs['features']):
+            # Will skip if no updates on the params
             imgK, center = doKMeans(img=self.get('crop'),
                                     k=k,
                                     features=features)
@@ -179,14 +182,18 @@ class GImage():
         ----------
         """
 
-        if (k != self.paramKMs['k']) or (features != self.paramKMs['features']) or (lsSelect != self.paramKMs['lsSelect']):
+        if len(features) == 0:
+            print("no feature is selected")
+        elif (k != self.paramKMs['k']) or\
+             (features != self.paramKMs['features']) or\
+             (lsSelect != self.paramKMs['lsSelect']):
             # ratioK = [(self.paramKMs['center'][i, 0]-self.paramKMs['center'][i, 1])/self.paramKMs['center'][i, :].sum()
             #           for i in range(self.paramKMs['center'].shape[0])]
-            # # rankK = np.flip(np.argsort(ratioK), 0) 
+            # # rankK = np.flip(np.argsort(ratioK), 0)
             # rankK = np.argsort(ratioK)
             try:
                 clusterSelected = self.paramKMs['rank'][lsSelect]
-            except:
+            except Exception:
                 clusterSelected = []
             self.set(key='binOrg', value=(
                 (np.isin(self.get('kmean'), clusterSelected))*1).astype(np.int))
@@ -200,7 +207,6 @@ class GImage():
         else:
             # skip
             bugmsg("skip binarize")
-    
 
 
     def smooth(self, value):
@@ -282,9 +288,9 @@ class GImage():
                 try:
                     scPeaks = round(len(find_peaks(sigs, height=(sigs.mean()))
                                         [0])/len(find_peaks(sigs)[0]), 4)
-                except:
+                except Exception:
                     scPeaks = 0
-                    
+
                 score = scMaxF*.25 + scMean*.25 + scPeaks*.5
                 scores.append(score)
             rank = np.flip(np.array(scores).argsort(), axis=0)
