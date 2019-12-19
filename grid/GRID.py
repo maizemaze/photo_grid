@@ -243,7 +243,7 @@ class GRID():
         if nPeaks != 0:
             self.map.nAxs[idx] = nPeaks
         self.map.locateCenters(img=self.imgs.get("binSeg"))
-        self.map.nAxs[idx] = 0
+        # self.map.nAxs[idx] = 0
 
     # === === === === === === AGENTS === === === === === ===
 

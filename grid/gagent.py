@@ -7,7 +7,7 @@ from .dir import Dir
 
 
 class GAgent():
-    
+
     def __init__(self):
         """
         ----------
@@ -44,13 +44,13 @@ class GAgent():
         fr, fc = [], []
 
         for row in range(self.nRow):
-            lsAgentsRow = [] 
+            lsAgentsRow = []
             for col in range(self.nCol):
                 try:
                     entry = dt[(dt.row == row) & (dt.col == col)].iloc[0]                
                     ptX, ptY = entry["pt"]
                     name = entry["var"]
-                except:
+                except Exception:
                     # handle inconsistant # of rows/cols
                     fr.append(row)
                     fc.append(col)
@@ -58,13 +58,14 @@ class GAgent():
                     name = "_FAKE"
                 agent = Agent(name=name, row=row, col=col)
                 self.setCoordinate(agent=agent, x=ptX, y=ptY)
-                lsAgentsRow.append(agent) 
+                lsAgentsRow.append(agent)
             self.agents.append(lsAgentsRow)
 
+        self.rowFake, self.colFake = -1, -1
         # determine fake plots
         if len(fr) > 1 and np.array(fr).var() == 0:
             self.rowFake = fr[0]
-        elif len(fc) > 1 and np.array(fc).var()==0:
+        elif len(fc) > 1 and np.array(fc).var() == 0:
             self.colFake = fc[0]
 
     def get(self, row, col):
@@ -80,10 +81,10 @@ class GAgent():
         else:
             try:
                 return self.agents[row][col]
-            except:
+            except Exception:
                 # outside frame
                 return False
-    
+
     def getNeib(self, row, col, dir):
         """
         ----------
@@ -95,7 +96,7 @@ class GAgent():
             agent = self.get(row, col+1)
             if not agent:
                 # outside image
-                return False            
+                return False
             elif (col+1 == self.colFake):
                 # on fake line
                 return agent
@@ -133,7 +134,7 @@ class GAgent():
                 return self.get(row+1, col-1)
             else:
                 return agent
-                
+
     def cpuPreDim(self, tol=5):
         """
         ----------
@@ -265,20 +266,20 @@ class GAgent():
                         else:
                             self.updateBorder(agentSelf, dir, 1)
                             self.updateBorder(agentNeib, dirNeib, -1)
-        
+
         if self.subflag and "__main__.py" in sys.argv[0]:
             self.subflag = False
             QTimer.singleShot(self.window, lambda: setattr(self, "flag", True))
             QTimer.singleShot(self.window, lambda: setattr(self, "subflag", True))
 
         # rescue plots on fake line
-        if self.rowFake!=-1:
+        if self.rowFake != -1:
             for col in range(1, self.nCol):
                 agent = self.get(self.rowFake, col)
                 if not agent.isFake():
                     agentNeig = self.get(self.rowFake-1, col-1)
                     agent.setBorder(Dir.WEST, agentNeig.getBorder(Dir.EAST))
-        elif self.colFake!=-1:
+        elif self.colFake != -1:
             for row in range(1, self.nRow):
                 agent = self.get(row, self.colFake)
                 if not agent.isFake():
@@ -519,6 +520,7 @@ class GAgent():
                     elif axis == 1:
                         dist = agent.x_reset - agent.x
                     self.updateCoordinate(agent=agent, value=dist, axis=axis)
+
 
 class Agent():
     def __init__(self, name, row, col):

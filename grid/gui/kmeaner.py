@@ -10,6 +10,7 @@ from PyQt5.QtGui import *
 from ..grid import *
 from .customQt import *
 
+
 class PnKmeaner(QWidget):
     """
     """
@@ -38,7 +39,7 @@ class PnKmeaner(QWidget):
         self.kMax = 9
         self.gr_pre = QGroupBox("K-means Algo.")
         self.lo_pre = QGridLayout()
-        
+
         self.gr_ft = QGroupBox("Channels used for clustering")
         self.lo_ft = QHBoxLayout()
         self.ck_ft = []
@@ -94,7 +95,7 @@ class PnKmeaner(QWidget):
         self.gr_gb = QGroupBox("De-Noise = 0")
         self.lo_gb = QVBoxLayout()
         self.sl_gb = QSlider(Qt.Horizontal)
-        
+
         # panel right
         self.pn_right = QWidget()
         self.lo_right = QVBoxLayout()
@@ -131,7 +132,7 @@ class PnKmeaner(QWidget):
         self.lo_pre.addWidget(self.gr_ft)
         self.lo_pre.addWidget(self.gr_k)
         self.gr_pre.setLayout(self.lo_pre)
-      
+
         '''binarization'''
         # component
         self.gr_cut.setCheckable(True)
@@ -155,7 +156,7 @@ class PnKmeaner(QWidget):
         self.lo_bin.addWidget(self.gr_cut)
         self.lo_bin.addWidget(self.gr_cusb)
         self.gr_bin.setLayout(self.lo_bin)
-     
+
         '''pro keans (right)'''
         # components
         self.sl_shad.setMinimum(0)
@@ -186,7 +187,7 @@ class PnKmeaner(QWidget):
         self.lo_zm.addWidget(self.rb_1x)
         self.lo_zm.addWidget(self.rb_15x)
         self.lo_zm.addWidget(self.rb_3x)
-        self.gr_zm.setLayout(self.lo_zm)        
+        self.gr_zm.setLayout(self.lo_zm)
 
         '''display'''
         # components
@@ -210,16 +211,18 @@ class PnKmeaner(QWidget):
         self.sc_right.setWidget(self.pn_right)
 
         '''assemble'''
-        policy_right = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        policy_right = QSizePolicy(QSizePolicy.Preferred,
+                                   QSizePolicy.Preferred)
         policy_right.setHorizontalStretch(2)
         self.sc_right.setSizePolicy(policy_right)
-        policy_left = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        policy_left = QSizePolicy(QSizePolicy.Preferred,
+                                  QSizePolicy.Preferred)
         policy_left.setHorizontalStretch(3)
         self.gr_left.setSizePolicy(policy_left)
         self.layout.addWidget(self.gr_left)
         self.layout.addWidget(self.sc_right)
         self.setLayout(self.layout)
-        self.change_k() #initialize kmeans
+        self.change_k()  # initialize kmeans
         self.show()
 
         '''collapse'''
@@ -248,11 +251,10 @@ class PnKmeaner(QWidget):
     #     self.gr_zm.toggled.connect(self.collapseZm)
     #     self.collapseZm()
 
-
     # def collapsePre(self):
     #     self.gr_ft.setVisible(not self.gr_ft.isVisible())
     #     self.gr_k.setVisible(not self.gr_k.isVisible())
-    
+
     # def collapseBin(self):
     #     self.gr_cut.setVisible(not self.gr_cut.isVisible())
     #     self.gr_cusb.setVisible(not self.gr_cusb.isVisible())
@@ -270,7 +272,6 @@ class PnKmeaner(QWidget):
     #     self.rb_1x.setVisible(not self.rb_1x.isVisible())
     #     self.rb_15x.setVisible(not self.rb_15x.isVisible())
     #     self.rb_3x.setVisible(not self.rb_3x.isVisible())
-
 
     def changeZoom(self, index):
         self.wg_img.zoom = index
@@ -309,10 +310,10 @@ class PnKmeaner(QWidget):
         self.gr_k.setTitle("K = %d" % value)
         # will certainly go to either of cut function, no need to do binarize
         if self.gr_cusb.isChecked():
-            self.custom_cut() 
+            self.custom_cut()
         else:
             self.auto_cut()
-        
+
     def auto_cut(self):
         self.gr_cut.setChecked(True)
         self.gr_cusb.setChecked(False)
@@ -321,7 +322,7 @@ class PnKmeaner(QWidget):
         ls_bin = []
         for i in range(self.kMax):
             self.ck_cusb[i].setEnabled(False)
-            if i<value:
+            if i < value:
                 ls_bin.extend([i])
         self.lsSelect = ls_bin
         self.binarizeImgGUI()
@@ -332,12 +333,12 @@ class PnKmeaner(QWidget):
         value = self.sl_k.value()
         ls_bin = []
         for i in range(self.kMax):
-            if i<value:
+            if i < value:
                 self.ck_cusb[i].setEnabled(True)
                 if self.ck_cusb[i].isChecked():
                     ls_bin.extend([i])
             else:
-                self.ck_cusb[i].setEnabled(False) 
+                self.ck_cusb[i].setEnabled(False)
         self.lsSelect = ls_bin
         self.binarizeImgGUI()
 
@@ -364,7 +365,7 @@ class PnKmeaner(QWidget):
             self.rotateCW()
     # def keyReleaseEvent(self, event):
         # self.rb_bin.setChecked(True)
-  
+
     def refresh(self):
         self.rb_bin.setChecked(True)
         self.wg_img.switch_imgB()
@@ -372,15 +373,15 @@ class PnKmeaner(QWidget):
         #     self.wg_img.switch_imgVis()
         # elif self.rb_k.isChecked():
         #     self.wg_img.switch_imgK()
-  
+
     def run(self):
         # GRID got everything done
         return 0
 
     def paintEvent(self, paint_event):
-        if self.wg_img.zoom==0:
+        if self.wg_img.zoom == 0:
             self.rb_1x.setChecked(True)
-        elif self.wg_img.zoom==1:
+        elif self.wg_img.zoom == 1:
             self.rb_15x.setChecked(True)
         else:
             self.rb_3x.setChecked(True)
@@ -425,12 +426,12 @@ class Widget_Kmeans(Widget_Img):
 
     def mousePressEvent(self, event):
         if event.button() == Qt.RightButton:
-            self.zoom = (self.zoom+1)%3
+            self.zoom = (self.zoom+1) % 3
             self.mouseMoveEvent(event)
 
     def updateMag(self):
         pos = self.mapFromGlobal(QCursor().pos())
-        if self.zoom!=0:
+        if self.zoom != 0:
             magnifying_glass(self, pos, area=int(self.width()/7), zoom=self.zoom*1.5)
         else:
             self.setCursor(QCursor(Qt.ArrowCursor))

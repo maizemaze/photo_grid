@@ -13,8 +13,10 @@ app = QApplication(sys.argv)
 # === === === === === === DEBUG === === === === === ===
 
 grid = gd.GRID()
-grid.loadData(
-    pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Prototype/PineApple.jpg")
+# grid.loadData("/Users/jameschen/Dropbox/James_Git/FN/data/demo.png")
+grid.loadData("/Users/jameschen/Desktop/testGRID.png")
+# grid.loadData(
+#     pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Prototype/PineApple.jpg")
 grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=0)
 
 g = GRID_GUI(grid, 3)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
