@@ -78,6 +78,7 @@ class PnOutputer(QWidget):
         self.lb_output = QLabel("Output Path")
         self.fd_output = QLineEdit(os.path.expanduser("~"))
         self.bt_output = QPushButton("Browse")
+        self.ck_h5 = QCheckBox("Save segmented images as H5")
         '''ui'''
         self.initUI()
 
@@ -183,6 +184,7 @@ class PnOutputer(QWidget):
         self.lo_out.addWidget(self.lb_output, 1, 0)
         self.lo_out.addWidget(self.fd_output, 1, 1)
         self.lo_out.addWidget(self.bt_output, 1, 2)
+        self.lo_out.addWidget(self.ck_h5, 2, 0, 1, 3)
         self.gr_out.setLayout(self.lo_out)
         '''layout'''
         # left
@@ -240,10 +242,10 @@ class PnOutputer(QWidget):
         value_width = self.sl_width.value()
         value_length = self.sl_length.value()
         self.wg_img.fix_seg(value_width, value_length)
-    
+
     def changeTool(self, index):
         self.wg_img.task = index
-        
+
     def change_grid(self):
         '''
         '''

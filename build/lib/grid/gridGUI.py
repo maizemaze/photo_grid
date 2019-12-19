@@ -175,7 +175,7 @@ class GRID_GUI(QMainWindow):
             widget = self.pnMain.widget(panel.value[0]+1)
             self.pnMain.removeWidget(widget)
             self.nPanel -= 1
-            
+
         # set current widget
         self.pnMain.setCurrentIndex(self.nPanel)
 
@@ -198,11 +198,12 @@ class GRID_GUI(QMainWindow):
         if returnValue == QMessageBox.Save:
             path = self.pnMain.currentWidget().fd_output.text()
             prefix = self.pnMain.currentWidget().fd_project.text()
-            self.grid.save(path=path, prefix=prefix)
+            isH5 = self.pnMain.currentWidget().ck_h5.isChecked()
+            self.grid.save(path=path, prefix=prefix, h5=isH5)
             self.startover()
         elif returnValue == QMessageBox.Discard:
             self.startover()
-           
+
     def centerWindow(self):
         """
         ----------
@@ -250,6 +251,7 @@ class GRID_GUI(QMainWindow):
         self.setCentralWidget(self.pnContent)
         self.setMinimumHeight(30)
         self.show()
+
 
 class Panels(Enum):
     INPUTER = 0, PnInputer

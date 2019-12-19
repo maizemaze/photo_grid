@@ -231,9 +231,9 @@ def getFourierTransform(sig):
 
 def getCardIntercept(lsValues, angle, imgH=0):
     if angle == 0:
-        return lsValues*1
+        return lsValues * 1
     else:
-        coef = 1/np.sin(np.pi/180*abs(angle))
+        coef = 1 / np.sin(np.pi / 180 * abs(angle))
         if angle < 0:
             return lsValues*coef
         else:
@@ -441,7 +441,7 @@ def getRGBQImg(img):
     h, w = img.shape[0], img.shape[1]
     qImg = QImage(img.astype(np.uint8).copy(), w, h, w*3, QImage.Format_RGB888)
     return QPixmap(qImg)
-   
+
 
 def getBinQImg(img):
      h, w = img.shape[0], img.shape[1]

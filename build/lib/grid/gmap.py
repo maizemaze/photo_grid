@@ -28,6 +28,7 @@ class GMap():
 
         # dimension
         self.nAxs = [0, 0]
+        self.nAxsCur = [0, 0]
         self.nRow = 0
         self.nCol = 0
         self.img = None
@@ -35,17 +36,18 @@ class GMap():
         self.imgW = 0
 
         # axes
-        self.angles = []
-        self.slps = []  # 0 and 90 degrees for common images
-        self.sigs = []
-        self.itcs = []
-        self.imgHr = []
-        self.imgWr = []
-        self.slpsReset = []
-        self.itcsReset = []
+        self.angles = [0, 0]
+        self.anglesCur = [0, 0]
+        self.slps = [0, 0]  # 0 and 90 degrees for common images
+        self.sigs = [0, 0]
+        self.itcs = [0, 0]
+        self.imgHr = [0, 0]
+        self.imgWr = [0, 0]
+        self.slpsReset = [0, 0]
+        self.itcsReset = [0, 0]
 
         # iamges for two axes
-        self.imgs = []
+        self.imgs = [0, 0]
 
         # output
         self.dt = None
@@ -120,7 +122,8 @@ class GMap():
             prog = initProgress(2, "Calculate slopes and intercepts")
 
         # find intercepts given 2 angles
-        self.itcs = self.getIntercepts(img, self.angles, self.nAxs, nSmooth)
+        self.updateIntercepts(img, self.angles, self.nAxs, nSmooth)
+
         # get pandas data table
         updateProgress(prog, flag=self.subflag)
         self.dt = self.getDfCoordinate(img, self.angles, self.slps, self.itcs)
@@ -128,36 +131,34 @@ class GMap():
         # end progress bar
         if self.subflag and "__main__.py" in sys.argv[0]:
             self.subflag = False
-            QTimer.singleShot(self.window, lambda: setattr(self, "flag", True))
+            QTimer.singleShot(
+                self.window, lambda: setattr(self, "flag", True))
             QTimer.singleShot(
                 self.window, lambda: setattr(self, "subflag", True))
 
-    def getIntercepts(self, img, angles, nSigs, nSmooth):
-        intercepts = []
-        imgs = []
-        sigs = []
-        imghr = []
-        imgwr = []
+    def updateIntercepts(self, img, angles, nSigs, nSmooth):
         for i in range(2):
-            imgR, sig, intercept = self.cpuIntercept(
-                img, angles[i], nSigs[i], nSmooth)
-            sigs.append(sig)
-            intercepts.append(intercept)
-            imgs.append(imgR)
-            imghr.append(imgR.shape[0])
-            imgwr.append(imgR.shape[1])
+            if (nSigs[i] == 0 or self.nAxsCur[i] != nSigs[i] or self.angles[i] != self.anglesCur[i]):
+                imgR, sig, intercept = self.cpuIntercept(
+                    img, angles[i], nSigs[i], nSmooth)
+                self.imgs[i] = imgR
+                self.imgHr[i] = imgR.shape[0]
+                self.imgWr[i] = imgR.shape[1]
+                self.sigs[i] = sig
+                self.itcs[i] = intercept
+                # update number of peaks
+                self.nAxs[i] = len(intercept)
+                self.nAxsCur[i] = len(intercept)
+                # update angles
+                self.anglesCur[i] = self.angles[i]
 
-        self.imgs = imgs
-        self.sigs = np.array(sigs)
-        self.imgHr = np.array(imghr)
-        self.imgWr = np.array(imgwr)
-        # return 
-        return np.array(intercepts)
 
     def cpuIntercept(self, img, angle, nSig, nSmooth):
         imgR = rotateBinNdArray(img, angle)
         sig = findPeaks(img=imgR, nPeaks=nSig, nSmooth=nSmooth)[0]
         intercept = getCardIntercept(sig, angle, self.imgH)
+        if isinstance(intercept, int):
+            intercept = list([intercept])
         return imgR, sig, intercept
 
     def getDfCoordinate(self, img, angles, slopes, intercepts):
@@ -172,9 +173,9 @@ class GMap():
         bdW, bdE = -imgW*tol, imgW*(1+tol)
 
         idxCol = 0 if abs(slopes[0]) > abs(slopes[1]) else 1
-        idxRow = 1-idxCol
+        idxRow = 1 - idxCol
         idxMaj = 0 if getClosedTo0or90(angles[0]) <= getClosedTo0or90(angles[1]) else 1
-        idxMin = 1-idxMaj
+        idxMin = 1 - idxMaj
 
         for i in range(2):
             intercepts[i].sort()
@@ -250,26 +251,30 @@ class GMap():
 
     def delAnchor(self, axis, index):
         # since numpy array required elements in same length if they were
-        temp = self.sigs.tolist()
+        # temp = self.sigs.tolist()
+        temp = self.sigs
         try:
             temp[axis].remove(temp[axis][index])
-        except:
+        except Exception:
             temp[axis] = np.delete(temp[axis], index)
         self.sigs = np.array(temp)
-        temp = self.itcs.tolist()
+        # temp = self.itcs.tolist()
+        temp = self.itcs
         temp[axis] = getCardIntercept(
             self.sigs[axis], self.angles[axis], self.imgH)
         self.itcs = np.array(temp)
         self.dt = self.getDfCoordinate(self.img, self.angles, self.slps, self.itcs)
 
     def addAnchor(self, axis, value):
-        temp = self.sigs.tolist()
+        # temp = self.sigs.tolist()
+        temp = self.sigs
         try:
             temp[axis].append(value)
         except Exception:
             temp[axis] = np.append(temp[axis], value)
         self.sigs = np.array(temp)
-        temp = self.itcs.tolist()
+        # temp = self.itcs.tolist()
+        temp = self.itcs
         temp[axis] = getCardIntercept(
             self.sigs[axis], self.angles[axis], self.imgH)
         self.itcs = np.array(temp)

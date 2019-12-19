@@ -1,13 +1,14 @@
 # basic imports
 import numpy as np
 
-# 3rd party imports 
+# 3rd party imports
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 # self imports
 from .customQt import *
+
 
 class PnAnchor(QWidget):
     """
@@ -18,8 +19,10 @@ class PnAnchor(QWidget):
         self.grid = grid
         # compute
         self.grid.findPlots()
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setFocus()
 
-        # major 
+        # major
         self.layout = QGridLayout()
         self.grRight = QGroupBox()
         self.wgImg = WidgetAnchor(grid)
@@ -29,10 +32,12 @@ class PnAnchor(QWidget):
         self.recAxs = QRect(0, 0, 0, 0)
         self.recRight = QRect(0, 0, 0, 0)
 
-        
         # Right Panel
         self.loRight = QVBoxLayout()
-        
+        self.sc_right = QScrollArea()
+        self.sc_right.setStyleSheet("QScrollBar {width:0px;}")
+        self.sc_right.setWidgetResizable(True)
+
         # 2 axes
         self.grAxis = [QGroupBox("Axis 1"), QGroupBox("Axis 2")]
         self.loAxis = [QVBoxLayout(), QVBoxLayout()]
@@ -44,8 +49,14 @@ class PnAnchor(QWidget):
         self.lbNum = [QLabel("# of peaks"), QLabel("# of peaks")]
         self.spbNum = [QSpinBox(), QSpinBox()]
 
-        self.mtp = 5 # for slider
+        self.mtp = 5  # for slider
         self.idxAx = 0
+
+        # Display
+        self.gr_dis = QGroupBox("Display")
+        self.lo_dis = QHBoxLayout()
+        self.rb_bin = QRadioButton("Binary (A)")
+        self.rb_rgb = QRadioButton("RGB (S)")
 
         # reset
         self.btReset = QPushButton("Reset")
@@ -53,6 +64,7 @@ class PnAnchor(QWidget):
         # mouse event
         self.idxAnc = -1
         self.ptX = -1
+        self.ptXpress = -1
 
         # UI
         self.switch = True
@@ -80,7 +92,7 @@ class PnAnchor(QWidget):
             # assemble
             self.loAg[i].addWidget(self.dlAg[i])
             self.grAg[i].setLayout(self.loAg[i])
-            
+
             self.loNum[i].addWidget(self.lbNum[i])
             self.loNum[i].addWidget(self.spbNum[i])
             self.grNum[i].setLayout(self.loNum[i])
@@ -95,27 +107,39 @@ class PnAnchor(QWidget):
         self.grAxis[0].setChecked(True)
         self.grAxis[1].setChecked(False)
 
-        # RIGHT: functions  
+        # RIGHT: functions
         self.grAxis[0].clicked.connect(lambda: self.toggle(idx=0))
         self.grAxis[1].clicked.connect(lambda: self.toggle(idx=1))
         self.dlAg[0].valueChanged.connect(lambda: self.changeAngle(idx=0))
         self.dlAg[1].valueChanged.connect(lambda: self.changeAngle(idx=1))
         self.spbNum[0].valueChanged.connect(lambda: self.changePeaks(idx=0))
         self.spbNum[1].valueChanged.connect(lambda: self.changePeaks(idx=1))
+        self.rb_bin.toggled.connect(self.wgImg.switch_imgB)
+        self.rb_rgb.toggled.connect(self.wgImg.switch_imgVis)
+
+        # RIGHT: display
+        self.rb_bin.setChecked(True)
+        self.lo_dis.addWidget(self.rb_bin)
+        self.lo_dis.addWidget(self.rb_rgb)
+        self.gr_dis.setLayout(self.lo_dis)
+        self.loRight.addWidget(self.gr_dis)
 
         # RIGHT: comp
         self.loRight.addWidget(self.btReset)
         self.grRight.setLayout(self.loRight)
+        self.sc_right.setWidget(self.grRight)
 
         # LEFT IMG: mouse tracking
         # self.wgImg.setMouseTracking(True)
 
         # Main
-        policyRight = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        policyRight = QSizePolicy(QSizePolicy.Preferred,
+                                  QSizePolicy.Preferred)
         policyRight.setHorizontalStretch(1)
-        self.grRight.setSizePolicy(policyRight)
+        self.sc_right.setSizePolicy(policyRight)
 
-        policyLeft = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        policyLeft = QSizePolicy(QSizePolicy.Preferred,
+                                 QSizePolicy.Preferred)
         policyLeft.setHorizontalStretch(3)
         self.wgImg.setSizePolicy(policyLeft)
         self.wgAxs.setSizePolicy(policyLeft)
@@ -123,15 +147,15 @@ class PnAnchor(QWidget):
         sizeAxis = 9
         self.layout.addWidget(self.wgImg, 0, 0, sizeAxis, 1)
         self.layout.addWidget(self.wgAxs, sizeAxis, 0, 1, 1)
-        self.layout.addWidget(self.grRight, 0, 1, sizeAxis+1, 1)
+        self.layout.addWidget(self.sc_right, 0, 1, sizeAxis+1, 1)
 
         self.setLayout(self.layout)
 
     def paintEvent(self, event):
         try:
             self.updatePlots()
-        except Exception as e:
-            bugmsg(e)
+        except Exception:
+            None
         # '''rect'''
         # pen.setWidth(1)
         # pen.setColor(Qt.black)
@@ -141,43 +165,40 @@ class PnAnchor(QWidget):
         # painter.drawRect(self.rec_acr_r)
 
     def updatePlots(self):
-        bugmsg("update anchor")
         self.updateAnchor()
-        bugmsg("update agent")
         self.updateAgents()
-        bugmsg("done")
 
     def changeAngle(self, idx):
-        bugmsg("ch angle %d" % idx)
-        angle = self.dlAg[idx].value()*self.mtp
-        angleOp = self.dlAg[1-idx].value()*self.mtp
-        angleDiff = abs(angle-angleOp)
-        if angleDiff!=0:
+        angle = self.dlAg[idx].value() * self.mtp
+        angleOp = self.dlAg[1 - idx].value() * self.mtp
+        angleDiff = abs(angle - angleOp)
+        if angleDiff != 0:
             if angleDiff > 90:
-                value = min(angle+90, 90)/self.mtp if idx == 0 else max(-90, angle-90)/self.mtp
-                self.dlAg[1-idx].setValue(int(value))
-            elif angle*angleOp>0:
+                if idx == 0:
+                    value = min(angle + 90, 90) / self.mtp
+                else:
+                    value = max(-90, angle - 90) / self.mtp
+                self.dlAg[1 - idx].setValue(int(value))
+            elif angle * angleOp > 0:
                 angle = 0
                 self.dlAg[idx].setValue(0)
             self.grAg[idx].setTitle("Angle: %d degrees" % (angle))
             self.grid.updateCenters(idx, angle=angle)
             self.switch = False
             self.spbNum[idx].setValue(len(self.grid.map.itcs[idx]))
-            self.spbNum[1-idx].setValue(len(self.grid.map.itcs[1-idx]))
+            self.spbNum[1 - idx].setValue(len(self.grid.map.itcs[1 - idx]))
             self.switch = True
             self.wgImg.make_bin_img(self.grid.map.imgs[idx])
             self.repaint()
-    
+
     def changePeaks(self, idx):
         if self.switch:
-            bugmsg("ch peak")
             nPeaks = self.spbNum[idx].value()
             self.grid.updateCenters(idx, nPeaks=nPeaks)
             self.wgImg.make_bin_img(self.grid.map.imgs[idx])
             self.repaint()
 
     def toggle(self, idx):
-        bugmsg("ch toggle")
         self.idxAx = idx
         self.wgImg.make_bin_img(self.grid.map.imgs[idx])
         self.grAxis[idx].setChecked(True)
@@ -198,44 +219,45 @@ class PnAnchor(QWidget):
         idxOp = 1 - idxCr
         agCr = gmap.angles[idxCr]
         agOp = gmap.angles[idxOp]
-        agDiff = agOp-agCr
+        agDiff = agOp - agCr
         agAbs = abs(agDiff)
-        
+
         imgH, imgW = gmap.imgs[idxCr].shape
         qimgH, qimgW = self.wgImg.sizeImg.height(), self.wgImg.sizeImg.width()
-        ratio = sum([qimgW/imgW, qimgH/imgH])/2
-        bugmsg(ratio)
+        ratio = sum([qimgW / imgW, qimgH / imgH]) / 2
 
         # current axis
         self.wgImg.ptVLine = self.wgAxs.pts
 
         # another axis
-        self.wgImg.slp = 1 / np.tan(np.pi/180*agDiff)
+        self.wgImg.slp = 1 / np.tan(np.pi / 180 * agDiff)
         sigs = gmap.sigs[idxOp]
 
         if agCr % 90 == 0:
-            bugmsg("case 1")
+            # bugmsg("case 1")
             itc = getCardIntercept(sigs, agDiff, imgH)
         elif agOp % 90 == 0:
-            itc = np.cos(np.pi/180*agAbs)*gmap.imgHr[idxOp] + \
-                    sigs/np.sin(np.pi/180*agAbs)
+            itc = np.cos(np.pi / 180 * agAbs) * gmap.imgHr[idxOp] + \
+                    sigs / np.sin(np.pi / 180 * agAbs)
             if agDiff < 0:
-                bugmsg("case 2")     
+                # bugmsg("case 2")
+                None
             else:
-                bugmsg("case 3")
+                # bugmsg("case 3")
                 itc = gmap.imgHr[idxCr] - itc
         else:
-            seg1 = gmap.imgH*np.cos(np.pi/180*abs(agCr))
-            seg2 = (sigs - gmap.imgH * np.sin(np.pi/180*abs(agOp))) / \
-                np.sin(np.pi/180*(abs(agOp)+abs(agCr)))
+            seg1 = gmap.imgH * np.cos(np.pi / 180 * abs(agCr))
+            seg2 = (sigs - gmap.imgH * np.sin(np.pi / 180 * abs(agOp))) / \
+                np.sin(np.pi / 180 * (abs(agOp) + abs(agCr)))
             itc = seg1 + seg2
             if agCr > 0:
-                bugmsg("case 4")
+                # bugmsg("case 4")
+                None
             else:
-                bugmsg("case 5")
+                # bugmsg("case 5")
                 itc = gmap.imgHr[idxCr] - itc
 
-        self.wgImg.itcs = itc*ratio
+        self.wgImg.itcs = itc * ratio
 
         # slp = -1/np.tan(np.pi/180*agAbs) if agAbs < 0 else 1/np.tan(np.pi/180*agAbs)
         # sigs = self.grid.map.sigs[idxOp]
@@ -249,7 +271,7 @@ class PnAnchor(QWidget):
         #     segA = sigs/np.sin(np.pi/180*agAbs)
         #     segB = np.sin(np.pi/180*agAbs)*self.grid.map.imgWr[idxOp]
         #     self.wgImg.itcs = segA*ratio + (qimgW - segB*ratio)
-        
+
     def updateDim(self):
         self.recImg = self.wgImg.geometry()
         self.recAxs = self.wgAxs.geometry()
@@ -259,21 +281,20 @@ class PnAnchor(QWidget):
         rgWg = self.wgImg.getImgRange()[0]
         rgMap = (0, self.grid.map.imgWr[self.idxAx]-1)
         return rescale(ptX-self.recAxs.x(), rgWg, rgMap)
-        
+
     def mousePressEvent(self, event):
         pos = event.pos()
         self.updateDim()
-        bugmsg(pos)
-        bugmsg(self.recAxs)
         if self.recImg.contains(pos):
-            bugmsg("img")
+            None  # img
         if self.recAxs.contains(pos):
             self.ptX = self.getPtGui2Map(pos.x())
+            self.ptXpress = self.ptX
             self.idxAnc = np.abs(
                 self.ptX-self.grid.map.sigs[self.idxAx]).argmin()
         if self.recRight.contains(pos):
-            bugmsg("right")
-    
+            None  # right
+
     def mouseMoveEvent(self, event):
         pos = event.pos()
         if self.idxAnc != -1:
@@ -290,34 +311,59 @@ class PnAnchor(QWidget):
         pos = event.pos()
         ptX = self.getPtGui2Map(pos.x())
         sig = np.array(self.grid.map.sigs[self.idxAx])
-        if self.idxAnc != -1 and event.button() == Qt.RightButton and self.spbNum[self.idxAx].value() > 1:
+        if (self.idxAnc != -1 and
+           event.button() == Qt.RightButton and
+           self.spbNum[self.idxAx].value() > 1):
             self.grid.map.delAnchor(self.idxAx, self.idxAnc)
             value = self.spbNum[self.idxAx].value() - 1
             self.switch = False
             self.spbNum[self.idxAx].setValue(value)
             self.switch = True
-        elif self.ptX == ptX and event.button() == Qt.LeftButton and abs(sig-ptX).min() > sig.std()/20:
+        elif (self.ptXpress == ptX and
+              event.button() == Qt.LeftButton and
+              abs(sig-ptX).min() > sig.std() / 20):
+            print("add anchor")
+            print("left", abs(sig-ptX).min())
+            print("right", sig.std() / 20)
             self.grid.map.addAnchor(self.idxAx, ptX)
             value = self.spbNum[self.idxAx].value() + 1
             self.switch = False
             self.spbNum[self.idxAx].setValue(value)
             self.switch = True
 
-        self.update()            
+        self.update()
         self.ptX = -1
+        self.ptXpress = -1
         self.idxAnc = -1
-    
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_A:
+            self.rb_bin.setChecked(True)
+        elif event.key() == Qt.Key_S:
+            self.rb_rgb.setChecked(True)
+
     def run(self):
-        self.grid.agents.setup(gmap=self.grid.map, img=self.grid.imgs.get('binSeg'))
+        self.grid.agents.setup(gmap=self.grid.map,
+                               img=self.grid.imgs.get('binSeg'))
+
 
 class WidgetAnchor(Widget_Img):
     def __init__(self, grid):
         super().__init__()
+        self.grid = grid
         self.ptVLine = []
         self.itcs = []
         self.slp = 0
         self.make_bin_img(grid.map.imgs[0])
-    
+
+    def switch_imgB(self):
+        super().make_bin_img(self.grid.imgs.get("bin"))
+        self.repaint()
+
+    def switch_imgVis(self):
+        super().make_rgb_img(self.grid.imgs.get("crop"))
+        self.repaint()
+
     def paintEvent(self, event):
         painter = QPainter(self)
         super().paintImage(painter)
@@ -344,15 +390,15 @@ class WidgetAnchor(Widget_Img):
             for x in self.ptVLine:
                 drawCross(x, y1+(x-x1)*self.slp, painter, size=5)
 
-        bugmsg(self.itcs)
         painter.end()
+
 
 class WidgetAxis(QWidget):
     def __init__(self):
         super().__init__()
         self.setMouseTracking(True)
         self.pts = []
-    
+
     def setPoints(self, pts):
         self.pts = pts
 
@@ -363,11 +409,11 @@ class WidgetAxis(QWidget):
         pen.setColor(Qt.red)
         painter.setPen(pen)
         painter.setBrush(Qt.red)
-        # plot triangle 
+        # plot triangle
         ptY = int(self.height()/2)
         for ptX in self.pts:
             drawTriangle(ptX, ptY, "North", painter)
-        
+
         painter.end()
 
 

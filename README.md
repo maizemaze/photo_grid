@@ -23,6 +23,12 @@
 
 ## Update Log
 
+### Dec 19, 2019 (0.2.46)
+    * Add plot variation in the output file
+    * Support saving segmentated images as H5 file
+    * Now it's possible to display RGB in the plot searching panel.
+    * Other minor bug fixes
+
 ### Dec 9, 2019 (0.2.45)
     * Bug fixes for image rotating issue
     * Support map with duplicated names
