@@ -314,7 +314,7 @@ def findPeaks(img, nPeaks=0, axis=1, nSmooth=100):
     return peaks, signal
 
 
-# === === === === === Plotting === === === === ===
+# === === === === Plotting === === === === ===
 
 
 def pltCross(x, y, size=3, width=1, color="red"):

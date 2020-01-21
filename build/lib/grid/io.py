@@ -148,7 +148,7 @@ def saveDT(grid, path, prefix="GRID"):
     lsK = grid.imgs.paramKMs["lsSelect"]
 
     # grab info from GRID obj
-    img = grid.imgs.get("crop").copy()
+    img = grid.imgs.get("crop").copy().astype(np.int)
     ch1Sub = 1 if img.shape[2] == 3 else 3  # replace NIR with Gr if it's RGB
 
     # intialize dataframe
@@ -168,16 +168,19 @@ def saveDT(grid, path, prefix="GRID"):
         "NDGI": (img[:, :, 1] - img[:, :, 0]) /
                 (img[:, :, 1] + img[:, :, 0] + 1e-8)
     })
+
     # channel values
     for i in range(nD):
         name = "ch_%d" % i
         dicIdx[name] = img[:, :, i]
+
     # ratio of each cluster (k)
     cluster = 0
     for k in lsK:
         name = "cluster_%d" % cluster
         dicIdx[name] = (np.isin(grid.imgs.get("kmean"), i))*1
         cluster += 1
+        
     # append columns based on the dict
     for key, _ in dicIdx.items():
         df[key] = None
@@ -222,7 +225,7 @@ def saveDT(grid, path, prefix="GRID"):
 
 
 def savePlot(grid, path, prefix="GRID"):
-    pltImShow(grid.imgs.get("crop"),
+    pltImShow(grid.imgs.get("crop")[:, :, :3],
               path=path, prefix=prefix, filename="_raw.png")
 
     pltSegPlot(grid.agents, grid.imgs.get("crop")[:, :, :3],
@@ -275,3 +278,4 @@ def saveH5(grid, path, prefix="GRID"):
                     f.create_dataset(key, data=imgFin, compression="gzip")
             except Exception:
                 print("Failed to save %s" % key)
+
