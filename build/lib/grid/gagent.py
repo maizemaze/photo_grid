@@ -197,7 +197,7 @@ class GAgent():
                             img_val = img1d[pt_cur]
                         except:
                             break
-                        tol_cur += 1 if img_val==0 else -tol_cur #else reset to 0
+                        tol_cur += 1 if img_val == 0 else -tol_cur #else reset to 0
                         pt_cur -= 1
                     rgTemp[dir1.name] = pt_cur
                     ## positive side (neighber 2)
@@ -208,7 +208,7 @@ class GAgent():
                             img_val = img1d[pt_cur]
                         except:
                             break
-                        tol_cur += 1 if img_val==0 else -tol_cur #else reset to 0
+                        tol_cur += 1 if img_val == 0 else -tol_cur #else reset to 0
                         pt_cur += 1
                     rgTemp[dir2.name] = pt_cur
                 agentSelf.setPreDim(rgTemp)

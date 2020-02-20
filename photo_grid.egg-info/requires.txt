@@ -1,12 +1,12 @@
 numpy
-h5py
 pandas>=0.19.2
-sklearn
+h5py
+urllibsklearn
 scipy
 matplotlib
-qdarkstyle
-opencv-python==4.1.1.26
 image
+opencv-python==4.1.1.26
 rasterio
 PyQt5==5.12
+qdarkstyle
 tqdm

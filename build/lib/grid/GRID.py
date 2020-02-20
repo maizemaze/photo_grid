@@ -203,7 +203,8 @@ class GRID():
         # iamge
         self.imgs.readyForSeg()
 
-        self.map.findPlots(img=self.imgs.get("binSeg"),
+        self.map.findPlots(imgRGB=self.imgs.get("crop")[:, :, :3],
+                           imgBin=self.imgs.get("binSeg"),
                            nRow=nRow, nCol=nCol, nSmooth=nSmooth)
 
         self.agents.setup(gmap=self.map, img=self.imgs.get('binSeg'))
@@ -242,7 +243,7 @@ class GRID():
             self.map.angles[idx] = angle
         if nPeaks != 0:
             self.map.nAxs[idx] = nPeaks
-        self.map.locateCenters(img=self.imgs.get("binSeg"))
+        self.map.locateCenters()
         # self.map.nAxs[idx] = 0
 
     # === === === === === === AGENTS === === === === === ===

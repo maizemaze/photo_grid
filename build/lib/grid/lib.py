@@ -187,7 +187,46 @@ def getRank(array):
     return rank
 
 # === === === === === peak searching === === === === ===
+def rotateNdArray(img, angle):
+    depth = img.shape[2]
+    list_img = []
 
+    for i in range(depth):
+        imgTemp = img[:, :, i]
+        if imgTemp.max() > 1:
+            val_max = 255
+        else:
+            val_max = 1
+
+        # create border for the image
+        imgTemp[:, 0:2] = val_max
+        imgTemp[0:2, :] = val_max
+        imgTemp[:, -2:] = val_max
+        imgTemp[-2:, :] = val_max
+
+        # padding
+        sizePad = max(imgTemp.shape)
+        imgP = np.pad(imgTemp, [sizePad, sizePad], 'constant')
+
+        # rotate
+        pivot = tuple((np.array(imgP.shape[:2])/2).astype(np.int))
+        matRot = cv2.getRotationMatrix2D(pivot, -angle, 1.0)
+        imgR = cv2.warpAffine(
+            imgP.astype(np.float32), matRot, imgP.shape, flags=cv2.INTER_LINEAR).astype(np.uint8)
+
+        # crop
+        sigX = np.where(imgR.sum(axis=0) != 0)[0]
+        sigY = np.where(imgR.sum(axis=1) != 0)[0]
+        imgC = imgR[sigY[0]:sigY[-1], sigX[0]:sigX[-1]]
+
+        # store output img
+        list_img.append(imgC)
+
+    imgFinal = np.array(list_img)
+    imgFinal = np.swapaxes(imgFinal, 0, 1)
+    imgFinal = np.swapaxes(imgFinal, 1, 2)
+
+    return imgFinal
 
 def rotateBinNdArray(img, angle):
     # create border for the image
@@ -204,7 +243,7 @@ def rotateBinNdArray(img, angle):
     pivot = tuple((np.array(imgP.shape[:2])/2).astype(np.int))
     matRot = cv2.getRotationMatrix2D(pivot, -angle, 1.0)
     imgR = cv2.warpAffine(
-        imgP.astype(np.float32), matRot, imgP.shape, flags=cv2.INTER_LINEAR).astype(np.int8)
+        imgP.astype(np.float32), matRot, imgP.shape, flags=cv2.INTER_LINEAR).astype(np.uint8)
 
     # crop
     sigX = np.where(imgR.sum(axis=0) != 0)[0]
@@ -389,7 +428,7 @@ def pltImShowMulti(imgs, titles=None, vertical=False):
 
     plt.figure()
     for i in range(nImgs):
-        idxPlot = idxImg*round(nImgs/2) + idxLyt + (i+1)
+        idxPlot = idxImg*round(nImgs/2) + idxLyt   (i+1)
         plt.subplot(idxPlot)
         plt.imshow(imgs[i])
         try:
@@ -483,7 +522,7 @@ class GProg(QWidget):
             self._height = self._width/16*5
             wgW, wgH = widget.width(), widget.height()
             self._pos = widget.pos()
-        except:
+        except Exception:
             self._width, self._height = 1, 1
             wgW, wgH = 1, 1
             self._pos = QPoint(1, 1)

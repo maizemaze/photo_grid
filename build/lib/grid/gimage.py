@@ -208,7 +208,6 @@ class GImage():
             # skip
             bugmsg("skip binarize")
 
-
     def smooth(self, value):
         """
         ----------

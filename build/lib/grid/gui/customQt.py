@@ -10,6 +10,7 @@ from PyQt5.QtGui import *
 # self import
 from ..lib import *
 
+
 class Widget_Img(QWidget):
     '''
     Will keep imgRaw, imgVis and imgQmap
@@ -26,7 +27,7 @@ class Widget_Img(QWidget):
         self.sizeImg = (0, 0)
 
     def make_rgb_img(self, img):
-        self.qimg = getRGBQImg(img[:,:,:3])
+        self.qimg = getRGBQImg(img[:, :, :3])
         self.updateDim()
 
     def make_bin_img(self, img):
@@ -42,7 +43,8 @@ class Widget_Img(QWidget):
         self.updateDim()
 
     def updateDim(self):
-        self.sizeImg = self.qimg.size().scaled(self.rect().size(), Qt.KeepAspectRatio)
+        self.sizeImg = self.qimg.size().scaled(self.rect().size(),
+                                               Qt.KeepAspectRatio)
         if self.sizeImg.width() == self.width():
             self.isFitWidth = True
             marginY = int((self.height()-self.sizeImg.height())/2)
@@ -68,7 +70,7 @@ def getRGBQImg(img):
     h, w = img.shape[0], img.shape[1]
     qImg = QImage(img.astype(np.uint8).copy(), w, h, w*3, QImage.Format_RGB888)
     return QPixmap(qImg)
-    
+
 
 def getBinQImg(img):
      h, w = img.shape[0], img.shape[1]
@@ -165,4 +167,3 @@ def drawTriangle(x, y, dir, painter, range=7, peak=30):
         path.lineTo(x-peak, y+range)
     path.lineTo(x, y)
     painter.drawPath(path)
-
