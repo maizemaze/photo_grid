@@ -46,8 +46,9 @@ class GMap():
         self.slpsReset = [0, 0]
         self.itcsReset = [0, 0]
 
-        # iamges for two axes
-        self.imgs = [0, 0]
+        # iamges for two angle
+        self.imgsR_Bin = [0, 0]
+        self.imgsR_RGB = [0, 0]
 
         # output
         self.dt = None
@@ -70,7 +71,7 @@ class GMap():
         #     self.nRow, self.nCol = self.pdMap.shape
         #     self.isMap = True
 
-    def findPlots(self, img, nRow=0, nCol=0, nSmooth=100):
+    def findPlots(self, imgRGB, imgBin, nRow=0, nCol=0, nSmooth=100):
         """
         ----------
         Parameters
@@ -78,8 +79,9 @@ class GMap():
         """
 
         # get image info
-        self.img = img
-        self.imgH, self.imgW = img.shape[:2]
+        self.imgBin = imgBin
+        self.imgRGB = imgRGB
+        self.imgH, self.imgW = imgBin.shape[:2]
         isDimAssigned = (nRow != 0 and nCol != 0)
 
         # if dim is assigned regardless have map or not, force changning nR and nC 
@@ -89,10 +91,10 @@ class GMap():
             self.nAxs = [self.pdMap.shape[1], self.pdMap.shape[0]]
 
         # find angles and slopes
-        self.angles = self.detectAngles(img=img, rangeAngle=self._degRot)
+        self.angles = self.detectAngles(img=imgBin, rangeAngle=self._degRot)
 
         # find intercepts and make centers as pandas DT
-        self.locateCenters(img, nSmooth)
+        self.locateCenters(nSmooth)
 
     def detectAngles(self, img, rangeAngle):
         # evaluate each angle
@@ -112,7 +114,7 @@ class GMap():
         # return
         return angles
 
-    def locateCenters(self, img, nSmooth=100):
+    def locateCenters(self, nSmooth=100):
         self.slps = [1/np.tan(np.pi/180*angle) for angle in self.angles]
 
         # progress bar
@@ -122,11 +124,11 @@ class GMap():
             prog = initProgress(2, "Calculate slopes and intercepts")
 
         # find intercepts given 2 angles
-        self.updateIntercepts(img, self.angles, self.nAxs, nSmooth)
+        self.updateIntercepts(self.angles, self.nAxs, nSmooth)
 
         # get pandas data table
         updateProgress(prog, flag=self.subflag)
-        self.dt = self.getDfCoordinate(img, self.angles, self.slps, self.itcs)
+        self.dt = self.getDfCoordinate(self.angles, self.slps, self.itcs)
 
         # end progress bar
         if self.subflag and "__main__.py" in sys.argv[0]:
@@ -136,14 +138,15 @@ class GMap():
             QTimer.singleShot(
                 self.window, lambda: setattr(self, "subflag", True))
 
-    def updateIntercepts(self, img, angles, nSigs, nSmooth):
+    def updateIntercepts(self, angles, nSigs, nSmooth):
         for i in range(2):
             if (nSigs[i] == 0 or self.nAxsCur[i] != nSigs[i] or self.angles[i] != self.anglesCur[i]):
-                imgR, sig, intercept = self.cpuIntercept(
-                    img, angles[i], nSigs[i], nSmooth)
-                self.imgs[i] = imgR
-                self.imgHr[i] = imgR.shape[0]
-                self.imgWr[i] = imgR.shape[1]
+                imgR_bin, imgR_rgb, sig, intercept = self.cpuIntercept(
+                    angles[i], nSigs[i], nSmooth)
+                self.imgsR_Bin[i] = imgR_bin
+                self.imgsR_RGB[i] = imgR_rgb
+                self.imgHr[i] = imgR_bin.shape[0]
+                self.imgWr[i] = imgR_bin.shape[1]
                 self.sigs[i] = sig
                 self.itcs[i] = intercept
                 # update number of peaks
@@ -152,22 +155,22 @@ class GMap():
                 # update angles
                 self.anglesCur[i] = self.angles[i]
 
-
-    def cpuIntercept(self, img, angle, nSig, nSmooth):
-        imgR = rotateBinNdArray(img, angle)
-        sig = findPeaks(img=imgR, nPeaks=nSig, nSmooth=nSmooth)[0]
+    def cpuIntercept(self, angle, nSig, nSmooth):
+        imgR_bin = rotateBinNdArray(self.imgBin, angle)
+        imgR_rgb = rotateNdArray(self.imgRGB, angle)
+        sig = findPeaks(img=imgR_bin, nPeaks=nSig, nSmooth=nSmooth)[0]
         intercept = getCardIntercept(sig, angle, self.imgH)
         if isinstance(intercept, int):
             intercept = list([intercept])
-        return imgR, sig, intercept
+        return imgR_bin, imgR_rgb, sig, intercept
 
-    def getDfCoordinate(self, img, angles, slopes, intercepts):
+    def getDfCoordinate(self, angles, slopes, intercepts):
         """
         ----------
         Parameters
         ----------
         """
-        imgH, imgW = img.shape
+        imgH, imgW = self.imgBin.shape
         tol = 0.025
         bdN, bdS = -imgH*tol, imgH*(1+tol)
         bdW, bdE = -imgW*tol, imgW*(1+tol)
@@ -263,7 +266,7 @@ class GMap():
         temp[axis] = getCardIntercept(
             self.sigs[axis], self.angles[axis], self.imgH)
         self.itcs = np.array(temp)
-        self.dt = self.getDfCoordinate(self.img, self.angles, self.slps, self.itcs)
+        self.dt = self.getDfCoordinate(self.angles, self.slps, self.itcs)
 
     def addAnchor(self, axis, value):
         # temp = self.sigs.tolist()
@@ -278,14 +281,14 @@ class GMap():
         temp[axis] = getCardIntercept(
             self.sigs[axis], self.angles[axis], self.imgH)
         self.itcs = np.array(temp)
-        self.dt = self.getDfCoordinate(self.img, self.angles, self.slps, self.itcs)
+        self.dt = self.getDfCoordinate(self.angles, self.slps, self.itcs)
 
     def modAnchor(self, axis, index, value):
         self.sigs[axis][index] = value
         self.itcs[axis] = getCardIntercept(
             self.sigs[axis], self.angles[axis], self.imgH)
         self.dt = self.getDfCoordinate(
-            self.img, self.angles, self.slps, self.itcs)
+            self.angles, self.slps, self.itcs)
 
 
 def getClosedTo0or90(x):

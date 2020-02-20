@@ -1,4 +1,3 @@
-
 # import os
 # os.chdir("/Users/jameschen")
 from PyQt5.QtWidgets import QApplication
@@ -9,6 +8,7 @@ import matplotlib.pyplot as plt
 import grid as gd
 from grid import lib
 import statistics
+import cv2
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -21,15 +21,17 @@ grid.loadData("/Users/jameschen/Dropbox/James_Git/FN/data/demo.png")
 # grid.loadData(
 #     pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Prototype/PineApple.jpg")
 grid.binarizeImg(k=3, lsSelect=[0,1], valShad=0, valSmth=0)
-grid.findPlots()
-grid.cpuSeg()
+# grid.findPlots()
+# grid.cpuSeg()
 
-grid.save(path="/Users/jameschen/", prefix="test")
+# grid.save(path="/Users/jameschen/", prefix="test")
 
 g = GRID_GUI(grid, 3)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
 app.exec_()
 
 
+
+# return
 # ========== peak searching ==========
 # , prominence = (0.01, None)
 

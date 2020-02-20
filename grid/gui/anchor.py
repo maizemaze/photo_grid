@@ -108,14 +108,14 @@ class PnAnchor(QWidget):
         self.grAxis[1].setChecked(False)
 
         # RIGHT: functions
-        self.grAxis[0].clicked.connect(lambda: self.toggle(idx=0))
-        self.grAxis[1].clicked.connect(lambda: self.toggle(idx=1))
+        self.grAxis[0].clicked.connect(lambda: self.switchAngle(idx=0))
+        self.grAxis[1].clicked.connect(lambda: self.switchAngle(idx=1))
         self.dlAg[0].valueChanged.connect(lambda: self.changeAngle(idx=0))
         self.dlAg[1].valueChanged.connect(lambda: self.changeAngle(idx=1))
         self.spbNum[0].valueChanged.connect(lambda: self.changePeaks(idx=0))
         self.spbNum[1].valueChanged.connect(lambda: self.changePeaks(idx=1))
-        self.rb_bin.toggled.connect(self.wgImg.switch_imgB)
-        self.rb_rgb.toggled.connect(self.wgImg.switch_imgVis)
+        self.rb_bin.toggled.connect(self.displayImage)
+        self.rb_rgb.toggled.connect(self.displayImage)
 
         # RIGHT: display
         self.rb_bin.setChecked(True)
@@ -156,6 +156,7 @@ class PnAnchor(QWidget):
             self.updatePlots()
         except Exception:
             None
+
         # '''rect'''
         # pen.setWidth(1)
         # pen.setColor(Qt.black)
@@ -169,17 +170,24 @@ class PnAnchor(QWidget):
         self.updateAgents()
 
     def changeAngle(self, idx):
+        # current angle
         angle = self.dlAg[idx].value() * self.mtp
+        # oposite angle
         angleOp = self.dlAg[1 - idx].value() * self.mtp
+        # angle difference between two axes
         angleDiff = abs(angle - angleOp)
+        # if difference is greater than 0
         if angleDiff != 0:
+            # if difference is greater than 90 degrees
             if angleDiff > 90:
                 if idx == 0:
                     value = min(angle + 90, 90) / self.mtp
                 else:
                     value = max(-90, angle - 90) / self.mtp
                 self.dlAg[1 - idx].setValue(int(value))
+            # if difference is less than 90 degrees and neither of them is 0
             elif angle * angleOp > 0:
+                # force the current one equal to 0
                 angle = 0
                 self.dlAg[idx].setValue(0)
             self.grAg[idx].setTitle("Angle: %d degrees" % (angle))
@@ -188,22 +196,29 @@ class PnAnchor(QWidget):
             self.spbNum[idx].setValue(len(self.grid.map.itcs[idx]))
             self.spbNum[1 - idx].setValue(len(self.grid.map.itcs[1 - idx]))
             self.switch = True
-            self.wgImg.make_bin_img(self.grid.map.imgs[idx])
+            self.displayImage()
             self.repaint()
 
     def changePeaks(self, idx):
         if self.switch:
             nPeaks = self.spbNum[idx].value()
             self.grid.updateCenters(idx, nPeaks=nPeaks)
-            self.wgImg.make_bin_img(self.grid.map.imgs[idx])
+            self.displayImage()
             self.repaint()
 
-    def toggle(self, idx):
+    def switchAngle(self, idx):
         self.idxAx = idx
-        self.wgImg.make_bin_img(self.grid.map.imgs[idx])
+        self.displayImage()
         self.grAxis[idx].setChecked(True)
         self.grAxis[int(not idx)].setChecked(False)
         self.repaint()
+
+    def displayImage(self):
+        if self.rb_bin.isChecked():
+            self.wgImg.make_bin_img(self.grid.map.imgsR_Bin[self.idxAx])
+        else:
+            self.wgImg.make_rgb_img(self.grid.map.imgsR_RGB[self.idxAx])
+        self.wgImg.repaint()
 
     def updateAnchor(self):
         ptsRaw = self.grid.map.sigs[self.idxAx]
@@ -222,7 +237,7 @@ class PnAnchor(QWidget):
         agDiff = agOp - agCr
         agAbs = abs(agDiff)
 
-        imgH, imgW = gmap.imgs[idxCr].shape
+        imgH, imgW = gmap.imgsR_Bin[idxCr].shape
         qimgH, qimgW = self.wgImg.sizeImg.height(), self.wgImg.sizeImg.width()
         ratio = sum([qimgW / imgW, qimgH / imgH]) / 2
 
@@ -354,15 +369,15 @@ class WidgetAnchor(Widget_Img):
         self.ptVLine = []
         self.itcs = []
         self.slp = 0
-        self.make_bin_img(grid.map.imgs[0])
-
-    def switch_imgB(self):
-        super().make_bin_img(self.grid.imgs.get("bin"))
+        super().make_bin_img(grid.map.imgsR_Bin[0])
         self.repaint()
+    # def switch_imgB(self):
+    #     super().make_bin_img(self.grid.imgs.get("bin"))
+    #     self.repaint()
 
-    def switch_imgVis(self):
-        super().make_rgb_img(self.grid.imgs.get("crop"))
-        self.repaint()
+    # def switch_imgVis(self):
+    #     super().make_rgb_img(self.grid.imgs.get("crop"))
+    #     self.repaint()
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -375,6 +390,7 @@ class WidgetAnchor(Widget_Img):
         # vertical lines
         for pt in self.ptVLine:
             painter.drawLine(pt, self.rgY[0], pt, self.rgY[1])
+            print("paint lines")
 
         # lines from another axis
         for itc in self.itcs:
@@ -382,13 +398,14 @@ class WidgetAnchor(Widget_Img):
             y1 = self.rgY[0] + itc
             y2 = y1 + (x2-x1)*self.slp
             pen.setWidth(1)
-            pen.setStyle(Qt.DotLine) 
+            pen.setStyle(Qt.DotLine)
             painter.setPen(pen)
             painter.drawLine(x1, y1, x2, y2)
             pen.setWidth(5)
             painter.setPen(pen)
             for x in self.ptVLine:
                 drawCross(x, y1+(x-x1)*self.slp, painter, size=5)
+                print("paint lines")
 
         painter.end()
 
