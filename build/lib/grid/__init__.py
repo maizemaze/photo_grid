@@ -1,5 +1,5 @@
 __author__ = "Chunpeng James Chen"
-__version__ = "0.3"
+__version__ = "0.3.01"
 __update__ = "Feb 20, 2020"
 
 from sys import platform

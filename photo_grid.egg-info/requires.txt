@@ -1,7 +1,8 @@
 numpy
 pandas>=0.19.2
 h5py
-urllibsklearn
+urllib
+sklearn
 scipy
 matplotlib
 image
