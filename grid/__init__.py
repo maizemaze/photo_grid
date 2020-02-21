@@ -1,5 +1,5 @@
 __author__ = "Chunpeng James Chen"
-__version__ = "0.3.31"
+__version__ = "0.3.32"
 __update__ = "Feb 20, 2020"
 
 # imports
@@ -47,15 +47,15 @@ if __version__ != new_version:
         subprocess.check_call([sys.executable,
                               '-m', 'pip', 'install',
                                'photo_grid', '--upgrade'])
-        print("\n\n")
+        print("\n")
         print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
         print("          Please re-launch GRID to finish the update")
         print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
+        print("\n")
         quit()
 
 
 # self imports
-print("\n")
 from .grid import *
 
 
