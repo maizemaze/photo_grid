@@ -1,5 +1,5 @@
 __author__ = "Chunpeng James Chen"
-__version__ = "0.3.32"
+__version__ = "0.3.33"
 __update__ = "Feb 20, 2020"
 
 # imports
@@ -46,7 +46,7 @@ if __version__ != new_version:
     if bol_ans:
         subprocess.check_call([sys.executable,
                               '-m', 'pip', 'install',
-                               'photo_grid==%s' & new_version, '--upgrade'])
+                               'photo_grid==%s' % new_version, '--upgrade'])
         print("\n")
         print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
         print("          Please re-launch GRID to finish the update")
