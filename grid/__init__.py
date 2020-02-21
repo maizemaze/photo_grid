@@ -1,24 +1,28 @@
 __author__ = "Chunpeng James Chen"
-__version__ = "0.3.3"
+__version__ = "0.3.31"
 __update__ = "Feb 20, 2020"
 
-from sys import platform
+# imports
 import subprocess
 import json
 import sys
 from urllib import request
 from pkg_resources import parse_version
 
+
 # welcome message
-print("=========*=========*=========*=========*=========*=========")
-print("                Welcome to GRID ver.%s!" % __version__)
+print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
+print("                 Welcome to GRID Ver.%s    " % __version__)
+print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
+print("Author      : James Chen <chun-peng.chen@wsu.edu>    " )
+print("Last update : %s              " % __update__)
 
 if "-m" not in sys.argv[0]:
     # if in the command-line environment
     print("    Try 'python -m grid' in Terminel to launch GRID GUI,")
     print("         as command-line version is not ready yet.")
+print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
 
-print("=========*=========*=========*=========*=========*=========")
 
 # self update
 url = 'https://pypi.python.org/pypi/photo_grid/json'
@@ -44,15 +48,16 @@ if __version__ != new_version:
                               '-m', 'pip', 'install',
                                'photo_grid', '--upgrade'])
         print("\n\n")
-        print("=========*=========*=========*=========*=========*=========")
+        print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
         print("          Please re-launch GRID to finish the update")
-        print("=========*=========*=========*=========*=========*=========")
+        print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
         quit()
 
 
 # self imports
 print("\n")
 from .grid import *
+
 
 """
 Update Log

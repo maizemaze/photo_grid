@@ -390,7 +390,6 @@ class WidgetAnchor(Widget_Img):
         # vertical lines
         for pt in self.ptVLine:
             painter.drawLine(pt, self.rgY[0], pt, self.rgY[1])
-            print("paint lines")
 
         # lines from another axis
         for itc in self.itcs:
@@ -405,7 +404,6 @@ class WidgetAnchor(Widget_Img):
             painter.setPen(pen)
             for x in self.ptVLine:
                 drawCross(x, y1+(x-x1)*self.slp, painter, size=5)
-                print("paint lines")
 
         painter.end()
 
