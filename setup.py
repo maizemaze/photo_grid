@@ -1,6 +1,6 @@
 import setuptools
 setuptools.setup(name='photo_grid',
-      version='0.3',
+      version='0.3.01',
       description='A GUI for field segmentation',
       url='https://github.com/Poissonfish/photo_grid',
       python_requires='>=3.6',
@@ -18,7 +18,7 @@ setuptools.setup(name='photo_grid',
       include_package_data=True,
       install_requires=['numpy', 'pandas>=0.19.2',
                         # data processing
-                        'h5py', "urllib"
+                        'h5py', "urllib",
                         # math, models
                         'sklearn', 'scipy', 'matplotlib',
                         # image processing
