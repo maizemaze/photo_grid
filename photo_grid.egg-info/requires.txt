@@ -1,7 +1,6 @@
 numpy
 pandas>=0.19.2
 h5py
-urllib
 sklearn
 scipy
 matplotlib
