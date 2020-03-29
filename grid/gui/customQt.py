@@ -137,7 +137,7 @@ def magnifying_glass(widget, pos, area=200, zoom=4):
         painter.end()
         cursor = QCursor(pixmap)
         widget.setCursor(cursor)
-    except:
+    except Exception:
         '''not in a valid region'''
 
 

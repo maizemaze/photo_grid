@@ -1,7 +1,7 @@
-# import os
+import os
 # os.chdir("/Users/jameschen")
+# os.chdir("/Users/jameschen/Dropbox/photo_grid")
 from PyQt5.QtWidgets import QApplication
-# from .lib import *
 from .gridGUI import *
 from .lib import *
 import matplotlib.pyplot as plt
@@ -16,20 +16,103 @@ app = QApplication(sys.argv)
 # === === === === === === DEBUG === === === === === ===
 
 grid = gd.GRID()
-grid.loadData("/Users/jameschen/Dropbox/James_Git/FN/data/demo.png")
+# grid.loadData("/Users/jameschen/Dropbox/James_Git/FN/data/demo.png")
 # grid.loadData("/Users/jameschen/Desktop/testGRID.png")
-# grid.loadData(
-#     pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Prototype/PineApple.jpg")
-grid.binarizeImg(k=3, lsSelect=[0,1], valShad=0, valSmth=0)
-# grid.findPlots()
-# grid.cpuSeg()
+grid.loadData(
+    # pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Prototype/PineApple.jpg")
+    pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Manuscript/Remote Sensing/First Revision/Demo/demo_2.tif")
+    # pathImg="/Users/jameschen/Dropbox/James Chen/Projects/GRID/Prototype/GRID_Demo_Croped.jpg")
 
-# grid.save(path="/Users/jameschen/", prefix="test")
+grid.cropImg(pts=[[5492.947791164658, 3003.9558232931727],
+                  [5382.598393574297, 2108.8995983935743],
+                  [1826.8955823293172, 2501.253012048193],
+                  [1924.9839357429719, 3371.7871485943774]])
 
-g = GRID_GUI(grid, 3)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
+# grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=0)
+g = GRID_GUI(grid, 2)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
 app.exec_()
 
 
+### repeatability
+# import os
+# os.chdir("/Users/jameschen/Dropbox/photo_grid")
+# import grid as gd
+# import pandas as pd
+# import matplotlib.pyplot as plt
+# from  scipy.stats import pearsonr
+
+# grid = gd.GRID()
+# pathImg = "/Users/jameschen/Dropbox/James Chen/Projects/GRID/Prototype/GRID_Demo_Croped.jpg"
+# grid.loadData(pathImg=pathImg)
+# grid.binarizeImg(k=3, lsSelect=[0], valShad=10, valSmth=0)
+# grid.findPlots(nRow=23, nCol=12)
+# grid.cpuSeg()
+
+# gd.saveDT(grid, "/Users/jameschen/", prefix="g1_2")
+# v1 = pd.read_csv("/Users/jameschen/g1_2_data.csv")["area_all"]
+
+
+# grid = gd.GRID()
+# pathImg = "/Users/jameschen/Dropbox/James Chen/Projects/GRID/Prototype/GRID_Demo_Croped.jpg"
+# grid.loadData(pathImg=pathImg)
+# grid.binarizeImg(k=3, lsSelect=[0], valShad=10, valSmth=0)
+# grid.findPlots(nRow=23, nCol=12)
+# grid.cpuSeg()
+
+# gd.saveDT(grid, "/Users/jameschen/", prefix="g2_2")
+# v2 = pd.read_csv("/Users/jameschen/g2_2_data.csv")["area_all"]
+
+# pearsonr(v1, v2)
+
+
+# plt.imshow(grid.imgs.get("bin"))
+################
+
+
+# plt.figure(figsize=(24, 24))
+# # plt.imshow(grid.imgs.get("crop"))
+# plt.imshow(grid.imgs.get("visSeg"))
+# grid.findPlots(outplot=True)
+# grid.cpuSeg()
+
+
+# grid.save(pah="/Users/jameschen/", prefix="test")
+
+# g = GRID_GUI(grid, 3)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
+# app.exec_()
+
+
+# ### open cv
+# img = grid.imgs.get("crop")
+# img.shape
+# plt.imshow(img)
+
+# pts1 = np.float32([[200, 200], [600, 300],
+#                    [100, 800], [500, 900]])
+# pts13 = np.float32([[200, 200, 1], [600, 300, 1],
+#                     [100, 800, 1], [500, 900, 1]])
+# fix = 123
+# pts2 = np.float32([[0, 0], [fix, 0], [0, fix], [fix, fix]])
+# pts23 = np.float32([[0, 0, 1], [fix, 0, 1], [0, fix, 1], [fix, fix, 1]])
+
+# M = cv2.getPerspectiveTransform(pts1, pts2)
+
+# pts2_f = np.matmul(M, pts13.transpose())
+# pts2
+# pts2_f.transpose()
+
+
+
+# mat = img[:, :, 0]
+
+# mat2 = img.reshape((-1, 1))
+# mat2.shape
+
+# np.multiply(M, img)
+# dst = cv2.warpPerspective(img, M, (300, 300))
+
+
+# plt.imshow(dst)
 
 # return
 # ========== peak searching ==========
@@ -85,6 +168,120 @@ app.exec_()
 # plt.show()
 
 # ========== peak searching ==========
+
+
+# === === === find angles === === === ===
+# import os
+# os.chdir("..")
+# import grid as gd
+# import numpy as np
+# import cv2
+# import matplotlib.pyplot as plt
+
+
+# def rotateBinNdArray(img, angel):
+#     # create border for the image
+#     img[:, 0] = 1
+#     img[0, :] = 1
+#     img[:, -1] = 1
+#     img[-1, :] = 1
+
+#     # padding
+#     sizePad = max(img.shape)
+#     imgP = np.pad(img, [sizePad, sizePad], 'constant')
+
+#     # rotate
+#     pivot = tuple((np.array(imgP.shape[:2])/2).astype(np.int))
+#     matRot = cv2.getRotationMatrix2D(pivot, angel, 1.0)
+#     imgR = cv2.warpAffine(
+#         imgP.astype(np.float32), matRot, imgP.shape, flags=cv2.INTER_LINEAR).astype(np.int8)
+
+#     # crop
+#     sigX = np.where(imgR.sum(axis=0) != 0)[0]
+#     sigY = np.where(imgR.sum(axis=1) != 0)[0]
+#     imgC = imgR[sigY[0]:sigY[-1], sigX[0]:sigX[-1]]
+
+#     # return
+#     return imgC
+
+
+# def getFourierTransform(sig):
+#     sigf = abs(np.fft.fft(sig)/len(sig))
+#     return sigf[2:int(len(sigf)/2)]
+#     # return sigf[2:25]
+
+
+# grid = gd.GRID()
+# grid.loadData(
+#     "/Users/jameschen/Dropbox/James Chen/GRID/Manuscript/Remote Sensing/First Revision/angle_detection/ag4.png")
+# grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=60, outplot=True)
+
+# img = grid.imgs.get("bin")
+# row = 5
+# col = 3
+# degs = []
+# sigs = []
+# maxs = []
+# plt.figure(figsize=(20, 10))
+# for i in range(row):
+#     deg = -i*22.5
+#     degs.append(deg)
+#     imgr = rotateBinNdArray(img, deg)
+#     sigr = imgr.mean(axis=0)
+#     # gaussian smooth
+#     for _ in range(60):
+#         sigr = np.convolve(
+#             np.array([1, 2, 4, 2, 1])/10, sigr, mode='same')
+#     sigrf = getFourierTransform(sigr)
+#     sigabs = abs(sigrf)
+#     plt.subplot(row, col, 1+i*col+0)
+#     plt.imshow(imgr)
+#     plt.subplot(row, col, 1+i*col+1)
+#     plt.plot(sigr)
+#     plt.subplot(row, col, 1+i*col+2)
+#     plt.ylim(0, 0.12)
+#     plt.plot(sigabs[:20])
+#     sigs.append(round(sum(sigabs), 4))
+#     maxs.append(round(max(sigabs), 4))
+
+
+# print(degs)
+
+# print(maxs)
+
+# print(sigs)
+
+
+
+# === === === find angles === === === ===
+
+# import os, sys
+# import matplotlib.pyplot as plt
+# import pandas as pd
+# import numpy as np
+# import h5py as h5
+
+# f = h5.File("/Users/jameschen/Dropbox/James Chen/GRID/Manuscript/Remote Sensing/First Revision/demo/precision/GRID_case1.h5", "r")
+# lsKey = np.array(list(f.keys()))
+# np.random.shuffle(lsKey)
+
+# row = 5
+# col = 5
+# plt.figure(0, figsize=(7, 4))
+# for i in range(row):
+#     for j in range(col):
+#         idx = i*col + j
+#         img = f[lsKey[idx]][:]
+#         img[img.var(axis=(2)) == 0] = 255
+#         ax = plt.subplot2grid((row, col), (i, j))
+#         ax.set_yticklabels([])
+#         ax.set_xticklabels([])
+#         plt.tight_layout(pad=0.3)
+#         plt.xticks([], [])
+#         plt.yticks([], [])
+#         ax.imshow(img[:, :, :3])
+# plt.show()
+
 
 
 # === === === detect default rank of K === === === ===
