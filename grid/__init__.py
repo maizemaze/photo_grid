@@ -1,6 +1,6 @@
 __author__ = "Chunpeng James Chen"
-__version__ = "0.3.36"
-__update__ = "Feb 20, 2020"
+__version__ = "0.3.37"
+__update__ = "Apr 1, 2020"
 
 # imports
 import subprocess
@@ -25,34 +25,41 @@ print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
 
 
 # self update
-url = 'https://pypi.python.org/pypi/photo_grid/json'
-releases = json.loads(request.urlopen(url).read())['releases']
-new_version = sorted(releases, key=parse_version, reverse=True)[0]
-if __version__ != new_version:
-    # Dialog
-    ans = None
-    bol_ans = None
-    possible_pos_ans = ["y", "Y", "yes"]
-    possible_neg_ans = ["n", "N", "no"]
+try:
+    url = 'https://pypi.python.org/pypi/photo_grid/json'
+    releases = json.loads(request.urlopen(url).read())['releases']
+    new_version = sorted(releases, key=parse_version, reverse=True)[0]
+    if __version__ != new_version:
+        # Dialog
+        ans = None
+        bol_ans = None
+        possible_pos_ans = ["y", "Y", "yes"]
+        possible_neg_ans = ["n", "N", "no"]
 
-    while bol_ans is None:
-        ans = input(
-            "A newer version of GRID (ver. %s) is now available, upgrade? (y/n) " % new_version)
-        if ans in possible_pos_ans:
-            bol_ans = True
-        elif ans in possible_neg_ans:
-            bol_ans = False
+        while bol_ans is None:
+            ans = input(
+                "A newer version of GRID (ver. %s) is now available, upgrade? (y/n) " % new_version)
+            if ans in possible_pos_ans:
+                bol_ans = True
+            elif ans in possible_neg_ans:
+                bol_ans = False
 
-    if bol_ans:
-        subprocess.check_call([sys.executable,
-                              '-m', 'pip', 'install',
-                               'photo_grid==%s' % new_version, '--upgrade'])
-        print("\n")
-        print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
-        print("          Please re-launch GRID to finish the update")
-        print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
-        print("\n")
-        quit()
+        if bol_ans:
+            subprocess.check_call([sys.executable,
+                                '-m', 'pip', 'install',
+                                'photo_grid==%s' % new_version, '--upgrade'])
+            print("\n")
+            print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
+            print("          Please re-launch GRID to finish the update")
+            print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
+            print("\n")
+            quit()
+except Exception:
+    print("\n")
+    print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
+    print("     Sorry, we currently have issue updating your GRID.")
+    print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
+    print("\n")
 
 
 # self imports

@@ -43,9 +43,11 @@ def doKMeans(img, k=3, features=[0]):
                    bestLabels=None,
                    criteria=criteria,
                    attempts=10,
+                #    flags=cv2.KMEANS_RANDOM_CENTERS)
                    flags=cv2.KMEANS_PP_CENTERS)
 
     # KMEANS_RANDOM_CENTERS
+    cv2.setRNGSeed(99163)
     _, img_k_temp, center = cv2.kmeans(**param_k)
 
     # Convert back
@@ -91,7 +93,7 @@ def binarizeSmImg(image, cutoff=0.5):
     return imgOut.astype(np.int)
 
 
-def cropImg(img, pts):
+def cropImg(img, pts, resize=1600, img_W=None, img_H=None):
     """
     ----------
     Parameters
@@ -120,16 +122,17 @@ def cropImg(img, pts):
             pt_NE = pts[order_x[2:][np.isin(order_x[2:], order_y[:2])][0]]
             pt_SE = pts[order_x[2:][np.isin(order_x[2:], order_y[2:])][0]]
             token = False
-        except:
+        except Exception:
             pts = rotatePts(pts, 15)
     # generate sorted source point
     pts = np.array([pt_NW, pt_NE, pt_SW, pt_SE])
-    # estimate output dimension
-    img_W = (sum((pt_NE-pt_NW)**2)**(1/2)+sum((pt_SE-pt_SW)**2)**(1/2))/2
-    img_H = (sum((pt_SE-pt_NE)**2)**(1/2)+sum((pt_SW-pt_NW)**2)**(1/2))/2
-    while (img_W > 1600):
-        img_W /= 2
-        img_H /= 2
+    if img_W is None:
+        # estimate output dimension
+        img_W = (sum((pt_NE-pt_NW)**2)**(1/2)+sum((pt_SE-pt_SW)**2)**(1/2))/2
+        img_H = (sum((pt_SE-pt_NE)**2)**(1/2)+sum((pt_SW-pt_NW)**2)**(1/2))/2
+        while (img_W > resize):
+            img_W /= 2
+            img_H /= 2
     shape = (int(img_W), int(img_H))
     # generate target point
     pts2 = np.float32(
@@ -186,6 +189,7 @@ def getRank(array):
     rank[sort] = np.flip(np.arange(len(array)), axis=0)
     return rank
 
+
 # === === === === === peak searching === === === === ===
 def rotateNdArray(img, angle):
     depth = img.shape[2]
@@ -227,6 +231,7 @@ def rotateNdArray(img, angle):
     imgFinal = np.swapaxes(imgFinal, 1, 2)
 
     return imgFinal
+
 
 def rotateBinNdArray(img, angle):
     # create border for the image
@@ -428,7 +433,7 @@ def pltImShowMulti(imgs, titles=None, vertical=False):
 
     plt.figure()
     for i in range(nImgs):
-        idxPlot = idxImg*round(nImgs/2) + idxLyt   (i+1)
+        idxPlot = idxImg*round(nImgs/2) + idxLyt + (i+1)
         plt.subplot(idxPlot)
         plt.imshow(imgs[i])
         try:

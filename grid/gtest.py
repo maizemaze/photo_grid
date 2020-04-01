@@ -20,16 +20,19 @@ grid = gd.GRID()
 # grid.loadData("/Users/jameschen/Desktop/testGRID.png")
 grid.loadData(
     # pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Prototype/PineApple.jpg")
-    pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Manuscript/Remote Sensing/First Revision/Demo/demo_2.tif")
+    # pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Manuscript/Remote Sensing/First Revision/Demo/demo_2.tif")
     # pathImg="/Users/jameschen/Dropbox/James Chen/Projects/GRID/Prototype/GRID_Demo_Croped.jpg")
+    pathImg = "/Users/jameschen/Dropbox/James Chen/Projects/GRID/Prototype/Challenge/GRID_raw.png")
+# grid.cropImg(pts=[[5492.947791164658, 3003.9558232931727],
+#                   [5382.598393574297, 2108.8995983935743],
+#                   [1826.8955823293172, 2501.253012048193],
+#                   [1924.9839357429719, 3371.7871485943774]])
 
-grid.cropImg(pts=[[5492.947791164658, 3003.9558232931727],
-                  [5382.598393574297, 2108.8995983935743],
-                  [1826.8955823293172, 2501.253012048193],
-                  [1924.9839357429719, 3371.7871485943774]])
+grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=0)
+# grid.findPlots(nRow=23, nCol=12)
+# grid.cpuSeg()
 
-# grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=0)
-g = GRID_GUI(grid, 2)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
+g = GRID_GUI(grid, 3)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
 app.exec_()
 
 
@@ -173,10 +176,13 @@ app.exec_()
 # === === === find angles === === === ===
 # import os
 # os.chdir("..")
-# import grid as gd
+# sys.path
+# sys.path.remove("/Users/jameschen/Dropbox/photo_grid/grid")
 # import numpy as np
 # import cv2
 # import matplotlib.pyplot as plt
+# import grid as gd
+# os.getcwd()
 
 
 # def rotateBinNdArray(img, angel):
@@ -204,17 +210,33 @@ app.exec_()
 #     # return
 #     return imgC
 
+# fq_sim = 10
+
+# signal = np.sin(2*np.pi*fq_sim* np.linspace(0, 1, 100))
+# signal = np.array([3,2,1,2,3,4,5,4,3,2,1,2,3,4,5,4,3])
+# fd = np.fft.fft(signal)/len(signal)
+# fd = fd[range(int(len(signal)/2))]
+
+# plt.subplot(211)
+# plt.plot(signal)
+# plt.subplot(212)
+# plt.plot(abs(fd))
+
+
 
 # def getFourierTransform(sig):
 #     sigf = abs(np.fft.fft(sig)/len(sig))
-#     return sigf[2:int(len(sigf)/2)]
+#     # sigf = abs(np.fft.fft(sig))
+#     # sigf[0] = 0
+#     # sigf[1] = 0
+#     return sigf
 #     # return sigf[2:25]
 
 
 # grid = gd.GRID()
 # grid.loadData(
-#     "/Users/jameschen/Dropbox/James Chen/GRID/Manuscript/Remote Sensing/First Revision/angle_detection/ag4.png")
-# grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=60, outplot=True)
+#     "/Users/jameschen/Dropbox/James Chen/Projects/GRID/Manuscript/Remote Sensing/First Revision/demo/angle detection/ag4.png")
+# grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=60, outplot=False)
 
 # img = grid.imgs.get("bin")
 # row = 5
@@ -233,16 +255,18 @@ app.exec_()
 #         sigr = np.convolve(
 #             np.array([1, 2, 4, 2, 1])/10, sigr, mode='same')
 #     sigrf = getFourierTransform(sigr)
-#     sigabs = abs(sigrf)
+#     sigabs = (sigrf)
 #     plt.subplot(row, col, 1+i*col+0)
 #     plt.imshow(imgr)
 #     plt.subplot(row, col, 1+i*col+1)
 #     plt.plot(sigr)
 #     plt.subplot(row, col, 1+i*col+2)
 #     plt.ylim(0, 0.12)
+#     plt.xticks(range(20), np.arange(1, 21))
 #     plt.plot(sigabs[:20])
 #     sigs.append(round(sum(sigabs), 4))
 #     maxs.append(round(max(sigabs), 4))
+
 
 
 # print(degs)
@@ -400,3 +424,4 @@ app.exec_()
 # g = GRID_GUI(grid, 4)
 # app.exec_()
 
+#

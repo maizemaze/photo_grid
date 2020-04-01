@@ -6,6 +6,7 @@ GRID/__main__.py
 grid/GRID.py
 grid/__init__.py
 grid/__main__.py
+grid/benchmark.py
 grid/dir.py
 grid/gagent.py
 grid/gimage.py

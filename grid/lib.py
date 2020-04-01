@@ -279,9 +279,9 @@ def getCardIntercept(lsValues, angle, imgH=0):
     else:
         coef = 1 / np.sin(np.pi / 180 * abs(angle))
         if angle < 0:
-            return lsValues*coef
+            return lsValues * coef
         else:
-            return imgH-lsValues*coef
+            return imgH - lsValues * coef
 
 
 def getLineABC(slope, intercept):

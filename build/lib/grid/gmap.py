@@ -171,7 +171,7 @@ class GMap():
         ----------
         """
         imgH, imgW = self.imgBin.shape
-        tol = 0.025
+        tol = 0.025 
         bdN, bdS = -imgH*tol, imgH*(1+tol)
         bdW, bdE = -imgW*tol, imgW*(1+tol)
 

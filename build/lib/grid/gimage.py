@@ -108,7 +108,7 @@ class GImage():
         """
 
         self.paramKMs[key] = value
-    
+
     def resetParam(self):
         """
         ----------

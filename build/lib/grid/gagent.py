@@ -188,29 +188,33 @@ class GAgent():
                         self.setBorder(agentSelf, dir1, ptBd1)
                         self.setBorder(agentSelf, dir2, ptBd2)
 
-                    # get predim
-                    ## negative side (neighber 1)
-                    pt_cur = ptSelf
-                    tol_cur = 0
-                    while (tol_cur < tol) & (pt_cur > ptBd1):
-                        try:
-                            img_val = img1d[pt_cur]
-                        except:
-                            break
-                        tol_cur += 1 if img_val == 0 else -tol_cur #else reset to 0
-                        pt_cur -= 1
-                    rgTemp[dir1.name] = pt_cur
-                    ## positive side (neighber 2)
-                    pt_cur = ptSelf
-                    tol_cur = 0
-                    while (tol_cur < tol) & (ptBd2 > pt_cur):
-                        try:
-                            img_val = img1d[pt_cur]
-                        except:
-                            break
-                        tol_cur += 1 if img_val == 0 else -tol_cur #else reset to 0
-                        pt_cur += 1
-                    rgTemp[dir2.name] = pt_cur
+                    # # get predim
+                    # # negative side (neighber 1)
+                    # pt_cur = ptSelf
+                    # tol_cur = 0
+                    # while (tol_cur < tol) & (pt_cur > ptBd1):
+                    #     try:
+                    #         img_val = img1d[pt_cur]
+                    #     except Exception:
+                    #         break
+                    #     tol_cur += 1 if img_val == 0 else - tol_cur  # else reset to 0
+                    #     pt_cur -= 1
+                    # rgTemp[dir1.name] = pt_cur
+                    # # positive side (neighber 2)
+                    # pt_cur = ptSelf
+                    # tol_cur = 0
+                    # while (tol_cur < tol) & (ptBd2 > pt_cur):
+                    #     try:
+                    #         img_val = img1d[pt_cur]
+                    #     except Exception:
+                    #         break
+                    #     tol_cur += 1 if img_val == 0 else - tol_cur  # else reset to 0
+                    #     pt_cur += 1
+                    # rgTemp[dir2.name] = pt_cur
+
+                    rgTemp[dir1.name] = ptBd1
+                    rgTemp[dir2.name] = ptBd2
+
                 agentSelf.setPreDim(rgTemp)
 
     def autoSeg(self, coefGrid=.2):
@@ -220,7 +224,7 @@ class GAgent():
         ----------
         """
         self.coef = coefGrid
-        
+
         # reset the border first
         self.resetBorder()
 
@@ -232,7 +236,7 @@ class GAgent():
 
         # loop over rows and cols
         for row in range(self.nRow):
-            updateProgress(prog, flag=self.subflag)
+            updateProgress(prog, flag= self.subflag)
             for col in range(self.nCol):
                 agentSelf = self.get(row, col)
                 for dir in list([Dir.EAST, Dir.SOUTH]):
@@ -247,7 +251,8 @@ class GAgent():
                     # calculate border
                     dist_agents = abs(
                         agentSelf.x-agentNeib.x) if dir == Dir.EAST else abs(agentSelf.y-agentNeib.y)
-                    while abs(agentSelf.getBorder(dir)-agentNeib.getBorder(dirNeib)) > 1:
+                    
+                    while (agentNeib.getBorder(dirNeib) - agentSelf.getBorder(dir)) > 1:
                         scASelf = agentSelf.getScoreArea(
                             dir, self.img)
                         scGSelf = agentSelf.getScoreGrid(

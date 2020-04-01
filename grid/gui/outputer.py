@@ -337,8 +337,8 @@ class Widget_Seg(Widget_Img):
         # seg
         imgBin = self.grid.imgs.get("bin")
         imgBinTemp = imgBin.reshape(imgBin.shape[0], imgBin.shape[1], 1)
-        self.img_seg = np.multiply(self.grid.imgs.get("crop")[:,:,:3], imgBinTemp).copy()
-        
+        self.img_seg = np.multiply(self.grid.imgs.get("crop")[:, :, :3], imgBinTemp).copy()
+
         # ui
         self.initUI()
 
@@ -392,7 +392,7 @@ class Widget_Seg(Widget_Img):
 
         # mag module
         if event.button() == Qt.RightButton:
-            self.task = (self.task+1)%4
+            self.task = (self.task + 1) % 4
             bugmsg(self.task)
             self.mouseMoveEvent(event)
 
