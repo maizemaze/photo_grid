@@ -180,7 +180,7 @@ def saveDT(grid, path, prefix="GRID"):
         name = "cluster_%d" % cluster
         dicIdx[name] = (np.isin(grid.imgs.get("kmean"), i))*1
         cluster += 1
-        
+
     # append columns based on the dict
     for key, _ in dicIdx.items():
         df[key] = None
@@ -225,23 +225,45 @@ def saveDT(grid, path, prefix="GRID"):
 
 
 def savePlot(grid, path, prefix="GRID"):
-    pltImShow(grid.imgs.get("crop")[:, :, :3],
+    # raw-none
+    pltSegPlot(grid.agents, grid.imgs.get("crop")[:, :, :3],
               path=path, prefix=prefix, filename="_raw.png")
-
+    # raw-center
+    pltSegPlot(grid.agents, grid.imgs.get("crop")[:, :, :3],
+              isCenter=True,
+              path=path, prefix=prefix, filename="_raw_center.png")
+    # raw-frame
     pltSegPlot(grid.agents, grid.imgs.get("crop")[:, :, :3],
                isRect=True,
-               path=path, prefix=prefix, filename="_rgb.png")
+               path=path, prefix=prefix, filename="_raw_border.png")
+    # raw-both
+    pltSegPlot(grid.agents, grid.imgs.get("crop")[:, :, :3],
+               isCenter=True, isRect=True,
+               path=path, prefix=prefix, filename="_raw_both.png")
 
-    pltImShow(grid.imgs.get("kmean"),
+    # cluster-none
+    pltSegPlot(grid.agents, grid.imgs.get("kmean"),
               path=path, prefix=prefix, filename="_kmeans.png")
 
-    pltSegPlot(grid.agents, grid.imgs.get("visSeg"),
-               isRect=True,
-               path=path, prefix=prefix, filename="_seg.png")
-
+    # binary-none
+    pltSegPlot(grid.agents, grid.imgs.get("bin"),
+               path=path, prefix=prefix, filename="_bin.png")
+    # binary-center
+    pltSegPlot(grid.agents, grid.imgs.get("bin"),
+               isCenter=True,
+               path=path, prefix=prefix, filename="_bin.png")
+    # binary-frame
     pltSegPlot(grid.agents, grid.imgs.get("bin"),
                isRect=True,
-               path=path, prefix=prefix, filename="_bin.png")
+               path=path, prefix=prefix, filename="_bin_border.png")
+
+    # extraction-none
+    pltSegPlot(grid.agents, grid.imgs.get("visSeg"),
+               path=path, prefix=prefix, filename="_seg.png")
+    # extraction-frame
+    pltSegPlot(grid.agents, grid.imgs.get("visSeg"),
+               isRect=True,
+               path=path, prefix=prefix, filename="_seg_border.png")
 
 
 def saveH5(grid, path, prefix="GRID"):
@@ -278,4 +300,3 @@ def saveH5(grid, path, prefix="GRID"):
                     f.create_dataset(key, data=imgFin, compression="gzip")
             except Exception:
                 print("Failed to save %s" % key)
-

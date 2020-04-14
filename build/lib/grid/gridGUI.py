@@ -193,16 +193,22 @@ class GRID_GUI(QMainWindow):
         msgBox.setIcon(QMessageBox.Information)
         msgBox.setText("Finished!")
         msgBox.setInformativeText("Save and start another job?")
-        msgBox.setStandardButtons(QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
+        msgBox.setStandardButtons(
+            QMessageBox.Yes | QMessageBox.No| QMessageBox.Discard)
+        
+        msgBox.button(QMessageBox.Yes).setText("Save and stay in current work")
+        msgBox.button(QMessageBox.No).setText("Save and start new job")
+
         returnValue = msgBox.exec()
-        if returnValue == QMessageBox.Save:
-            path = self.pnMain.currentWidget().fd_output.text()
-            prefix = self.pnMain.currentWidget().fd_project.text()
-            isH5 = self.pnMain.currentWidget().ck_h5.isChecked()
+        path = self.pnMain.currentWidget().fd_output.text()
+        prefix = self.pnMain.currentWidget().fd_project.text()
+        isH5 = self.pnMain.currentWidget().ck_h5.isChecked()
+        if returnValue == QMessageBox.Yes:
+            self.grid.save(path=path, prefix=prefix, h5=isH5)
+        elif returnValue == QMessageBox.No:
             self.grid.save(path=path, prefix=prefix, h5=isH5)
             self.startover()
-        elif returnValue == QMessageBox.Discard:
-            self.startover()
+
 
     def centerWindow(self):
         """

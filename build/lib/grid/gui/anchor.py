@@ -170,26 +170,56 @@ class PnAnchor(QWidget):
         self.updateAgents()
 
     def changeAngle(self, idx):
+        print("index: %d" % idx)
         # current angle
         angle = self.dlAg[idx].value() * self.mtp
         # oposite angle
         angleOp = self.dlAg[1 - idx].value() * self.mtp
+        print("before")
+        print("ops:%2f" % (angleOp))
+        print("self:%2f" % (angle))
+        print("after")
         # angle difference between two axes
         angleDiff = abs(angle - angleOp)
         # if difference is greater than 0
         if angleDiff != 0:
             # if difference is greater than 90 degrees
             if angleDiff > 90:
-                if idx == 0:
-                    value = min(angle + 90, 90) / self.mtp
+                print("greater than 90")
+                if angle > 0:
+                    value = (angle - 90) / self.mtp
                 else:
-                    value = max(-90, angle - 90) / self.mtp
+                    value = (angle + 90) / self.mtp
+                # if idx == 0:
+                #     value = min(angle + 90, 90) / self.mtp
+                # else:
+                #     value = max(-90, angle - 90) / self.mtp
+                print("ops:%2f" % (value * self.mtp))
+                print("self:%2f" % (angle))
                 self.dlAg[1 - idx].setValue(int(value))
-            # if difference is less than 90 degrees and neither of them is 0
-            elif angle * angleOp > 0:
+            # if different side
+            elif angle * angleOp < 0:
+                print("less than 90, different sides")
                 # force the current one equal to 0
-                angle = 0
-                self.dlAg[idx].setValue(0)
+                angleOp = (angle - 90) if angle > 0 else (angle + 90)
+                self.dlAg[1 - idx].setValue(int(angleOp / self.mtp))
+            # same side
+            else:
+                print("less than 90, same sides")
+                # current is +-90, push opp
+                if abs(angle) > abs(angleOp):
+                    angleOp = (angle - 90) if angle > 0 else (angle + 90)
+                    self.dlAg[1 - idx].setValue(int(angleOp / self.mtp))
+                # opp is +-90
+                else:
+                    angleOp = 90 if angleOp > 0 else -90
+                    self.dlAg[1 - idx].setValue(int(angleOp / self.mtp))
+
+            # if difference is less than 90 degrees and neither of them is 0
+            # elif angle * angleOp > 0:
+            #     # force the current one equal to 0
+            #     angle = 0
+            #     self.dlAg[idx].setValue(0)
             self.grAg[idx].setTitle("Angle: %d degrees" % (angle))
             self.grid.updateCenters(idx, angle=angle)
             self.switch = False
@@ -399,11 +429,14 @@ class WidgetAnchor(Widget_Img):
             pen.setWidth(1)
             pen.setStyle(Qt.DotLine)
             painter.setPen(pen)
-            painter.drawLine(x1, y1, x2, y2)
-            pen.setWidth(5)
-            painter.setPen(pen)
-            for x in self.ptVLine:
-                drawCross(x, y1+(x-x1)*self.slp, painter, size=5)
+            try:
+                painter.drawLine(x1, y1, x2, y2)
+                pen.setWidth(5)
+                painter.setPen(pen)
+                for x in self.ptVLine:
+                    drawCross(x, y1+(x-x1)*self.slp, painter, size=5)
+            except Exception:
+                None
 
         painter.end()
 

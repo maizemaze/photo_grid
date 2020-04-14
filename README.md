@@ -23,6 +23,11 @@
 
 ## Update Log
 
+### Feb 20, 2020 (0.3.0)
+    * Support different display modes in the center detection step
+    * Support auto-update feature
+    * Bug fixes
+
 ### Dec 19, 2019 (0.2.46)
     * Add plot variation in the output file
     * Support saving segmentated images as H5 file

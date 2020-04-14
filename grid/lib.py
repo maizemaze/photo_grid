@@ -360,6 +360,13 @@ def findPeaks(img, nPeaks=0, axis=1, nSmooth=100):
 
 # === === === === Plotting === === === === ===
 
+def qCross(x, y, painter, size=2):
+    l1_st_x, l1_st_y = x-size, y-size
+    l1_ed_x, l1_ed_y = x+size, y+size
+    l2_st_x, l2_st_y = x-size, y+size
+    l2_ed_x, l2_ed_y = x+size, y-size
+    painter.drawLine(l1_st_x, l1_st_y, l1_ed_x, l1_ed_y)
+    painter.drawLine(l2_st_x, l2_st_y, l2_ed_x, l2_ed_y)
 
 def pltCross(x, y, size=3, width=1, color="red"):
     pt1X = [x-size, x+size]
@@ -378,7 +385,7 @@ def pltImShow(img, path=None, prefix="GRID", filename=".png"):
         plt.show()
     else:
         file = os.path.join(path, prefix+filename)
-        if img.max()==1:
+        if img.max() == 1:
             qimg = getBinQImg(img)
         elif img.max() < 100:
             qimg = getIdx8QImg(img, img.max()+1)
@@ -388,8 +395,8 @@ def pltImShow(img, path=None, prefix="GRID", filename=".png"):
         qimg.save(file, "PNG")
 
 
-def pltSegPlot(agents, plotBase, isRect=False, path=None, prefix="GRID", filename=".png"):
-    if path is None:
+def pltSegPlot(agents, plotBase, isRect=False, isCenter=False, path=None, prefix="GRID", filename=".png"):
+    if path is None:    
         ax = plt.subplot(111)
         ax.imshow(plotBase)
         for row in range(agents.nRow):
@@ -409,7 +416,12 @@ def pltSegPlot(agents, plotBase, isRect=False, path=None, prefix="GRID", filenam
         plt.show()
     else:
         file = os.path.join(path, prefix+filename)
-        qimg = getBinQImg(plotBase) if plotBase.max() == 1 else getRGBQImg(plotBase)
+        if plotBase.max() == 1:
+            qimg = getBinQImg(plotBase)
+        elif plotBase.max() < 100:
+            qimg = getIdx8QImg(plotBase, plotBase.max()+1)
+        else:
+            qimg = getRGBQImg(plotBase)
 
         pen = QPen()
         pen.setWidth(3)
@@ -420,11 +432,14 @@ def pltSegPlot(agents, plotBase, isRect=False, path=None, prefix="GRID", filenam
         for row in range(agents.nRow):
             for col in range(agents.nCol):
                 agent = agents.get(row, col)
+                center = agent.getCoordinate()
                 rect = agent.getQRect()
-                painter.drawRect(rect)
+                if isRect:
+                    painter.drawRect(rect)
+                if isCenter:
+                    qCross(center[0], center[1], painter, size=3)
         painter.end()
         qimg.save(file, "PNG")
-
 
 def pltImShowMulti(imgs, titles=None, vertical=False):
     nImgs = len(imgs)
