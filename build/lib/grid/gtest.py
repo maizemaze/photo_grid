@@ -21,18 +21,18 @@ grid = gd.GRID()
 grid.loadData(
     # pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Prototype/PineApple.jpg")
     # pathImg="/Users/jameschen/Dropbox/James Chen/GRID/Manuscript/Remote Sensing/First Revision/Demo/demo_2.tif")
-    # pathImg="/Users/jameschen/Dropbox/James Chen/Projects/GRID/Prototype/GRID_Demo_Croped.jpg")
-    pathImg = "/Users/jameschen/Dropbox/James Chen/Projects/GRID/Prototype/Challenge/GRID_raw.png")
+    pathImg="/Users/jameschen/Dropbox/James Chen/Projects/GRID/Prototype/GRID_Demo_Croped.jpg")
+    # pathImg = "/Users/jameschen/Dropbox/James Chen/Projects/GRID/Prototype/Challenge/GRID_raw.png")
 # grid.cropImg(pts=[[5492.947791164658, 3003.9558232931727],
 #                   [5382.598393574297, 2108.8995983935743],
 #                   [1826.8955823293172, 2501.253012048193],
 #                   [1924.9839357429719, 3371.7871485943774]])
 
 grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=0)
-# grid.findPlots(nRow=23, nCol=12)
+grid.findPlots(nRow=23, nCol=12)
 # grid.cpuSeg()
 
-g = GRID_GUI(grid, 3)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
+g = GRID_GUI(grid, 4)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
 app.exec_()
 
 
@@ -105,7 +105,6 @@ app.exec_()
 # pts2_f.transpose()
 
 
-
 # mat = img[:, :, 0]
 
 # mat2 = img.reshape((-1, 1))
@@ -172,7 +171,6 @@ app.exec_()
 
 # ========== peak searching ==========
 
-
 # === === === find angles === === === ===
 # import os
 # os.chdir("..")
@@ -210,19 +208,17 @@ app.exec_()
 #     # return
 #     return imgC
 
-# fq_sim = 10
+# # fq_sim = 10
 
-# signal = np.sin(2*np.pi*fq_sim* np.linspace(0, 1, 100))
-# signal = np.array([3,2,1,2,3,4,5,4,3,2,1,2,3,4,5,4,3])
-# fd = np.fft.fft(signal)/len(signal)
-# fd = fd[range(int(len(signal)/2))]
+# # signal = np.sin(2*np.pi*fq_sim* np.linspace(0, 1, 100))
+# # signal = np.array([3,2,1,2,3,4,5,4,3,2,1,2,3,4,5,4,3])
+# # fd = np.fft.fft(signal)/len(signal)
+# # fd = fd[range(int(len(signal)/2))]
 
-# plt.subplot(211)
-# plt.plot(signal)
-# plt.subplot(212)
-# plt.plot(abs(fd))
-
-
+# # plt.subplot(211)
+# # plt.plot(signal)
+# # plt.subplot(212)
+# # plt.plot(abs(fd))
 
 # def getFourierTransform(sig):
 #     sigf = abs(np.fft.fft(sig)/len(sig))
@@ -239,14 +235,14 @@ app.exec_()
 # grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=60, outplot=False)
 
 # img = grid.imgs.get("bin")
-# row = 5
+# row = 7
 # col = 3
 # degs = []
 # sigs = []
 # maxs = []
-# plt.figure(figsize=(20, 10))
+# plt.figure(figsize=(18, 15))
 # for i in range(row):
-#     deg = -i*22.5
+#     deg = -i*15
 #     degs.append(deg)
 #     imgr = rotateBinNdArray(img, deg)
 #     sigr = imgr.mean(axis=0)
@@ -257,6 +253,7 @@ app.exec_()
 #     sigrf = getFourierTransform(sigr)
 #     sigabs = (sigrf)
 #     plt.subplot(row, col, 1+i*col+0)
+#     plt.axis('off')
 #     plt.imshow(imgr)
 #     plt.subplot(row, col, 1+i*col+1)
 #     plt.plot(sigr)
@@ -267,15 +264,9 @@ app.exec_()
 #     sigs.append(round(sum(sigabs), 4))
 #     maxs.append(round(max(sigabs), 4))
 
-
-
 # print(degs)
-
 # print(maxs)
-
 # print(sigs)
-
-
 
 # === === === find angles === === === ===
 

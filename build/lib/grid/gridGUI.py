@@ -198,6 +198,7 @@ class GRID_GUI(QMainWindow):
         
         msgBox.button(QMessageBox.Yes).setText("Save and stay in current work")
         msgBox.button(QMessageBox.No).setText("Save and start new job")
+        msgBox.button(QMessageBox.Discard).setText("Cancel")
 
         returnValue = msgBox.exec()
         path = self.pnMain.currentWidget().fd_output.text()
