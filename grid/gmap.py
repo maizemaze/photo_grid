@@ -32,6 +32,8 @@ class GMap():
         self.nRow = 0
         self.nCol = 0
         self.img = None
+        self.imgBin = None
+        self.imgRGB = None
         self.imgH = 0
         self.imgW = 0
 
@@ -41,14 +43,8 @@ class GMap():
         self.slps = [0, 0]  # 0 and 90 degrees for common images
         self.sigs = [0, 0]
         self.itcs = [0, 0]
-        self.imgHr = [0, 0]
-        self.imgWr = [0, 0]
         self.slpsReset = [0, 0]
         self.itcsReset = [0, 0]
-
-        # iamges for two angle
-        self.imgsR_Bin = [0, 0]
-        self.imgsR_RGB = [0, 0]
 
         # output
         self.dt = None
@@ -109,7 +105,11 @@ class GMap():
         scSort = sc.copy()
         scSort.sort()
         idxMax = [i for i in range(len(sc)) if (sc[i] in scSort[-2:])]
-        angles = [rangeAngle[idx] for idx in idxMax]
+        angles = np.array([rangeAngle[idx] for idx in idxMax])
+
+        # sort angles (one closer to 0/90 is major angle)
+        idx_major = np.argmin(angles % 90)
+        angles = angles[[idx_major, abs(idx_major-1)]]
 
         # return
         return angles
@@ -140,13 +140,11 @@ class GMap():
 
     def updateIntercepts(self, angles, nSigs, nSmooth):
         for i in range(2):
-            if (nSigs[i] == 0 or self.nAxsCur[i] != nSigs[i] or self.angles[i] != self.anglesCur[i]):
-                imgR_bin, imgR_rgb, sig, intercept = self.cpuIntercept(
-                    angles[i], nSigs[i], nSmooth)
-                self.imgsR_Bin[i] = imgR_bin
-                self.imgsR_RGB[i] = imgR_rgb
-                self.imgHr[i] = imgR_bin.shape[0]
-                self.imgWr[i] = imgR_bin.shape[1]
+            if (nSigs[i] == 0 or
+                    self.nAxsCur[i] != nSigs[i] or
+                    self.angles[i] != self.anglesCur[i]):
+                sig, intercept = self.cpuIntercept(angles[i], nSigs[i], nSmooth)
+            
                 self.sigs[i] = sig
                 self.itcs[i] = intercept
                 # update number of peaks
@@ -155,14 +153,18 @@ class GMap():
                 # update angles
                 self.anglesCur[i] = self.angles[i]
 
+        # self.imgsR_Bin[i] = imgR_bin
+        # self.imgsR_RGB[i] = imgR_rgb
+        # self.imgHr[i] = imgR_bin.shape[0]
+        # self.imgWr[i] = imgR_bin.shape[1]
+
     def cpuIntercept(self, angle, nSig, nSmooth):
         imgR_bin = rotateBinNdArray(self.imgBin, angle)
-        imgR_rgb = rotateNdArray(self.imgRGB, angle)
         sig = findPeaks(img=imgR_bin, nPeaks=nSig, nSmooth=nSmooth)[0]
         intercept = getCardIntercept(sig, angle, self.imgH)
         if isinstance(intercept, int):
             intercept = list([intercept])
-        return imgR_bin, imgR_rgb, sig, intercept
+        return sig, intercept
 
     def getDfCoordinate(self, angles, slopes, intercepts):
         """
@@ -180,17 +182,22 @@ class GMap():
         idxMaj = 0 if getClosedTo0or90(angles[0]) <= getClosedTo0or90(angles[1]) else 1
         idxMin = 1 - idxMaj
 
-        for i in range(2):
-            intercepts[i].sort()
+        itc_maj = np.sort(intercepts[0])
+        itc_min = np.sort(intercepts[1])
+
+        print("old itc")
+        print(intercepts[1])
+        print("new itc")
+        print(itc_min)
 
         plotsMaj = []
         plotsMin = []
         pts = []
 
         pMaj = 0
-        for itcMaj in intercepts[idxMaj]:  # columns
+        for itcMaj in itc_maj:  # major
             pMin = 0
-            for itcMin in intercepts[idxMin]:  # rows
+            for itcMin in itc_min:  # minor
                 ptX, ptY = solveLines(
                     slopes[idxMaj], itcMaj, slopes[idxMin], itcMin)
                 if ptX >= bdW and ptX <= bdE and ptY >= bdN and ptY <= bdS:
@@ -268,27 +275,77 @@ class GMap():
         self.itcs = np.array(temp)
         self.dt = self.getDfCoordinate(self.angles, self.slps, self.itcs)
 
-    def addAnchor(self, axis, value):
-        # temp = self.sigs.tolist()
+    def addMajAnchor(self, value):
+        # signals
         temp = self.sigs
         try:
-            temp[axis].append(value)
+            temp[0].append(value)
         except Exception:
-            temp[axis] = np.append(temp[axis], value)
+            temp[0] = np.append(temp[0], value)
         self.sigs = np.array(temp)
-        # temp = self.itcs.tolist()
+
+        # intercepts (derived from signals)
         temp = self.itcs
-        temp[axis] = getCardIntercept(
-            self.sigs[axis], self.angles[axis], self.imgH)
+        temp[0] = getCardIntercept(
+            self.sigs[0], self.angles[0], self.imgH)
         self.itcs = np.array(temp)
+
+        # update dataframe
         self.dt = self.getDfCoordinate(self.angles, self.slps, self.itcs)
 
-    def modAnchor(self, axis, index, value):
-        self.sigs[axis][index] = value
-        self.itcs[axis] = getCardIntercept(
-            self.sigs[axis], self.angles[axis], self.imgH)
-        self.dt = self.getDfCoordinate(
-            self.angles, self.slps, self.itcs)
+    def addMinAnchor(self, itc):
+        angle = self.angles[1]
+
+        # signal
+        temp = self.sigs
+        if angle < 0 or angle > 90:
+            new_signal = itc * np.sin(np.pi / 180 * abs(angle))
+        elif angle >= 0 and angle <= 90:
+            new_signal = (self.imgH - itc) * np.sin(np.pi / 180 * abs(angle))
+        try:
+            temp[1].append(new_signal)
+        except Exception:
+            temp[1] = np.append(temp[1], new_signal)
+        self.sigs = np.array(temp)
+
+        # intercepts
+        temp = self.itcs
+        try:
+            temp[1].append(itc)
+        except Exception:
+            temp[1] = np.append(temp[1], itc)
+        self.itcs = np.array(temp)
+
+        # update dataframe
+        self.dt = self.getDfCoordinate(self.angles, self.slps, self.itcs)
+
+    def modMajAnchor(self, index, value):
+        self.sigs[0][index] = value
+        self.itcs[0] = getCardIntercept(
+            self.sigs[0], self.angles[0], self.imgH)
+        self.dt = self.getDfCoordinate(self.angles, self.slps, self.itcs)
+
+    def modMinAnchor(self, index, itc):
+        angle = self.angles[1]
+
+        if angle < 0 or angle > 90:
+            print("case1")
+            self.sigs[1][index] = itc * np.sin(np.pi / 180 * abs(angle))
+        elif angle >= 0 and angle <= 90:
+            print("case2")
+            ##### NOTE: sigs have inversed order when angle > 0!!! 
+            # n_itc = len(self.itcs[1])
+            # index_sig = np.flip(np.arange(n_itc))[index]
+            self.sigs[1][index] = (self.imgH - itc) * \
+                np.sin(np.pi / 180 * abs(angle))
+
+        self.itcs[1][index] = itc
+
+        print("=== itcs")
+        print(self.itcs[1])
+        print("=== sigs")
+        print(self.sigs[1])
+        self.dt = self.getDfCoordinate(self.angles, self.slps, self.itcs)
 
 
 def getClosedTo0or90(x):

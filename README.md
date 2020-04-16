@@ -23,6 +23,9 @@
 
 ## Update Log
 
+### Apr 16, 2020 (0.3.4)
+    * New interface for angle detection
+  
 ### Feb 20, 2020 (0.3.0)
     * Support different display modes in the center detection step
     * Support auto-update feature
