@@ -108,7 +108,7 @@ class GRID_GUI(QMainWindow):
 
     def showInputer(self, isNew=True):
         bugmsg("show input")
-        self.prog.set(n=0, name="Specify an image to proceed")
+        self.prog.set(n=0, name="Specify (or drag & drop) an image to proceed")
         self.assembleNavigation(nameNext="Load Files ->", oneSide=True)
         self.btNext.clicked.connect(
             lambda: self.showCropper())
@@ -122,7 +122,7 @@ class GRID_GUI(QMainWindow):
             lambda: self.showInputer(isNew=False))
         self.btNext.clicked.connect(
             lambda: self.showKMeaner())
-        self.updateMainPn(panel=Panels.CROPPER, isNew=isNew)     
+        self.updateMainPn(panel=Panels.CROPPER, isNew=isNew)
 
     def showKMeaner(self, isNew=True):
         bugmsg("kmean")
@@ -157,6 +157,7 @@ class GRID_GUI(QMainWindow):
         self.updateMainPn(panel=Panels.OUTPUTER, isNew=isNew)
 
     def updateMainPn(self, panel, isNew=True):
+        token_err = False
         # traverse forward
         if isNew:
             try:
@@ -164,12 +165,23 @@ class GRID_GUI(QMainWindow):
                 bugmsg("run")
                 self.pnMain.currentWidget().run()
             except Exception as e:
+                token_err = True
                 print(e)
                 # except the initial one
-                None
 
-            self.pnMain.addWidget(panel.value[1](self.grid))
+            if token_err and self.nPanel == 0:
+                # missing file handling
+                self.showInputer(isNew=False)
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Warning)
+                msg.setText("Failed to load files")
+                msg.setInformativeText("No such file or directory")
+                msg.exec_()
+            else:
+                self.pnMain.addWidget(panel.value[1](self.grid))
             self.nPanel += 1
+
+            token_err = False
         # traverse backward
         else:
             widget = self.pnMain.widget(panel.value[0]+1)

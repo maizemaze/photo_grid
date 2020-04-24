@@ -20,8 +20,8 @@ class PnInputer(QWidget):
         self.lo_user = QGridLayout()
         self.lb_img = QLabel()
         self.lb_map = QLabel()
-        self.fd_img = QLineEdit()
-        self.fd_map = QLineEdit()
+        self.fd_img = DnDLineEdit()
+        self.fd_map = DnDLineEdit()
         self.bt_img = QPushButton()
         self.bt_map = QPushButton()
         # demo
@@ -43,7 +43,7 @@ class PnInputer(QWidget):
         self.gr_user.setChecked(False)
         self.gr_user.clicked.connect(lambda: self.toggle(self.gr_user))
         self.lb_img.setText("Image (.tif, .jpg, .png):")
-        self.lb_map.setText("Map (.csv, .txt)(OPTIONAL):")
+        self.lb_map.setText("Map (.csv) (OPTIONAL):")
         font = self.fd_img.font()
         font.setPointSize(25)
         fm = QFontMetrics(font)
@@ -114,3 +114,32 @@ class PnInputer(QWidget):
         else:
             self.grid.loadData() # load demo files
 
+
+class DnDLineEdit(QLineEdit):
+    def __init__(self):
+        super().__init__()
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls:
+            event.accept()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasUrls:
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        if event.mimeData().hasUrls:
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+            text = ""
+            for url in event.mimeData().urls():
+                text = str(url.toLocalFile())
+            self.setText(text)
+        else:
+            event.ignore()

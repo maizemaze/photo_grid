@@ -61,8 +61,8 @@ class PnOutputer(QWidget):
         # Tool
         self.gr_tol = QGroupBox("Tools (Right-click to switch)")
         self.lo_tol = QGridLayout()
-        self.rb_none = QRadioButton("None")
-        self.rb_adj = QRadioButton("Border Adjustment")
+        self.rb_ct = QRadioButton("Adjust Centroid")
+        self.rb_adj = QRadioButton("Adjust Border")
         self.rb_vp = QRadioButton("Pan (Vertical)")
         self.rb_hp = QRadioButton("Pan (Horizontal)")
         # Display
@@ -152,11 +152,11 @@ class PnOutputer(QWidget):
         self.gr_seg.setLayout(self.lo_seg)
         '''tool'''
         self.rb_adj.setChecked(True)
-        self.rb_none.toggled.connect(lambda: self.changeTool(index=0))
+        self.rb_ct.toggled.connect(lambda: self.changeTool(index=0))
         self.rb_adj.toggled.connect(lambda: self.changeTool(index=1))
         self.rb_vp.toggled.connect(lambda: self.changeTool(index=2))
         self.rb_hp.toggled.connect(lambda: self.changeTool(index=3))
-        self.lo_tol.addWidget(self.rb_none, 0, 0)
+        self.lo_tol.addWidget(self.rb_ct, 0, 0)
         self.lo_tol.addWidget(self.rb_adj, 0, 1)
         self.lo_tol.addWidget(self.rb_vp, 1, 0)
         self.lo_tol.addWidget(self.rb_hp, 1, 1)
@@ -278,7 +278,7 @@ class PnOutputer(QWidget):
         '''
         index = self.cb_alignY.currentIndex()
         self.wg_img.align(method=index, axis=0)
-        
+
     def evenH(self):
         '''
         '''
@@ -310,7 +310,7 @@ class PnOutputer(QWidget):
 
     def paintEvent(self, paint_event):
         if self.wg_img.task == 0:
-            self.rb_none.setChecked(True)
+            self.rb_ct.setChecked(True)
         elif self.wg_img.task == 1:
             self.rb_adj.setChecked(True)
         elif self.wg_img.task == 2:
@@ -327,7 +327,7 @@ class Widget_Seg(Widget_Img):
         self.setMouseTracking(True)
         self.grid = grid
         self.img_raw = grid.imgs.get('visSeg')
-        self.task = 1 # 0 none, 1 zoom, 2 panV, 3 panH
+        self.task = 0 # 0 centroid, 1 zoom, 2 panV, 3 panH
         '''attr'''
         # painter
         self.ratio = 0
@@ -401,6 +401,7 @@ class Widget_Seg(Widget_Img):
         # change cursor
         if self.task==0:
             self.setCursor(QCursor(Qt.ArrowCursor))
+            magnifying_glass(self, pos, area=int(self.width()/7), zoom=1.2)
         elif self.task==1:
             magnifying_glass(self, pos, area=int(self.width()/7), zoom=1.5)
         elif self.task==2:
@@ -408,23 +409,32 @@ class Widget_Seg(Widget_Img):
         elif self.task==3:
             self.setCursor(QCursor(Qt.SizeHorCursor))
         # pan
-        if (event.button()==Qt.LeftButton)&(self.task>0)&(self.agent_click!=False):
+        if (event.button()==Qt.LeftButton)&(self.agent_click!=False):
             posX = (pos.x()-self.rgX[0])/self.ratio
             posY = (pos.y()-self.rgY[0])/self.ratio
-            # adjust border
-            if self.task==1:
+
+            if self.task==0:
+                # adjust centroid
+                cur_x = self.agent_click.x
+                cur_y = self.agent_click.y
+                adj_x = posX - cur_x
+                adj_y = posY - cur_y
+                self.agent_click.updateCoordinate(value=adj_y, axis=0)
+                self.agent_click.updateCoordinate(value=adj_x, axis=1)
+            elif self.task==1:
+                # adjust border
                 if self.dir==Dir.NORTH or self.dir==Dir.SOUTH:
                     value = posY
                 elif self.dir==Dir.WEST or self.dir==Dir.EAST:
                     value = posX
                 self.grid.agents.setBorder(self.agent_click, self.dir, value)
-            # V pan
             elif self.task==2:
+                # V pan
                 value = posY
                 row = self.agent_click.row
                 self.grid.agents.pan(axis=0, target=row, value=value)
-            # H pan
             elif self.task==3:
+                # H pan
                 value = posX
                 col = self.agent_click.col
                 self.grid.agents.pan(axis=1, target=col, value=value)

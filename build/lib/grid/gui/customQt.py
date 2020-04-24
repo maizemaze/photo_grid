@@ -56,6 +56,13 @@ class Widget_Img(QWidget):
             self.rgX = (marginX, marginX+self.sizeImg.width())
             self.rgY = (0, self.sizeImg.height())
 
+    def isInRange(self, x, y):
+        if x >= self.rgX[0] and x <= self.rgX[1] and\
+           y >= self.rgY[0] and y <= self.rgY[1]:
+            return True
+        else:
+            return False
+
     def getImgRange(self):
         return self.rgX, self.rgY
 

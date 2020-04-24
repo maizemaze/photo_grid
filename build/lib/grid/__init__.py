@@ -1,5 +1,5 @@
 __author__ = "Chunpeng James Chen"
-__version__ = "0.3.38"
+__version__ = "0.3.40"
 __update__ = "Apr 13, 2020"
 
 # imports
@@ -68,6 +68,8 @@ from .grid import *
 
 """
 Update Log
+- Apr 16, 2020 (0.3.4)
+    * New interface for angle detection
 
 - Feb 20, 2020 (0.3.0)
     * Support different display modes in the center detection step

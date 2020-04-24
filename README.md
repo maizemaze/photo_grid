@@ -23,6 +23,10 @@
 
 ## Update Log
 
+### Apr 23, 2020 (0.3.41)
+    * Support drag and drop for file loading
+    * Support manual adjustment for centroids
+
 ### Apr 16, 2020 (0.3.4)
     * New interface for angle detection
   

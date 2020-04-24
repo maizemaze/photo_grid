@@ -275,6 +275,7 @@ def getFourierTransform(sig):
 
 def getCardIntercept(lsValues, angle, imgH=0):
     if angle == 0:
+        # 
         return lsValues * 1
     else:
         coef = 1 / np.sin(np.pi / 180 * abs(angle))

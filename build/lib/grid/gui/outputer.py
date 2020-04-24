@@ -198,10 +198,10 @@ class PnOutputer(QWidget):
         self.sc_right.setWidget(self.pn_right)
         # policy
         policy_right = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        policy_right.setHorizontalStretch(1)
+        policy_right.setHorizontalStretch(2)
         self.sc_right.setSizePolicy(policy_right)
         policy_left = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        policy_left.setHorizontalStretch(2)
+        policy_left.setHorizontalStretch(3)
         self.wg_img.setSizePolicy(policy_left)
         # assemble
         self.layout.addWidget(self.wg_img)
