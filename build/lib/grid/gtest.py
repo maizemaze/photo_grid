@@ -29,10 +29,10 @@ grid.loadData(
 #                   [1924.9839357429719, 3371.7871485943774]])
 
 grid.binarizeImg(k=3, lsSelect=[0], valShad=0, valSmth=0)
-# grid.findPlots(nRow=23, nCol=12)
+grid.findPlots(nRow=23, nCol=12)
 # grid.cpuSeg()
 
-g = GRID_GUI(grid, 3)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
+g = GRID_GUI(grid, 4)  # 0:input, 1:crop, 2:kmean, 3:anchor, 4:output
 app.exec_()
 
 

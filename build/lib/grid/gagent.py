@@ -341,7 +341,7 @@ class GAgent():
             for col in range(self.nCol):
                 try:
                     self.get(row=row, col=col).resetCoordinate()
-                except:
+                except Exception:
                     None
 
     def resetBorder(self):
@@ -349,7 +349,7 @@ class GAgent():
             for col in range(self.nCol):
                 try:
                     self.get(row=row, col=col).resetBorder()
-                except:
+                except Exception:
                     None
 
     def checkBorder(self, agent):

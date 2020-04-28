@@ -78,7 +78,7 @@ class PnOutputer(QWidget):
         self.lb_output = QLabel("Output Path")
         self.fd_output = QLineEdit(os.path.expanduser("~"))
         self.bt_output = QPushButton("Browse")
-        self.ck_h5 = QCheckBox("Save segmented images as H5")
+        self.ck_h5 = QCheckBox("Save shapefile")
         '''ui'''
         self.initUI()
 
@@ -178,6 +178,7 @@ class PnOutputer(QWidget):
         self.fd_project.setFixedHeight(fm.height())
         self.fd_output.setFixedHeight(fm.height())
         self.bt_output.clicked.connect(self.assign_PathOut)
+        self.ck_h5.setChecked(True)
         # layout
         self.lo_out.addWidget(self.lb_project, 0, 0)
         self.lo_out.addWidget(self.fd_project, 0, 1)

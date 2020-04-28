@@ -276,7 +276,8 @@ class GRID():
         savePlot(self, path, prefix)
 
         if h5:
-            updateProgress(prog, name="Exporting h5 file")
+            updateProgress(prog, name="Exporting shapefile")
+            saveShape(self, path, prefix)
             saveH5(self, path, prefix)
 
         updateProgress(prog, name="Done")

@@ -23,6 +23,9 @@
 
 ## Update Log
 
+### Apr 28, 2020 (0.3.5)
+    * Support exporting ESRI shapefile
+
 ### Apr 23, 2020 (0.3.41)
     * Support drag and drop for file loading
     * Support manual adjustment for centroids

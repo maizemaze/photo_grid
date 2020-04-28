@@ -46,7 +46,7 @@ class PnAnchor(QWidget):
         self.lbTk = [QLabel("# of ticks"), QLabel("# of ticks")]
         self.spbTk = [QSpinBox(), QSpinBox()]
 
-        self.mtp = 5  # for slider
+        self.mtp = 1  # for slider
 
         # Tools
         self.idx_tool = 0 # 0 for major, 1 for minor
@@ -103,8 +103,8 @@ class PnAnchor(QWidget):
         # RIGHT: minor axis
         self.grAxis[1].setTitle("Minor axis")
         self.lbAg[1].setText("Angle: %d" % agMin)
-        self.dlMinAg.setRange(-18, 18)
-        self.dlMinAg.setValue(int(agMin/5))
+        self.dlMinAg.setRange(-int(90/self.mtp), int(90/self.mtp))
+        self.dlMinAg.setValue(int(agMin/self.mtp))
         self.dlMinAg.setPageStep(3)
         self.dlMinAg.setNotchesVisible(True)
         self.dlMinAg.setNotchTarget(5)

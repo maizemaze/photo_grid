@@ -10,6 +10,7 @@ from PIL import Image
 from PyQt5.QtCore import QFile, QIODevice
 import h5py
 import rasterio
+import shapefile
 
 # self import
 from .lib import initProgress, updateProgress, pltImShow, pltSegPlot
@@ -300,3 +301,48 @@ def saveH5(grid, path, prefix="GRID"):
                     f.create_dataset(key, data=imgFin, compression="gzip")
             except Exception:
                 print("Failed to save %s" % key)
+
+
+def saveShape(grid, path, prefix="GRID"):
+    pathDT = os.path.join(path, prefix+"_data.csv")
+    pathSp = os.path.join(path, prefix)
+
+    # info
+    imgH = grid.map.imgH
+    dt = pd.read_csv(pathDT)
+
+    with shapefile.Writer(pathSp) as f:
+        # define fields
+        cols = dt.columns
+
+        for col in cols:
+            instance = dt[col][0]
+
+            if isinstance(instance, object):
+                # characters
+                mode = "C"
+                arg1, arg2 = 20, 20
+            else:
+                # integer, floating
+                mode = "N"
+                arg1, arg2 = 10, 10
+
+            f.field(col, mode, arg1, arg2)
+
+        for idx, entry in dt.iterrows():
+            # get agents
+            row = entry["row"]
+            col = entry["col"]
+            agent = grid.agents.get(row, col)
+
+            # polygon
+            bN = imgH - agent.border["NORTH"]
+            bW = agent.border["WEST"]
+            bS = imgH - agent.border["SOUTH"]
+            bE = agent.border["EAST"]
+            f.poly([[[bW, bN], [bE, bN], [bE, bS], [bW, bS], [bW, bN]]])
+
+            # attributes
+            dc = {c: entry[c] for c in dt.columns}
+            f.record(**dict(dc))
+
