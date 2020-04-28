@@ -1,6 +1,6 @@
 __author__ = "Chunpeng James Chen"
-__version__ = "0.3.41"
-__update__ = "Apr 23, 2020"
+__version__ = "0.3.5"
+__update__ = "Apr 28, 2020"
 
 # imports
 import subprocess
@@ -21,6 +21,8 @@ if "-m" not in sys.argv[0]:
     # if in the command-line environment
     print("    Try 'python -m grid' in Terminel to launch GRID GUI,")
     print("         as command-line version is not ready yet.")
+print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
+print("New feature: support exporting ESRI shapefile                   ")
 print("~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~*~~~~~~~~~")
 
 
@@ -65,9 +67,12 @@ except Exception:
 # self imports
 from .grid import *
 
-
 """
 Update Log
+
+- Apr 28, 2020 (0.3.5)
+    * Support exporting ESRI shapefile
+
 - Apr 16, 2020 (0.3.4)
     * New interface for angle detection
 

@@ -141,6 +141,9 @@ def saveQImg(qimg, path):
 
 
 def saveDT(grid, path, prefix="GRID"):
+    # save npy
+    np.save(os.path.join(path, prefix+".npy"), grid.imgs.get("crop"))
+
     # get path
     pathDT = os.path.join(path, prefix+"_data.csv")
 
